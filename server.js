@@ -8,7 +8,7 @@ var passport = require('passport')
 var app = express()
 app.set('view engine','ejs')
 app.use(bodyParser())
-app.use(express.static(path.join(__dirname,'views')))
+app.use(express.static(path.join(__dirname,'Public')))
 var con = mysql.createConnection({
 	host : 'localhost',
 	user : 'root',
