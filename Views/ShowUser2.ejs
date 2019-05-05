@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<link rel="stylesheet" type="text/css" href="ShowUser2.css">
+	<link rel="stylesheet" type="text/css" href="TabbarAndNavbar.css">
+	<link rel="stylesheet" type="text/css" href="LogoutCover.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<style type="text/css">
+		table{
+			border: 1px solid rgba(0,0,0,0.1);
+		}
+		td{
+			border-bottom: 1px solid rgba(0,0,0,0.3);
+			padding: 10px;
+		}
+		table.dataTable tbody tr:nth-child(odd){
+			background-color: transparent;
+		}
+		table.dataTable{
+			border-collapse: unset;
+		}
+	</style>
+	<title></title>
+</head>
+<body>
+	<% include partials/LogoutCover.ejs %>
+	<div class="edit">
+		<div class="head">
+			Update
+		</div>
+		<div class="data">
+			<div class="info"><div class="info1">UserName: </div><div class="info2"><input placeholder="Username" type="text" name="" class="textBox" id="Username"></div></div>
+			<div class="info"><div class="info1">Phone: </div><div class="info2"><input placeholder="Phone" type="text" name="" class="textBox" id="Phone"></div></div>
+			<div class="info"><div class="info1">City: </div><div class="info2"><input placeholder="City" type="text" name="" class="textBox" id="City"></div></div>
+			<div class="info"><div class="info1">Status: </div><div class="info2"><select id="Status" class="textBox">
+					<option>Pending</option>
+					<option>Confirmed</option></select></div></div>
+			<div class="info"><div class="info1">Role: </div><div class="info2"><select id="Role" class="textBox">
+					<option>User</option>
+					<option>Community builder</option>
+					<option>Admin</option></select></div></div>
+			<div class="info"><div class="info1"></div><div class="info2"><button class="UCbutton" id="Update">Update</button></div></div>
+			
+		</div>
+		<div class="bottom">
+			<button class="UCbutton" id="close">Close</button>
+		</div>
+	</div>
+	<div class="cover"></div>
+	<% include partials/navBar.ejs %>
+	<div class="container">
+		<% include partials/tabBar.ejs %>
+		<div class="profile">
+			<div class="FilterButtons">
+				<div class="listUsers">User List</div>
+				<div class="Rcontainer">
+					<div class="refresh"><i class="fa fa-refresh" style="width: 10px;height: 10px;margin-right: 5px;font-size: 17px"></i>Refresh</div><select class="PCusers">
+						<option selected>All</option>
+						<option>Pending</option>
+						<option>Confirmed</option>
+					</select><select class="userType">
+						<option selected>All</option>
+						<option>Admin</option>
+						<option>User</option>
+						<option>Community builder</option>
+					</select>
+				</div>
+			</div>
+			<div class="Users">
+				<table id="myTable">
+					<thead>
+						<tr>
+							<th class="Username" style="border-bottom: 3px solid rgb(221,221,221);">
+								Username/Email
+							</th>
+							<th class="Phone" style="border-bottom: 3px solid rgb(221,221,221);">
+								Phone
+							</th>
+							<th class="City" style="border-bottom: 3px solid rgb(221,221,221);">
+								City
+							</th>
+							<th class="Status" style="border-bottom: 3px solid rgb(221,221,221);">
+								Status
+							</th>
+							<th class="Role" style="border-bottom: 3px solid rgb(221,221,221);">
+								Role
+							</th>
+							<th class="Action" style="border-bottom: 3px solid rgb(221,221,221);">
+								Action
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="TabbarAndNavbar.js"></script>
+	<script type="text/javascript" src="ShowUser2.js"></script>
+	<script type="text/javascript" src="LogoutCover.js"></script>
+</body>
+</html>

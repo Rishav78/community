@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="TabbarAndNavbar.css">
+	<link rel="stylesheet" type="text/css" href="Tags.css">
+	<link rel="stylesheet" type="text/css" href="LogoutCover.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<title></title>
+</head>
+<body>
+<% include partials/LogoutCover.ejs %>
+<% include partials/navBar.ejs %>
+<div class="container">
+	<% include partials/tabBar.ejs %>
+	<div class="profile">
+		<div class="tags">
+			<div class="addTag">
+				<div class="head">
+					<h1>Create Tag</h1>
+				</div>
+				<div class="input">
+					<input type="text" name="" placeholder="Tag Name" class="textBox">
+					<button class="Submit">Submit</button>
+				</div>
+			</div>
+			<button class="showTags">Tag List</button>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="TabbarAndNavbar.js"></script>
+<script type="text/javascript" src="Tags.js"></script>
+<script type="text/javascript" src="LogoutCover.js"></script>
+</body>
+</html>

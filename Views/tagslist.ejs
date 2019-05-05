@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="TabbarAndNavbar.css">
+	<link rel="stylesheet" type="text/css" href="tagslist.css">
+	<link rel="stylesheet" type="text/css" href="LogoutCover.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<title></title>
+</head>
+<body>
+	<% include partials/LogoutCover.ejs %>
+	<% include partials/navBar.ejs %>
+	<div class="container">
+		<% include partials/tabBar.ejs %>
+		<div class="profile">
+			<div class="FilterButtons">
+				<div class="listUsers">User List</div>
+				<div class="Rcontainer">
+					<div class="refresh"><i class="fa fa-refresh" style="width: 10px;height: 10px;margin-right: 5px;font-size: 17px"></i>Refresh</div>
+				</div>
+			</div>
+			<div class="FilterBox">
+				<div class="leftbox">
+					Show
+					<select class="searchbox" id="number">
+						<option>10</option>
+						<option>25</option>
+						<option>50</option>
+					</select>
+					entries
+				</div>
+				<div class="Rfilterbox">
+					Search: <input type="" name="" class="searchbox" id="search">
+				</div>
+			</div>
+			<div class="Users">
+				<table width="100%" cellpadding="0" cellspacing="0">
+					<tr style="font-size: 18px">
+						<th style="padding: 5px 10px;" class="Username">
+							Tag Name
+						</th>
+						<th style="padding: 5px 10px;" class="Phone">
+							Created By
+						</th>
+						<th style="padding: 5px 10px;" class="Phone">
+							Create Date
+						</th>
+						<th style="padding: 5px 10px;" class="Phone">
+							Action
+						</th>
+					</tr>
+				</table>
+				<div class="pagination"></div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="TabbarAndNavbar.js"></script>
+	<script type="text/javascript" src="tagslist.js"></script>
+	<script type="text/javascript" src="LogoutCover.js"></script>
+</body>
+</html>

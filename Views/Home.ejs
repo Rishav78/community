@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="TabbarAndNavbar.css">
+	<link rel="stylesheet" type="text/css" href="Home.css">
+	<link rel="stylesheet" type="text/css" href="LogoutCover.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<title></title>
+</head>
+<body>
+<% include partials/LogoutCover.ejs %>
+<% include partials/navBar.ejs %>
+<div class="container">
+	<% include partials/tabBar.ejs %>
+	<div class="profile">
+		<div style="margin-top: 30px" class="picDetail">
+			<div class="profilePic"><img src="default.png"></div>
+			<div class="userDetails">
+				<div class="detail">
+					<div class="heading">Email</div>
+					<div class="details"><%= data.Email %></div>
+				</div>
+				<div class="detail">
+					<div class="heading">Gender</div>
+					<div class="details"><%= data.Gender %></div>
+				</div>
+				<div class="detail">
+					<div class="heading">Name</div>
+					<div class="details"><%= data.Name %></div>
+				</div>
+				<div class="detail">
+					<div class="heading">City</div>
+					<div class="details"><%= data.City %></div>
+				</div>
+				<div class="detail">
+					<div class="heading">D.O.B</div>
+					<div class="details"><%= data.Dob %></div>
+				</div>
+				<div class="detail">
+					<div class="heading">Phone no</div>
+					<div class="details"><%= data.Phno %></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="TabbarAndNavbar.js"></script>
+<script type="text/javascript" src="LogoutCover.js"></script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" type="text/css" href="ShowUsers.css">
+	<link rel="stylesheet" type="text/css" href="TabbarAndNavbar.css">
+	<link rel="stylesheet" type="text/css" href="LogoutCover.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<title></title>
+</head>
+<body>
+	<% include partials/LogoutCover.ejs %>
+	<div class="edit">
+		<div class="head">
+			Update
+		</div>
+		<div class="data">
+			<div class="info"><div class="info1">UserName: </div><div class="info2"><input placeholder="Username" type="text" name="" class="textBox" id="Username"></div></div>
+			<div class="info"><div class="info1">Phone: </div><div class="info2"><input placeholder="Phone" type="text" name="" class="textBox" id="Phone"></div></div>
+			<div class="info"><div class="info1">City: </div><div class="info2"><input placeholder="City" type="text" name="" class="textBox" id="City"></div></div>
+			<div class="info"><div class="info1">Status: </div><div class="info2"><select id="Status" class="textBox">
+					<option>Pending</option>
+					<option>Confirmed</option></select></div></div>
+			<div class="info"><div class="info1">Role: </div><div class="info2"><select id="Role" class="textBox">
+					<option>User</option>
+					<option>Community builder</option>
+					<option>Admin</option></select></div></div>
+			<div class="info"><div class="info1"></div><div class="info2"><button class="UCbutton" id="Update">Update</button></div></div>
+			
+		</div>
+		<div class="bottom">
+			<button class="UCbutton" id="close">Close</button>
+		</div>
+	</div>
+	<div class="cover"></div>
+	<% include partials/navBar.ejs %>
+	<div class="container">
+		<% include partials/tabBar.ejs %>
+		<div class="profile">
+			<div class="FilterButtons">
+				<div class="listUsers">User List</div>
+				<div class="Rcontainer">
+					<div class="refresh"><i class="fa fa-refresh" style="width: 10px;height: 10px;margin-right: 5px;font-size: 17px"></i>Refresh</div><select class="PCusers">
+						<option selected>All</option>
+						<option>Pending</option>
+						<option>Confirmed</option>
+					</select><select class="userType">
+						<option selected>All</option>
+						<option>Admin</option>
+						<option>User</option>
+						<option>Community builder</option>
+					</select>
+				</div>
+			</div>
+			<div class="FilterBox">
+				<div class="leftbox">
+					Show
+					<select class="searchbox" id="number">
+						<option>10</option>
+						<option>25</option>
+						<option>50</option>
+					</select>
+					entries
+				</div>
+				<div class="Rfilterbox">
+					Search: <input type="" name="" class="searchbox" id="search">
+				</div>
+			</div>
+			<div class="Users">
+				<table width="100%" cellpadding="0" cellspacing="0">
+					<tr style="font-size: 16px;background-color: rgb(243,244,244);">
+						<th style="padding: 5px 10px;border-bottom: 2px solid rgb(221,221,221)" class="Username">
+							Username/Email
+						</th>
+						<th style="padding: 5px 10px;border-bottom: 2px solid rgb(221,221,221)" class="Phone">
+							Phone
+						</th>
+						<th style="padding: 5px 10px;border-bottom: 2px solid rgb(221,221,221)" class="City">
+							City
+						</th>
+						<th style="padding: 5px 10px;border-bottom: 2px solid rgb(221,221,221)" class="Status">
+							Status
+						</th>
+						<th style="padding: 5px 10px;border-bottom: 2px solid rgb(221,221,221)" class="Role">
+							Role
+						</th>
+						<th style="padding: 5px 10px;border-bottom: 2px solid rgb(221,221,221)" class="Action">
+							Action
+						</th>
+					</tr>
+				</table>
+				<div class="pagination"></div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="TabbarAndNavbar.js"></script>
+	<script type="text/javascript" src="ShowUsers.js"></script>
+	<script type="text/javascript" src="LogoutCover.js"></script>
+</body>
+</html>

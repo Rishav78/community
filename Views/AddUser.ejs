@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="TabbarAndNavbar.css">
+	<link rel="stylesheet" type="text/css" href="AddUser.css">
+	<link rel="stylesheet" type="text/css" href="LogoutCover.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<title></title>
+</head>
+<body>
+<% include partials/LogoutCover.ejs %>
+<% include partials/navBar.ejs %>
+<div class="container">
+	<% include partials/tabBar.ejs %>
+	<div class="profile">
+		<div class="AddUser">
+			<h1>Add User</h1>
+			<!-- <form> -->
+				<input type="text" name="" class="textBox" id="name" placeholder="Name">
+				<input type="text" name="" class="textBox" id="email" placeholder="Email">
+				<input type="text" name="" class="textBox" id="Password" placeholder="User Password">
+				<input type="text" name="" class="textBox" id="phone" placeholder="Phone">
+				<input type="text" name="" class="textBox" id="city" placeholder="City">
+				<h3>Role:</h3>
+				<select class="textBox" id="role">
+					<option>User</option>
+					<option>Community Builder</option>
+					<option>Admin</option>
+				</select>
+				<button class="add" onclick="add()">Add User</button><button class="cancel" onclick="home()">Cancel</button>
+			<!-- </form> -->
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="TabbarAndNavbar.js"></script>
+<script type="text/javascript" src="AddUser.js"></script>
+<script type="text/javascript" src="LogoutCover.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+.filters{
+	display: flex;
+	flex-direction: column;
+}
+.FilterButtons{
+	text-align: left;
+	width: 100%;
+	min-width: 600px;
+}
+.pagination{
+	margin-top: 15px;
+	text-align: right;
+}
+.pagebutton{
+	padding: 7px 12px;
+	font-size: 16px;
+	background-color: rgb(51,122,183);
+	border: 1px solid rgb(51,122,183);
+	margin: 0px 7px;
+	color: white;
+}
+#next, #prev{
+	color: black;;
+	background-color: white;
+	border: 1px solid gray;
+	margin: 0px 15px;
+}
+.listUsers, .refresh, .PCusers, .userType{
+	display: inline-block;
+	color: white;
+	background-color: #333;
+	font-size: 20px;
+	font-weight: bolder;
+	display: inline-block;
+	padding: 5px 12px;
+	border-radius: 3px;
+	border: none;
+	margin-left: 5px;
+	cursor: pointer;
+}
+.listUsers{
+	box-shadow: 1px 1px 10px gray;
+}
+.listUsers,.PCusers, .userType{
+	padding: 9px 15px;
+}
+.refresh{
+	border-radius: 0;
+}
+.Rcontainer, .Rfilterbox{
+	float: right;
+}
+.PCusers, .userType{
+	padding: 4px 8px;
+}
+.FilterBox{
+	text-align: left;
+	margin-top: 20px;
+}
+.leftbox{
+	display: inline-block;
+}
+.searchbox{
+	padding: 5px 12px;
+	border-radius: 3px;
+}
+#myTable{
+	/*background-color: pink;*/
+}
+.cover{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -1;
+	opacity: 0;
+	transition: 1s;
+	background-color: #333333;
+	pointer-events: auto;
+}
+.edit{
+	position: absolute;
+	background-color: white;
+	opacity: 0;
+	transition: 1s;
+	transform: translateX(-50%);
+	box-sizing: border-box;
+	border-radius: 5px;
+	left: 50%;
+	width: 600px;
+	top: -200%;
+	z-index: 10;
+}
+.data{
+	box-sizing: border-box;
+	padding: 25px 10px;
+}
+.head{
+	border-bottom: 1px solid gray;
+	padding: 15px 20px;
+}
+.bottom{
+	border-top: 1px solid gray;
+	padding: 15px 20px;
+}
+.info{
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0px 10px;
+}
+.info1{
+	width: 18%;
+	box-sizing: border-box;
+	padding: 10px 15px;
+	display: inline-block;
+	text-align: right;
+}
+.info2{
+	width: 78%;
+	display: inline-block;
+}
+.UCbutton{
+	background-color: white;
+	border: 1px solid gray;
+	padding: 7px 12px;
+}
+select, input{
+	padding: 5px 8px;
+	border-radius: 3px;
+	border: 1px solid rgba(0,0,0,0.3);
+	margin-bottom: 20px;
+}
+.textBox{
+	padding: 7px 9px;
+	font-size: 17px;
+	box-sizing: border-box;
+	width: 100%;
+	box-shadow: 0 8px 6px -6px gray;
+	border: 1px solid #b3b3b3;
+	border-radius: 3px;
+	margin: 10px 0px 10px 0px;
+}
+.bottom{
+	text-align: right;
+}
+.Users{
+	margin-top: 25px;
+}
+#showUsers{
+	background-color: rgb(51,122,183);
+}
+#showUsers > i, #showUsers > span{
+	color: white;
+}
+.icon{
+	width: 35px;
+	height: 35px;
+	padding-top: 10px;
+	/*background-color: pink;*/
+	margin: 0px 5px;
+}
+i.fa-envelope-o{
+	background-color: black;
+	color: white;
+}
+i.fa-edit{
+	background-color: rgb(51,122,183);
+	color: white;
+}
+i.fa-close{
+	background-color: rgb(240,173,78);
+	color: white;
+}
+@media screen and (max-width: 950px) {
+	.userImg{
+		display: none;
+	}
+	.leftbox{
+		display: block;
+	}
+	.FilterBox{
+		text-align: center;
+	}
+	.Rfilterbox{
+		float: none;
+	}
+}
