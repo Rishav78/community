@@ -44,13 +44,42 @@ h1{
 .cancel:hover{
 	background-color: #d1392e;
 }
+.added{
+	border : 1px solid rgb(216,235,203);
+	padding: 20px;
+	box-sizing: border-box;
+	display: inline-block;
+	color: rgb(60,118,63);
+	font-weight: bold;
+	font-size: 17px;
+	font-family: sans-serif;
+	text-align: center;
+	background-color: rgb(223,240,216);
+	width: 30%;
+	max-width: 600px;
+	border-radius: 5px;
+	display: none;
+}
+.added span{
+	display: inline-block;
+	
+	text-align: right;
+}
+.close{
+	/*position: relative;
+	right: -21px;*/
+	cursor: pointer;
+	color: rgb(190,216,185);
+	font-weight: bolder;
+}
+.close:hover{
+	color: #333;
+	opacity: 0.4;
+}
 #addUser{
 	background-color: rgb(51,122,183);
 }
-#addUser > i{
-	background-color: white;
-}
-#addUser > span{
+#addUser > i, #addUser > span{
 	color: white;
 }
 @media screen and (max-width: 950px) {

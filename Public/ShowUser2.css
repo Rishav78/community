@@ -147,10 +147,10 @@ select, input{
 .Users{
 	margin-top: 25px;
 }
-#showUsers{
+#showUser{
 	background-color: rgb(51,122,183);
 }
-#showUsers > i, #showUsers > span{
+#showUser > i, #showUser > span{
 	color: white;
 }
 .icon{

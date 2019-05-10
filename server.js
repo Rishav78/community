@@ -7,7 +7,7 @@ var MySQLStorage = require('express-mysql-session')(session)
 var passport = require('passport')
 var app = express()
 app.set('view engine','ejs')
-app.use(bodyParser())
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname,'Public')))
 var con = mysql.createConnection({
 	host : 'localhost',
@@ -31,10 +31,12 @@ app.use(passport.initialize())
 app.use(passport.session())
 con.connect((err)=>{
 	if (err) throw err
+		// con.query('drop table communityList')
 	// con.query('truncate table tags')
 	// con.query('truncate table Users')
 	// var q = `create table Tags(Id int, name char(100), CreatedBy varchar(100), CreationDate date)`
-	// var q = 'create table Users(Name char(50), Email varchar(100), Password varchar(50), Phno char(20), City char(50), Gender char(1), Dob char(10), Role char(50), Status char(20))'
+	// var q = 'create table CommunityList(CommunityName char(50), MembershipRule char(50), CommunityLocation varchar(50), CommunityOwner char(50), CreateDate date, CommunityPic varchar(200))'
+	// var q = `insert into communityList values('asdfg', 'sdfg', 'sdfgh' , 'werty', '0/0/0', 'dfghjk')`
 	// var q = `insert into Users values('Rishav', 'rishavgarg789@gmail.com', 'hacker12', '1234567890', 'Mandi GobindGarh', 'M', '13/9/1999', 'Superadmin', 'Confirmed')`
 	// con.query(q,(err,result)=>{
 	// 	if (err) {throw err}
@@ -66,7 +68,6 @@ app.get('/home',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
-		console.log(data)
 		res.render('Home',{data})
 	})
 })
@@ -76,28 +77,31 @@ app.get('/adduser',isAuthenticated(),(req,res)=>{
 })
 
 app.post('/adduser',(req,res)=>{
+	console.log(req.body)
+	res.send(req.body)
 	var data = ''
 	req.on('data',(chunk)=>{
 		data += chunk
+		console.log('dfghjk')
 	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`select * from Users where Email = '${data.email}'`,(err,result)=>{
-			if(err) throw err
-			if(result.length <= 0){
-				var q = `insert into Users values('${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', 'M', date '2015-12-17', '${data.role}', 'Pending')`
-				console.log(q)
-				con.query(q,(err,result)=>{
-					if(err) throw err;
-					console.log('add')
-					return res.send('User Added')
-				})
-			}else{
-				res.send('User Already Exist')
-			}
-		})
+
+	// req.on('end',()=>{
+	// 	data = JSON.parse(data)
+	// 	con.query(`select * from Users where Email = '${data.email}'`,(err,result)=>{
+	// 		if(err) throw err
+	// 		if(result.length <= 0){
+	// 			var q = `insert into Users values('${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', 'M', date '2015-12-17', '${data.role}', 'Pending')`
+	// 			con.query(q,(err,result)=>{
+	// 				if(err) throw err;
+	// 				console.log('add')
+	// 				return res.send('User Added')
+	// 			})
+	// 		}else{
+	// 			res.send('User Already Exist')
+	// 		}
+	// 	})
 		
-	})
+	// })
 })
 
 app.get('/showusers',isAuthenticated(),(req,res)=>{
@@ -146,7 +150,6 @@ app.post('/update',(req,res)=>{
 		data = JSON.parse(data)
 		con.query(`update Users set Email = '${data.Email}', Phno = '${data.Phone}', City = '${data.City}', Status = '${data.Status}', Role = '${data.Role}' where Email = '${data.Email}'`,(err,result)=>{
 			if(err) throw err
-			console.log(result)
 		  	res.send('done')
 		})
 	})
@@ -158,7 +161,6 @@ app.post('/deleteuser',(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		console.log(data)
 		con.query(`delete from Users where Email = '${data}'`,(err,result)=>{
 			if(err) throw err
 			console.log('done')
@@ -184,8 +186,6 @@ app.post('/tags',(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		console.log(data)
-		// data = JSON.parse(data)
 		con.query(`select * from tags where name = '${data}'`,(err,result)=>{
 			if(err) throw err
 			if(result.length<=0){
@@ -201,28 +201,28 @@ app.post('/tags',(req,res)=>{
 })
 
 app.get('/tagslist',(req,res)=>{
-	res.render('tagslist')
+	res.render('taglist2')
 })
 
 app.post('/tagslistdata',(req,res)=>{
-	var data = '',q
+	var data = ''
 	req.on('data',(chunk)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
 		con.query(`select * from tags`,(err,result)=>{
 			if (err) throw err
-			if(data){
-				var array = []
-				result.forEach((value)=>{
-					if(value.name.indexOf(data)>=0){
-						array = [...array,value]
-					}
-				})
-				res.send(array)
-			}else{
+			// if(data){
+			// 	var array = []
+			// 	result.forEach((value)=>{
+			// 		if(value.name.indexOf(data)>=0){
+			// 			array = [...array,value]
+			// 		}
+			// 	})
+			// 	res.send(array)
+			// }else{
 				res.send(result)
-			}
+			// }
 		})
 	})
 })
@@ -233,7 +233,6 @@ app.post('/deletetag',(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		console.log(data)
 		con.query(`delete from tags where name = ${data}`,(err,result)=>{
 			if(err) throw err
 			res.send('done')
@@ -251,20 +250,45 @@ app.post('/changePassword',(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		console.log(data)
 		data = JSON.parse(data)
 		con.query(`select Password from Users where Email = '${req.user}'`,(err,result)=>{
 			if(err) throw err
-			console.log(result)
 			if(result[0].Password === data.old){
 				con.query(`update Users set Password = '${data.New}' where Email = '${req.user}'`)
 				return res.send('changed')
 			}else{
-				console.log(result + " " + data.old)
 				return res.send('wrong password')
 			}
 		})
 	})
+})
+
+app.get('/communityList',(req,res)=>{
+	res.render('communityList')
+})
+
+app.post('/communityList',(req,res)=>{
+	var data = ''
+	req.on('data',(chunk)=>{
+		data += chunk
+	})
+	req.on('end',()=>{
+		data = JSON.parse(data)
+		if(data.Rule != 'All'){
+			con.query(`select * from communityList where MembershipRule = ${data.Rule}`,(err,result)=>{
+				if(err) throw err
+				return res.send(result)
+			})
+		}
+		con.query(`select * from communityList`,(err,result)=>{
+			if(err) throw err
+			return res.send(result)
+		})
+	})
+})
+
+app.get('/communitypanel',(req,res)=>{
+	res.render('communityAsUser')
 })
 
 passport.serializeUser((user,done)=>{

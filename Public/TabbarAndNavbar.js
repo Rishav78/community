@@ -4,7 +4,7 @@ var open = document.querySelector('.open')
 var hidden = document.querySelectorAll('.hidden')
 var item = document.querySelectorAll('.item')
 var icon = document.querySelector('.icon')
-var initial;
+var initial,width;
 item.forEach((value)=>{
 	value.onclick = ()=>{
 		for(var i=0;i<item.length;i++){
@@ -17,31 +17,18 @@ item.forEach((value)=>{
 	value.style.color = 'gray'
 })
 
-function show(){
-	if(tabbar.style.width == '300px'){
-		tabbar.style.width =initial
+var bar = document.querySelector('.bar')
+var tabBar = document.querySelector('.tabBar')
+function expand(){
+	if(tabBar.style.width == '250px'){
+		tabBar.style.width = width
 	}else{
-		// profile.style.width = '80%'
-		initial = tabbar.style.width
-		tabbar.style.width = '300px'
+		width = tabBar.style.width
+		tabBar.style.width = '250px'
 	}
 }
-icon.onclick = show;
-open.onclick = show;
-
-
-document.querySelector('#home').onclick = ()=>{
-	window.location = '/home'
+bar.onclick = (event)=>{
+	event.preventDefault()
+	expand()
 }
-document.querySelector('#addUser').onclick = ()=>{
-	window.location = '/adduser'
-}
-document.querySelector('#showUsers').onclick = ()=>{
-	window.location = '/showusers'
-}
-document.querySelector('#tags').onclick = ()=>{
-	window.location = '/tags'
-}
-document.querySelector('#changePassword').onclick = ()=>{
-	window.location = '/changePassword'
-}
+document.querySelector('.icon').onclick = expand

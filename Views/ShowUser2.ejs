@@ -7,9 +7,10 @@
 	<link rel="stylesheet" type="text/css" href="TabbarAndNavbar.css">
 	<link rel="stylesheet" type="text/css" href="LogoutCover.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-	<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
-	<script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.4/css/jquery.dataTables.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
 	<style type="text/css">
 		table{
 			border: 1px solid rgba(0,0,0,0.1);
@@ -28,32 +29,33 @@
 	<title></title>
 </head>
 <body>
-	<% include partials/LogoutCover.ejs %>
-	<div class="edit">
-		<div class="head">
-			Update
-		</div>
-		<div class="data">
-			<div class="info"><div class="info1">UserName: </div><div class="info2"><input placeholder="Username" type="text" name="" class="textBox" id="Username"></div></div>
-			<div class="info"><div class="info1">Phone: </div><div class="info2"><input placeholder="Phone" type="text" name="" class="textBox" id="Phone"></div></div>
-			<div class="info"><div class="info1">City: </div><div class="info2"><input placeholder="City" type="text" name="" class="textBox" id="City"></div></div>
-			<div class="info"><div class="info1">Status: </div><div class="info2"><select id="Status" class="textBox">
-					<option>Pending</option>
-					<option>Confirmed</option></select></div></div>
-			<div class="info"><div class="info1">Role: </div><div class="info2"><select id="Role" class="textBox">
-					<option>User</option>
-					<option>Community builder</option>
-					<option>Admin</option></select></div></div>
-			<div class="info"><div class="info1"></div><div class="info2"><button class="UCbutton" id="Update">Update</button></div></div>
-			
-		</div>
-		<div class="bottom">
-			<button class="UCbutton" id="close">Close</button>
-		</div>
+<% include partials/LogoutCover.ejs %>
+<div class="edit">
+	<div class="head">
+		Update
 	</div>
-	<div class="cover"></div>
+	<div class="data">
+		<div class="info"><div class="info1">UserName: </div><div class="info2"><input placeholder="Username" type="text" name="" class="textBox" id="Username"></div></div>
+		<div class="info"><div class="info1">Phone: </div><div class="info2"><input placeholder="Phone" type="text" name="" class="textBox" id="Phone"></div></div>
+		<div class="info"><div class="info1">City: </div><div class="info2"><input placeholder="City" type="text" name="" class="textBox" id="City"></div></div>
+		<div class="info"><div class="info1">Status: </div><div class="info2"><select id="Status" class="textBox">
+				<option>Pending</option>
+				<option>Confirmed</option></select></div></div>
+		<div class="info"><div class="info1">Role: </div><div class="info2"><select id="Role" class="textBox">
+				<option>User</option>
+				<option>Community builder</option>
+				<option>Admin</option></select></div></div>
+		<div class="info"><div class="info1"></div><div class="info2"><button class="UCbutton" id="Update">Update</button></div></div>
+		
+	</div>
+	<div class="bottom">
+		<button class="UCbutton" id="close">Close</button>
+	</div>
+</div>
+<div class="cover"></div>
+<div class="container1">
 	<% include partials/navBar.ejs %>
-	<div class="container">
+	<div class="container2">
 		<% include partials/tabBar.ejs %>
 		<div class="profile">
 			<div class="FilterButtons">
@@ -102,8 +104,9 @@
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" src="TabbarAndNavbar.js"></script>
-	<script type="text/javascript" src="ShowUser2.js"></script>
-	<script type="text/javascript" src="LogoutCover.js"></script>
+</div>
+<script type="text/javascript" src="TabbarAndNavbar.js"></script>
+<script type="text/javascript" src="ShowUser2.js"></script>
+<script type="text/javascript" src="LogoutCover.js"></script>
 </body>
 </html>

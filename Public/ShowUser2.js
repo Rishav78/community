@@ -31,14 +31,12 @@ function popUp(e){
 	popup.style.top = '0px'
 }
 
-
-
 function del(e){
 	var value = e.target
 	var user = value.parentNode.parentNode.parentNode
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
-		document.querySelector('tbody').removeChild(user)
+		console.log('deleted')
 	}
 	req.open('POST','deleteuser')
 	req.send(user.firstChild.textContent.trim())
@@ -120,7 +118,11 @@ function updateData(){
 			tr.appendChild(td6)
 			document.querySelector('tbody').appendChild(tr)
 		})
-		$('#myTable').DataTable();
+		var table = $('#myTable').DataTable();
+		$('#myTable').on("click", ".fa-close", function(){
+		  console.log($(this).parent());
+		  table.row($(this).parents('tr')).remove().draw(false);
+		});
 	}
 	req.open('POST','users')
 	req.send(JSON.stringify(obj))

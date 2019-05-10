@@ -9,21 +9,23 @@
 </head>
 <body>
 <% include partials/LogoutCover.ejs %>
-<% include partials/navBar.ejs %>
-<div class="container">
-	<% include partials/tabBar.ejs %>
-	<div class="profile">
-		<div class="tags">
-			<div class="addTag">
-				<div class="head">
-					<h1>Create Tag</h1>
+<div class="container1">
+	<% include partials/navBar.ejs %>
+	<div class="container2">
+		<% include partials/tabBar.ejs %>
+		<div class="profile">
+			<div class="tags">
+				<div class="addTag">
+					<div class="head">
+						<h1>Create Tag</h1>
+					</div>
+					<div class="input">
+						<input type="text" name="" placeholder="Tag Name" class="textBox">
+						<button class="Submit">Submit</button>
+					</div>
 				</div>
-				<div class="input">
-					<input type="text" name="" placeholder="Tag Name" class="textBox">
-					<button class="Submit">Submit</button>
-				</div>
+				<button class="showTags">Tag List</button>
 			</div>
-			<button class="showTags">Tag List</button>
 		</div>
 	</div>
 </div>

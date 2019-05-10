@@ -1,4 +1,7 @@
-
+.container{
+	display: flex;
+	flex-direction: row;
+}
 .picDetail{
 	box-shadow: 3px 3px 20px rgb(230, 230, 230);
 	padding: 20px;
@@ -36,7 +39,7 @@
 	font-size: 17px;
 	box-sizing: border-box;
 	padding: 10px;
-	color: rgb(118,119,149);
+	color: rgba(0,0,0,0.8);
 }
 .details{
 	width: 100%;

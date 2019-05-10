@@ -9,26 +9,31 @@
 </head>
 <body>
 <% include partials/LogoutCover.ejs %>
-<% include partials/navBar.ejs %>
-<div class="container">
-	<% include partials/tabBar.ejs %>
-	<div class="profile">
-		<div class="AddUser">
-			<h1>Add User</h1>
-			<!-- <form> -->
-				<input type="text" name="" class="textBox" id="name" placeholder="Name">
-				<input type="text" name="" class="textBox" id="email" placeholder="Email">
-				<input type="text" name="" class="textBox" id="Password" placeholder="User Password">
-				<input type="text" name="" class="textBox" id="phone" placeholder="Phone">
-				<input type="text" name="" class="textBox" id="city" placeholder="City">
-				<h3>Role:</h3>
-				<select class="textBox" id="role">
-					<option>User</option>
-					<option>Community Builder</option>
-					<option>Admin</option>
-				</select>
-				<button class="add" onclick="add()">Add User</button><button class="cancel" onclick="home()">Cancel</button>
-			<!-- </form> -->
+<div class="container1">
+	<% include partials/navBar.ejs %>
+	<div class="container2">
+		<% include partials/tabBar.ejs %>
+		<div class="profile">
+			<div class="added">
+				<span style="width: 60%">User Added </span><span style="width: 40%" class="close">&times</span>
+			</div>
+			<div class="AddUser">
+				<h1>Add User</h1>
+				<form method="post" action="/addUser">
+					<input type="text" name="" class="textBox" id="name" placeholder="Name" required>
+					<input type="email" name="" class="textBox" id="email" placeholder="Email" required>
+					<input type="text" name="" class="textBox" id="Password" placeholder="User Password" required>
+					<input type="text" name="" class="textBox" id="phone" placeholder="Phone" required>
+					<input type="text" name="" class="textBox" id="city" placeholder="City" required>
+					<h3>Role:</h3>
+					<select class="textBox" id="role">
+						<option>User</option>
+						<option>Community Builder</option>
+						<option>Admin</option>
+					</select>
+					<button type="submit" class="add">Add User</button><button type="button" class="cancel" onclick="home()">Cancel</button>
+				</form>
+			</div>
 		</div>
 	</div>
 </div>

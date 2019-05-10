@@ -1,0 +1,56 @@
+body{
+	padding: 0;
+	margin: 0;
+	font-family: sans-serif;
+}
+.container{
+	display: flex;
+	height: 100vh;
+	flex-direction: column;
+}
+.header{
+	height: 50px;
+	background-color: rgb(34,45,60);
+	box-sizing: border-box;
+	padding: 10px;
+
+}
+.container2{
+	flex: 1;
+	display: flex;
+}
+.content{
+	flex: 1;
+	transition: 0.5s;
+}
+.tabBar{
+	background-color: black;
+	float: left;
+	overflow: hidden;
+	height: 100%;
+	width: 50px;
+	transition: 0.5s;
+}
+.tabBar a{
+	display: block;
+	margin: 5px 0px;
+	padding: 10px 5px;
+	min-width: 200px;
+	text-decoration: none;
+	background-color: black;
+	color: rgb(153,153,153);
+}
+.tabBar a:hover{
+	background-color: #333333;
+	color: white;
+}
+.tabBar i{
+	width: 35px;
+	height: 25px;
+	font-size: 22px;
+	text-align: center;
+	margin-right: 10px;
+}
+.tabBar span{
+	font-size: 17px;
+}
