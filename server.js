@@ -46,12 +46,17 @@ con.connect((err)=>{
 })
 app.get('/',(req,res)=>{
 	if(req.isAuthenticated()){
-		con.query(`select LoginAs from Users where Email = '${req.user}'`,(err,result)=>{
+		con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 			if(err) throw err
-			if(result[0].LoginAs == 'Admin'){
-				return res.redirect('/admin/profile')
+				console.log(result[0].Role)
+			if(result[0].Role == 'User'){
+				return res.redirect('/profile')
 			}else{
-				return res.redirect('/communitypanel')
+				if(result[0].LoginAs == 'Admin'){
+					return res.redirect('/admin/profile')
+				}else{
+					return res.redirect('/communitypanel')
+				}
 			}
 		})
 	}
@@ -61,11 +66,14 @@ app.post('/login',(req,res)=>{
 	con.query(`select * from Users where Email = '${req.body.Email}' and Password = '${req.body.Password}'`,(err,result)=>{
 		if(err) throw err
 		if(result.length>0){
-			console.log(result[0].AcivationState)
 			if(result[0].AcivationState == 'True'){
 				req.login(req.body.Email,(err)=>{
 					if(err) throw err
-					return res.redirect('/admin/profile')
+					if(result[0].Role == 'User'){
+						return res.redirect('/profile')	
+					}else{
+						return res.redirect('/admin/profile')
+					}
 				})
 			}else{
 				return res.render('404NotFound')
@@ -91,11 +99,15 @@ app.get('/profile',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
-	console.log(data.LoginAs)
-		if(data.LoginAs == 'Admin'){
-			res.render('profile_admin',{data : data,visible : true})
+		console.log(data.LoginAs)
+		if(data.Role == 'User'){
+			return res.render('profile_user',{data : data, visible : true})
 		}else{
-			res.render('profile_user',{data : data,visible : true})
+			if(data.LoginAs == 'Admin'){
+				res.render('profile_admin',{data : data,visible : true})
+			}else{
+				res.render('profile_user',{data : data,visible : true})
+			}
 		}
 	})
 })
@@ -287,12 +299,16 @@ app.post('/deletetag',(req,res)=>{
 })
 
 app.get('/changePassword',(req,res)=>{
-	con.query(`select LoginAs from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
-		if(result[0].LoginAs == 'Admin'){
-			res.render('changePassword_admin')
-		}else{
+		if(result[0].Role == 'User'){
 			res.render('ChangePassword_user')
+		}else{
+			if(result[0].LoginAs == 'Admin'){
+				res.render('changePassword_superadmin_admin')
+			}else{
+				res.render('ChangePassword_superadmin_user')
+			}
 		}
 	})
 })
@@ -349,7 +365,14 @@ app.get('/communitypanel',(req,res)=>{
 	con.query(`update Users set LoginAs = 'User' where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 	})
-	res.render('communityAsUser')
+	con.query(`select LoginAs from Users where Email = '${req.user}'`,(err,result)=>{
+		if(err) throw err
+		if(result[0].LoginAs == 'User'){
+			res.render('communityManager_user')
+		}else{
+			res.render('communityManager_admin')
+		}
+	})
 })
 
 app.get('/notfound',(req,res)=>{
@@ -377,6 +400,14 @@ app.post('/updateInfo',(req,res)=>{
 	req.on('end',()=>{
 		console.log(JSON.parse(data))
 		res.send(data)
+	})
+})
+
+app.get('/normal',(req,res)=>{
+	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+		if(err) throw err
+		var data = result[0]
+		res.render('profile_user',{data : data,visible : true})
 	})
 })
 
