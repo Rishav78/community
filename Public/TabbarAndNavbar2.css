@@ -1,3 +1,6 @@
+::-webkit-scrollbar {
+  width: 0px;
+}
 body{
 	padding: 0;
 	margin: 0;
@@ -8,13 +11,6 @@ body{
 	height: 100vh;
 	flex-direction: column;
 }
-.header{
-	height: 50px;
-	background-color: rgb(34,45,60);
-	box-sizing: border-box;
-	padding: 10px;
-
-}
 .container2{
 	flex: 1;
 	display: flex;
@@ -22,6 +18,9 @@ body{
 .content{
 	flex: 1;
 	transition: 0.5s;
+	background-color: rgb(243,244,244);
+	overflow-y: scroll;
+	text-align: center;
 }
 .tabBar{
 	background-color: black;
@@ -37,7 +36,6 @@ body{
 	padding: 10px 5px;
 	min-width: 200px;
 	text-decoration: none;
-	background-color: black;
 	color: rgb(153,153,153);
 }
 .tabBar a:hover{
@@ -53,4 +51,18 @@ body{
 }
 .tabBar span{
 	font-size: 17px;
+}
+a{
+	cursor: pointer;
+}
+@media screen and (max-width: 950px) {
+	.superadmin, .admin{
+		display: none;
+	}
+	.tabBar{
+		width: 0px;
+	}
+	.content{
+		width: 100%;
+	}
 }

@@ -1,13 +1,18 @@
 var bar = document.querySelector('.bar')
 var tabBar = document.querySelector('.tabBar')
+var width;
 function expand(){
     if(tabBar.style.width == '250px'){
-        tabBar.style.width = '50px'
+        tabBar.style.width = width
     }else{
+    	width = tabBar.style.width
         tabBar.style.width = '250px'
     }
 }
 bar.onclick = (event)=>{
     event.preventDefault()
     expand()
+}
+document.querySelector('#switch').onclick = ()=>{
+	window.location = '/admin/profile'
 }

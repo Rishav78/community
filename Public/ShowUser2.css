@@ -154,23 +154,23 @@ select, input{
 	color: white;
 }
 .icon{
-	width: 35px;
-	height: 35px;
-	padding-top: 10px;
-	/*background-color: pink;*/
+	padding: 8px 10px;
+	box-sizing: border-box;
 	margin: 0px 5px;
+	color: white;
+	cursor: pointer;
 }
 i.fa-envelope-o{
 	background-color: black;
-	color: white;
 }
 i.fa-edit{
 	background-color: rgb(51,122,183);
-	color: white;
 }
-i.fa-close{
+i.fa-times-circle{
 	background-color: rgb(240,173,78);
-	color: white;
+}
+i.fa-check-circle{
+	background-color: rgb(92,184,92);
 }
 @media screen and (max-width: 950px) {
 	.userImg{

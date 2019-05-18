@@ -81,8 +81,9 @@ td.Action{
 }
 table .icon{
 	width: 35px;
-	height: 25px;
+	height: 35px;
 	padding-top: 10px;
+	box-sizing: border-box;
 	background-color: rgb(45,49,44);
 	color: white;
 	font-size: 17px;

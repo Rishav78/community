@@ -7,6 +7,7 @@
 	margin-top: 40px;
 	background-color: white;
 	border: 5px solid #e6e6e6;
+	text-align: left;
 }
 h1{
 	font-size: 40px;
@@ -25,6 +26,7 @@ h1{
 	box-shadow: 1px 1px 10px #4d4dff;
 }
 .add, .cancel{
+	text-decoration: none;
 	padding: 10px 15px;
 	border: none;
 	font-size: 20px;

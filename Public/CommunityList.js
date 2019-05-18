@@ -65,11 +65,14 @@ function updateData(){
 			var td6 = document.createElement('td')
 			td6.innerHTML = value.CommunityPic
 			tr.appendChild(td6)
+			var td7 = document.createElement('td')
+			td7.innerHTML = value.CommunityPic
+			tr.appendChild(td7)
 			document.querySelector('tbody').appendChild(tr)
 		})
 		$('#myTable').DataTable();
 	}
-	req.open('POST','communityList')
+	req.open('POST','/community/communityList')
 	req.send(JSON.stringify(obj))
 }
 window.onload = updateData

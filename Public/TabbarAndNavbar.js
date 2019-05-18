@@ -32,3 +32,6 @@ bar.onclick = (event)=>{
 	expand()
 }
 document.querySelector('.icon').onclick = expand
+// document.querySelector('#switch').onclick = ()=>{
+// 	window.location = '/communityPanel'
+// }

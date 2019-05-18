@@ -73,6 +73,7 @@ select, input{
 	width: 35px;
 	height: 35px;
 	padding-top: 10px;
+	box-sizing: border-box;
 	/*background-color: pink;*/
 	margin: 0px 5px;
 }

@@ -1,0 +1,7 @@
+
+@media screen and (max-width: 950px) {
+	.heading{
+		display: block;
+		/*margin: auto;*/
+	}
+}

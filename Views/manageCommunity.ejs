@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- <link rel="stylesheet" type="text/css" href="manageCommunity.css"> -->
+	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
+	<style type="text/css">
+		.head{
+			background-color: rgb(51,170,200);
+			padding: 10px;
+			height: 50px;
+			text-align: center;
+		}
+		.community, .manageCommunity, .editCommunity{
+			width: 80%;
+			margin: auto;
+			max-width: 1180px;
+		}
+		.community{
+			display: flex;
+		}
+		.basicDetal{
+			box-sizing: border-box;
+			height: 75px;
+		}
+		.image{
+			width: 100px;
+			height: 70px;
+			position: relative;
+			display: inline-block;
+		}
+		img{
+			width: 100px;
+			height: 100px;
+			position: absolute;
+			top: -50%;
+		}
+		.communityName{
+			flex: 5;
+		}
+		.communityName, .moredetail{
+			padding: 15px 30px; 
+			box-sizing: border-box;
+		}
+		.communityName > span{
+			font-size: 20px;
+			color: rgb(51,122,183);
+			font-weight: bold;
+		}
+		.heading{
+			font-size: 17px;
+			color: white;
+			display: none;
+		}
+		.moredetail{
+			flex: 1;
+			text-align: right;
+			display: inline-block;
+		}
+		.moredetail > i{
+			padding: 12px 15px;
+			border: 3px solid rgb(209,207,207);
+			box-sizing: border-box;
+			background-color: rgb(230,230,230);
+			position: relative;
+			cursor: pointer;
+			outline: none;
+		}
+		.moredetail > i > div{
+			width: 200px;
+			box-sizing: border-box;
+			text-align: left;
+			background-color: white;
+			border-radius: 3px;
+			position: absolute;
+			transform: translateY(100%);
+			border: 2px solid rgb(170,193,247);
+			bottom: 0;
+			right: 0;
+			display: none;
+		}
+		.moredetail > i > div > a{
+			display: block;
+			text-decoration: none;
+			color: black;
+			padding: 5px 10px;
+			margin: 5px 0px;
+		}
+		.moredetail > i > div > a:hover{
+			background-color: #2d6a9f;
+			color: white;
+		}
+		.moredetail > i:active{
+			box-shadow: inset 0px 0px 20px gray;
+		}
+		.manageCommunity{
+			padding: 10px;
+			box-sizing: border-box;
+			border-bottom: 1px solid gray;
+		}
+		.manageCommunity > a{
+			float: right;
+			margin: 0px 10px;
+			text-decoration: none;
+			color: rgb(51,122,183);
+			font-weight: bold;
+		}
+		.manageCommunity > span{
+			color: rgb(111,110,111);
+			font-weight: bold;
+			font-size: 18px;
+		}
+		.editCommunity{
+			background-color: white;
+			text-align: center;
+			box-sizing: border-box;
+			padding: 20px;
+			display: none;
+		}
+		.editCommunity > a{
+			background-color: rgb(51,122,183);
+			text-decoration: none;
+			color: white;
+			border: none;
+			padding: 10px;
+		}
+		@media (max-width: 950px) {
+			.community{
+				display: block;
+			}
+			.basicDetal{
+				height: 150px;
+			}
+			.head{
+				height: 70px;
+			}
+			.community, .editCommunity, .manageCommunity{
+				width: 100%;
+			}
+			.heading{
+				display: block;
+			}
+			.communityName{
+				display: none;
+			}
+			.image{
+				width: 100%;
+				display: block;
+			}
+			.moredetail{
+				width: 100%;
+				display: block;
+				text-align: center;
+			}
+			.edit{
+				display: none;
+			}
+			.editCommunity{
+				display: block;
+			}
+			img{
+				transform: translateX(-50%);
+				left: 50%;
+			}
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="header">
+	</div>
+	<div class="container2">
+		<% include partials/tabBar2.ejs %>
+		<div class="content">
+
+			<div class="head">
+				<span class="heading">First community</span>
+			</div>
+			<div class="community basicDetal">
+				<div class="image">
+					<img src="dfghjk">
+				</div>
+				<div class="communityName">
+					<span>First Community</span>
+				</div>
+				<div class="moredetail">
+					<i class="fa fa-bars" id="moredetail" onblur="hide()" tabindex="0">
+						<div class="community-profile-option">
+							<a href="">Discussions</a>
+							<a href="">Manage Community</a>
+							<a href="">Community Profile</a>
+							<a href="">Community Members</a>
+						</div>
+					</i>
+				</div>
+			</div>
+			<hr style="width: 90%;margin: auto;">
+			<div class="manageCommunity">
+				<span>Manage Community</span>
+				<a href="">Invite Users</a>
+				<a href="" class="edit">Edit Community</a>
+			</div>
+			<div class="editCommunity">
+				<a href="">Edit Community</a>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
+<script type="text/javascript">
+document.querySelector('#moredetail').onclick = ()=>{
+	if(document.querySelector('.community-profile-option').style.display == 'block'){
+		document.querySelector('.community-profile-option').style.display = 'none'
+	}else{
+		document.querySelector('.community-profile-option').style.display = 'block'
+	}
+}
+var hide = ()=>{
+	document.querySelector('.community-profile-option').style.display = 'none'
+}
+</script>
+</body>
+</html>

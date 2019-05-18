@@ -31,15 +31,49 @@ function popUp(e){
 	popup.style.top = '0px'
 }
 
-function del(e){
-	var value = e.target
-	var user = value.parentNode.parentNode.parentNode
+// function del(e){
+// 	var value = e.target
+// 	var user = value.parentNode.parentNode.parentNode
+// 	var req = new XMLHttpRequest()
+// 	req.onload = ()=>{
+// 		console.log('deleted')
+// 	}
+// 	req.open('POST','deleteuser')
+// 	req.send(user.firstChild.textContent.trim())
+// }
+
+function Activate(event){
+	var target = event.target
+	var user = event.target.parentNode.parentNode.parentNode.firstChild.textContent.trim()
+	var data = {
+		user : user,
+		state : 'True'
+	}
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
-		console.log('deleted')
+		event.target.classList.remove('fa-check-circle')
+		event.target.classList.add('fa-times-circle')
+		event.target.setAttribute('onclick','Deactivate(event)')
 	}
-	req.open('POST','deleteuser')
-	req.send(user.firstChild.textContent.trim())
+	req.open('POST','/Activation')
+	req.send(JSON.stringify(data))
+}
+
+function Deactivate(event){
+	var target = event.target
+	var user = event.target.parentNode.parentNode.parentNode.firstChild.textContent.trim()
+	var data = {
+		user : user,
+		state : 'False'
+	}
+	var req = new XMLHttpRequest()
+	req.onload = ()=>{
+		event.target.classList.remove('fa-times-circle')
+		event.target.classList.add('fa-check-circle')
+		event.target.setAttribute('onclick','Activate(event)')
+	}
+	req.open('POST','/Activation')
+	req.send(JSON.stringify(data))
 }
 
 update.onclick = ()=>{
@@ -78,10 +112,11 @@ function updateData(){
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = document.querySelectorAll('.USER')
-		console.log(users)
+		// console.log(users)
 		users.forEach((value)=>{
 			document.querySelector('tbody').removeChild(value)
 		})
+		// console.log(users)
 		users = JSON.parse(req.responseText)
 		console.log(users)
 		users.forEach((value)=>{
@@ -113,7 +148,11 @@ function updateData(){
 			if(value.Role == 'Superadmin'){
 				td6.innerHTML = '<div style="min-width: 100px;"><i  class="fa fa-envelope-o icon"></i></div>'
 			}else{
-				td6.innerHTML = '<div style="min-width: 100px;"><i class="fa fa-envelope-o icon"></i><i onclick="popUp(event)" class="fa fa-edit icon"></i><i onclick="del(event)" class="fa fa-close icon"></i></div>'
+				if(value.AcivationState == 'True'){
+					td6.innerHTML = '<div style="min-width: 100px;"><i class="fa fa-envelope-o icon"></i><i onclick="popUp(event)" class="fa fa-edit icon"></i><i onclick="Deactivate(event)" class="fa fa-times-circle icon"></i></div>'
+				}else{
+					td6.innerHTML = '<div style="min-width: 100px;"><i class="fa fa-envelope-o icon"></i><i onclick="popUp(event)" class="fa fa-edit icon"></i><i onclick="Activate(event)" class="fa fa-check-circle icon"></i></div>'
+				}
 			}
 			tr.appendChild(td6)
 			document.querySelector('tbody').appendChild(tr)
@@ -124,7 +163,7 @@ function updateData(){
 		  table.row($(this).parents('tr')).remove().draw(false);
 		});
 	}
-	req.open('POST','users')
+	req.open('POST','/admin/userlist')
 	req.send(JSON.stringify(obj))
 }
 window.onload = updateData

@@ -1,0 +1,60 @@
+<form action="/updateInfo" method="post">
+	<div class="info">
+		<div class="ProfilePic">
+			<img src="sdfg">
+			<span>Change</span>
+		</div>
+		<div class="basicInfo">
+			<div class="heading">
+				Basic Info
+			</div>
+			<div class="basic">
+				<span>Email : </span>
+				<input type="email" class="Email" disabled>
+				<span>Name : </span>
+				<input type="text" class="name" required>
+				<div>
+					<div>
+						<span>DOB : </span>
+						<input type="text" class="dob" id="datepicker" required>
+					</div>
+					<div>
+						<span>Gender : </span>
+						<select required class="gender">
+							<option>Male</option>
+							<option>Female</option>
+							<option>Transgender</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="basicInfo">
+			<div class="heading">
+				Contact Info
+			</div>
+			<div class="basic">
+				<span>Phone : </span>
+				<input type="text" class="phoneno" required>
+				<span>City : </span>
+				<input type="text" class="city" name="" required>
+			</div> 
+		</div>
+		<div class="basicInfo">
+			<div class="heading">
+				Personal Info
+			</div>
+			<div class="basic">
+				<span>Interests : </span>
+				<input type="text" class="interests" placeholder="Enter Interests">
+				<span>Tell us a bit more about yourjourney : </span>
+				<textarea class="userdetail"></textarea>
+				<span>what are your expectations from the communities? </span>
+				<textarea class="expectations"></textarea>
+			</div>
+		</div>
+		<div class="action">
+			<button type="submit" class="update" id="submit">Update</button><a href="" class="cancel">Cancel</a>
+		</div>
+	</div>
+</form>
