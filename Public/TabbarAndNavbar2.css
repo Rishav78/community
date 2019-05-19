@@ -36,9 +36,11 @@ body{
 	padding: 10px 5px;
 	min-width: 200px;
 	text-decoration: none;
+	/*margin-left: 8px;*/
 	color: rgb(153,153,153);
 }
 .tabBar a:hover{
+	border-left: 3px solid red;
 	background-color: #333333;
 	color: white;
 }

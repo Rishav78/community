@@ -44,6 +44,9 @@ body{
 .ProfilePic span:hover{
 	background-color: rgba(204, 204, 204,0.3);
 }
+.ProfilePic span:active{
+	box-shadow: inset 1px 1px 10px gray;
+}
 .ProfilePic img{
 	width: 100%;
 	height: 100%;
