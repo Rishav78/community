@@ -12,7 +12,9 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(bodyParser.json());
-app.use('/static',express.static(path.join(__dirname,'Public')))
+app.use('/static',express.static(path.join(__dirname,'Public','JavaScript')))
+app.use('/static',express.static(path.join(__dirname,'Public','CSS')))
+app.use('/static',express.static(path.join(__dirname,'Public','Files')))
 const con = mysql.createConnection({
 	host : 'localhost',
 	user : 'root',
