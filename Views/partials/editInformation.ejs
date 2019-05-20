@@ -11,17 +11,17 @@
 			</div>
 			<div class="basic">
 				<span>Email : </span>
-				<input type="email" class="Email" name="email" disabled>
+				<input type="email" class="Email" name="email" value="<%= data.Email %>" disabled>
 				<span>Name : </span>
-				<input type="text" class="name" name="name" required>
+				<input type="text" class="name" name="name" value="<%= data.Name %>" required>
 				<div>
 					<div>
 						<span>DOB : </span>
-						<input type="text" class="dob" id="datepicker" name="dob" required>
+						<input type="text" class="dob" id="datepicker" name="dob" value="<%= data.DOB %>" required>
 					</div>
 					<div>
 						<span>Gender : </span>
-						<select required class="gender" name="gender">
+						<select required class="gender" name="gender" value="<%= data.Gender %>">
 							<option>Male</option>
 							<option>Female</option>
 							<option>Transgender</option>
@@ -36,9 +36,9 @@
 			</div>
 			<div class="basic">
 				<span>Phone : </span>
-				<input type="text" class="phoneno" name="phone" required>
+				<input type="text" class="phoneno" value="<%= data.Phno %>" name="phone" required>
 				<span>City : </span>
-				<input type="text" class="city" name="city" required>
+				<input type="text" class="city" value="<%= data.City %>" name="city" required>
 			</div> 
 		</div>
 		<div class="basicInfo">
@@ -49,9 +49,9 @@
 				<span>Interests : </span>
 				<input type="text" class="interests" name="interest" placeholder="Enter Interests">
 				<span>Tell us a bit more about yourjourney : </span>
-				<textarea class="userdetail" name="about"></textarea>
+				<textarea class="userdetail" value="<%= data.About %>" name="about"></textarea>
 				<span>what are your expectations from the communities? </span>
-				<textarea class="expectations" name="expectation"></textarea>
+				<textarea class="expectations" value="<%= data.Expectations %>" name="expectations"></textarea>
 			</div>
 		</div>
 		<div class="action">

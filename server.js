@@ -90,11 +90,12 @@ app.get('/',(req,res)=>{
 					}
 				}
 			}else{
-				editInformation(req,res)
+				res.render('editInfomation_starting',{data: result[0]})
 			}
 		})
+	}else{
+		res.sendFile(path.join(__dirname,'views','login.html'))
 	}
-	res.sendFile(path.join(__dirname,'views','login.html'))
 })
 app.post('/login',(req,res)=>{
 	con.query(`select * from Users where Email = '${req.body.Email}' and Password = '${req.body.Password}'`,(err,result)=>{
@@ -110,7 +111,7 @@ app.post('/login',(req,res)=>{
 							return res.redirect('/admin/profile')
 						}
 					}else{
-						editInformation(req,res)
+						res.render('editInfomation_starting',{data: result[0]})
 					}
 				})
 			}else{
@@ -151,32 +152,24 @@ app.get('/profile',isAuthenticated(),(req,res)=>{
 })
 
 app.get('/admin/adduser',isAuthenticated(),(req,res)=>{
-	return res.render('AddUser')
+	return res.render('AddUser',{added : false})
 })
 
 app.post('/admin/adduser',(req,res)=>{
-	var data = ''
-	req.on('data',(chunk)=>{
-		data += chunk
-	})
-
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`select * from Users where Email = '${data.email}'`,(err,result)=>{
-			if(err) throw err
-			console.log('dfghjkl')
-			if(result.length == 0){
-				var q = `insert into Users(Name, Email, Password, Phno, City, Role, Status, ActivationState, LoginAs) values('${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', '${data.role}', 'Pending', 'False', 'Admin')`
-				con.query(q,(err,result)=>{
-					if(err) throw err;
-					console.log('add')
-					return res.send('User Added')
-				})
-			}else{
-				return res.send('User Already Exist')
-			}
-		})
-		
+	var data = req.body
+	con.query(`select * from Users where Email = '${data.email}'`,(err,result)=>{
+		if(err) throw err
+		console.log('dfghjkl')
+		if(result.length == 0){
+			var q = `insert into Users(Name, Email, Password, Phno, City, Role, Status, ActivationState, LoginAs) values('${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', '${data.role}', 'Pending', 'True', 'Admin')`
+			con.query(q,(err,result)=>{
+				if(err) throw err;
+				console.log('add')
+				return res.render('AddUser',{added : true})
+			})
+		}else{
+			return res.send('User Already Exist')
+		}
 	})
 })
 
@@ -283,13 +276,13 @@ app.post('/tags',(req,res)=>{
 	req.on('end',()=>{
 		con.query(`select * from tags where name = '${data}'`,(err,result)=>{
 			if(err) throw err
-			if(result.length<=0){
+			if(result.length==0){
 				con.query(`insert into tags values(${Math.random()*Math.pow(10,8)}, '${data}', '${req.user}', date '12/12/12')`,(err,result)=>{
 					if(err) throw err
 					return res.send('added')
 				})
 			}else{
-				return res.send('tag already exist')
+				return res.send('exist')
 			}
 		})
 	})
@@ -307,17 +300,7 @@ app.post('/tagslistdata',(req,res)=>{
 	req.on('end',()=>{
 		con.query(`select * from tags`,(err,result)=>{
 			if (err) throw err
-			// if(data){
-			// 	var array = []
-			// 	result.forEach((value)=>{
-			// 		if(value.name.indexOf(data)>=0){
-			// 			array = [...array,value]
-			// 		}
-			// 	})
-			// 	res.send(array)
-			// }else{
-				return res.send(result)
-			// }
+			return res.send(result)
 		})
 	})
 })
@@ -328,7 +311,7 @@ app.post('/deletetag',(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		con.query(`delete from tags where name = ${data}`,(err,result)=>{
+		con.query(`delete from tags where name = '${data}'`,(err,result)=>{
 			if(err) throw err
 			return res.send('done')
 		})
@@ -336,36 +319,19 @@ app.post('/deletetag',(req,res)=>{
 })
 
 app.get('/changePassword',(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
-		if(err) throw err
-		if(result[0].Role == 'User'){
-			res.render('ChangePassword_user')
-		}else{
-			if(result[0].LoginAs == 'Admin'){
-				return res.render('changePassword_superadmin_admin')
-			}else{
-				return res.render('ChangePassword_superadmin_user')
-			}
-		}
-	})
+	changePassword(req,res,false)
 })
 
 app.post('/changePassword',(req,res)=>{
-	var data = ''
-	req.on('data',(chunk)=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`select Password from Users where Email = '${req.user}'`,(err,result)=>{
-			if(err) throw err
-			if(result[0].Password === data.old){
-				con.query(`update Users set Password = '${data.New}' where Email = '${req.user}'`)
-				return res.send('changed')
-			}else{
-				return res.send('wrong password')
-			}
-		})
+	var data = req.body
+	con.query(`select Password from Users where Email = '${req.user}'`,(err,result)=>{
+		if(err) throw err
+		if(result[0].Password === data.old){
+			con.query(`update Users set Password = '${data.new}' where Email = '${req.user}'`)
+			changePassword(req,res,'changed')
+		}else{
+			changePassword(req,res,'wrong')
+		}
 	})
 })
 
@@ -430,11 +396,10 @@ app.get('/getInformation',(req,res)=>{
 app.post('/updateInfo',(req,res)=>{
 	console.log(req.body)
 	var data = req.body
-	// con.query(`update Users set Name = '${data.name}', DOB = '${data.dob}', Gender = '${data.gender}', Phno = '${data.phone}', City = '${data.city}', About = '${data.about}', Expectations = '${data.expectations}', Verified = 'True' where Email = '${req.user}'`,(err,result)=>{
-	// 	if (err) throw err
-	// 	res.redirect('/profile')
-	// })
-	res.redirect('/profile')
+	con.query(`update Users set Name = '${data.name}', DOB = '${data.dob}', Gender = '${data.gender}', Phno = '${data.phone}', City = '${data.city}', About = '${data.about}', Expectations = '${data.expectations}', Verified = 'True' where Email = '${req.user}'`,(err,result)=>{
+		if (err) throw err
+		res.redirect('/profile')
+	})
 })
 
 app.get('/faltu',(req,res)=>{
@@ -444,6 +409,13 @@ app.get('/faltu',(req,res)=>{
 app.post('/faltu',(req,res)=>{
 	console.log(req.body)
 
+})
+
+app.get('/qwert',(req,res)=>{
+	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+		if(err) throw err
+		res.render('editInfomation_starting',{data : result[0]})
+	})
 })
 
 passport.serializeUser((user,done)=>{
@@ -483,12 +455,27 @@ function editInformation(req,res) {
 		console.log(req.user)
 		var data = result[0]
 		if(data.Role == 'User'){
-			return res.render('editInformation_user')
+			return res.render('editInformation_user',{data})
 		}else{
 			if(data.LoginAs == 'Admin'){
-				return res.render('editInformation_superadmin_admin')
+				return res.render('editInformation_superadmin_admin',{data})
 			}else{
-				return res.render('editInformation_superadmin_user')
+				return res.render('editInformation_superadmin_user',{data})
+			}
+		}
+	})
+}
+
+function changePassword(req,res,value){
+	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+		if(err) throw err
+		if(result[0].Role == 'User'){
+			res.render('ChangePassword_user',{changed: value})
+		}else{
+			if(result[0].LoginAs == 'Admin'){
+				return res.render('changePassword_superadmin_admin',{changed: value})
+			}else{
+				return res.render('ChangePassword_superadmin_user',{changed: value})
 			}
 		}
 	})

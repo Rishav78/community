@@ -14,6 +14,12 @@
   	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
 	<style type="text/css">
+		th,td{
+			text-align: left;
+		}
+		td.Action{
+			text-align: center;
+		}
 		table{
 			border: 1px solid rgba(0,0,0,0.1);
 		}
@@ -31,6 +37,8 @@
 	<title></title>
 </head>
 <body>
+<div class="added alert"></div>
+<div class="exist alert"></div>
 <% include partials/LogoutCover.ejs %>
 <div class="edit">
 	<div class="head">
@@ -60,7 +68,7 @@
 	<div class="container2">
 		<% include partials/tabBar.ejs %>
 		<div class="content">
-			<div class="FilterButtons">
+			<div class="FilterButtons" style="margin-top: 20px;">
 				<div class="listUsers">User List</div>
 				<div class="Rcontainer">
 					<div class="refresh"><i class="fa fa-refresh" style="width: 10px;height: 10px;margin-right: 5px;font-size: 17px"></i>Refresh</div><select class="PCusers">
@@ -100,7 +108,38 @@
 						</tr>
 					</thead>
 					<tbody>
-						
+						<% data.forEach((value)=>{ %>
+							<tr class="USER">
+								<td class="Username" style="font-weight: bold;">
+									<%= value.Email %>
+								</td>
+								<td class="Phone">
+									<%= value.Phno %>
+								</td>
+								<td class="City">
+									<%= value.City %>
+								</td>
+								<td class="Status">
+									<%= value.Status %>
+								</td>
+								<td class="Role">
+									<%= value.Role %>
+								</td>
+								<td class="Action">
+									<div style="min-width: 150px;">
+									<% if(value.Role == 'Superadmin'){ %>
+										<i  class="fa fa-envelope-o icon"></i>
+									<% } else { %>
+										<% if(value.ActivationState == 'True'){ %>
+											<i class="fa fa-envelope-o icon"></i><i onclick="popUp(event)" class="fa fa-edit icon"></i><i onclick="Deactivate(event)" class="fa fa-times-circle icon"></i>
+										<% } else { %>
+											<i class="fa fa-envelope-o icon"></i><i onclick="popUp(event)" class="fa fa-edit icon"></i><i onclick="Activate(event)" class="fa fa-check-circle icon"></i>
+										<% } %>
+									<% } %>
+									</div>
+								</td>
+							</tr>
+						<% }) %>
 					</tbody>
 				</table>
 			</div>

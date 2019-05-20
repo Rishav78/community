@@ -16,25 +16,27 @@
 	<div class="container2">
 		<% include partials/tabBar.ejs %>
 		<div class="content">
-			<div class="added">
-				<span style="width: 60%">User Added </span><span style="width: 40%" class="close">&times</span>
-			</div>
+			<% if(added == true){ %>
+				<div class="added">
+					<span style="width: 60%">User Added </span><span style="width: 40%" class="close">&times</span>
+				</div>
+			<% } %>
 			<div class="AddUser">
 				<h1>Add User</h1>
-				<!-- <form method="post" action="/addUser"> -->
-					<input type="text" name="" class="textBox" id="name" placeholder="Name" required>
-					<input type="email" name="" class="textBox" id="email" placeholder="Email" required>
-					<input type="text" name="" class="textBox" id="Password" placeholder="User Password" required>
-					<input type="text" name="" class="textBox" id="phone" placeholder="Phone" required>
-					<input type="text" name="" class="textBox" id="city" placeholder="City" required>
+				<form method="post" action="/admin/adduser">
+					<input type="text" name="name" class="textBox" id="name" placeholder="Name" required>
+					<input type="email" name="email" class="textBox" id="email" placeholder="Email" required>
+					<input type="text" name="password" class="textBox" id="Password" placeholder="User Password" required>
+					<input type="text" name="phone" class="textBox" id="phone" placeholder="Phone" required>
+					<input type="text" name="city" class="textBox" id="city" placeholder="City" required>
 					<h3>Role:</h3>
-					<select class="textBox" id="role">
+					<select class="textBox" id="role" name="role">
 						<option>User</option>
 						<option>Community Builder</option>
 						<option>Admin</option>
 					</select>
-					<button type="submit" class="add" onclick="add()">Add User</button><a class="cancel" href="admin/profile/">Cancel</a>
-				<!-- </form> -->
+					<button type="submit" class="add">Add User</button><a class="cancel" href="admin/profile/">Cancel</a>
+				</form>
 			</div>
 		</div>
 	</div>
