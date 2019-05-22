@@ -9,10 +9,12 @@ function expand(){
         tabBar.style.width = '250px'
     }
 }
+
 bar.onclick = (event)=>{
     event.preventDefault()
     expand()
 }
-document.querySelector('#switch').onclick = ()=>{
-	window.location = '/admin/profile'
-}
+
+document.querySelectorAll('.icon').forEach((value)=>{
+	value.onclick = expand
+})

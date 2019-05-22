@@ -10,33 +10,11 @@
 </head>
 <body>
 <div class="container">
-	<div class="header">
-		
-	</div>
+	<% include partials/navBar.ejs %>
 	<div class="container2">
 		<% include partials/tabBar2.ejs %>
 		<div class="content">
-			<div class="searchbar">
-				<i class="fa fa-users"></i><i class="fa fa-search"></i>
-			</div>
-			<div class="list">
-				<div class="myCommunity">
-					<p>My Communities
-					<a href="">Create</a></p>
-				</div>
-				<div class="communities">
-					<div class="community">
-						<div class="communityimage">
-							<img src="df">
-						</div>
-						<div class="communitydetail">
-							<span>First Community</span>&nbsp;&nbsp;&nbsp;
-							Request(0)
-							<a href=""><i class="fa fa-cogs"></i></a>
-						</div>
-					</div>
-				</div>
-			</div>
+			<% include partials/communityPanel.ejs %>
 		</div>
 	</div>
 </div>

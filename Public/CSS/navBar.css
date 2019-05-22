@@ -1,34 +1,63 @@
 .header{
-	height: 70px;
-	background-color: rgb(0, 26, 51);
+	padding: 10px;
+	background-color: rgba(34,45,60,1);
+	display: flex;
+	justify-content: space-between;
 	color: white;
-	/*position: fixed;*/
-	top: 0;
-	width: 100%;
-	box-sizing: border-box;
-	padding: 1%;
 }
-.user{
-	display: inline-block;
-	right: 10px;
-	position: absolute;
+.left,.right{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
-.superadmin, .admin{
-	display: inline-block;
-	margin: 12px 15px 0px 5px;
-	font-size: medium;
-	padding: 0px 2px 0px 2px;
-	border-radius: 5px;
+.left{
+	width: 100px;
 }
-.superadmin{
-	background-color: #F0AD4E;
+.right{
+	width: 200px;
 }
-.admin{
-	background-color: green;
+.cq{
+	font-size: 25px;
+	font-weight: bold;
+}
+.icon{
+	cursor: pointer;
+}
+.icon2{
+	display: none;
 }
 .userImg{
-	width: 40px;
-	height: 40px;
-	float: right;
-	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+}
+.userRole,.userName{
+	font-size: small;
+	padding: 3px 5px;
+	border-radius: 3px;
+}
+.userRole{
+	background-color: rgb(240,173,78);
+}
+.userName{
+	background-color: rgb(87,191,87);
+}
+@media screen and (max-width: 950px) {
+	.userRole{
+		display: none;
+	}
+	.icon2{
+		display: block;
+	}
+	.right{
+		width: 100px;
+	}
+	.left > i{
+		display: none;
+	}
+	.tabBar > .bar{
+		display: none;
+	}
+	.userImg{
+		display: none;
+	}
 }

@@ -31,7 +31,9 @@ bar.onclick = (event)=>{
 	event.preventDefault()
 	expand()
 }
-document.querySelector('.icon').onclick = expand
+document.querySelectorAll('.icon').forEach((value)=>{
+	value.onclick = expand
+})
 // document.querySelector('#switch').onclick = ()=>{
 // 	window.location = '/communityPanel'
 // }
