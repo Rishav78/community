@@ -96,10 +96,10 @@ app.get('/',(req,res)=>{
 			}
 		})
 	}else{
-		res.sendFile(path.join(__dirname,'views','login.html'))
+		res.render('Login',{visible: false})
 	}
 })
-app.post('/login',(req,res)=>{
+app.post('/',(req,res)=>{
 	con.query(`select * from Users where Email = '${req.body.Email}' and Password = '${req.body.Password}'`,(err,result)=>{
 		if(err) throw err
 		if(result.length>0){
@@ -120,7 +120,7 @@ app.post('/login',(req,res)=>{
 				return res.render('404NotFound')
 			}
 		}else{
-			return res.send('User does not exist')
+			return res.render('Login',{visible: true})
 		}
 	})
 })
@@ -157,7 +157,7 @@ app.get('/admin/adduser',isAuthenticated(),(req,res)=>{
 	return res.render('AddUser',{added : false})
 })
 
-app.post('/admin/adduser',(req,res)=>{
+app.post('/admin/adduser',isAuthenticated(),(req,res)=>{
 	var data = req.body
 	con.query(`select * from Users where Email = '${data.email}'`,(err,result)=>{
 		if(err) throw err
@@ -181,7 +181,7 @@ app.get('/admin/userlist',isAuthenticated(),(req,res)=>{
 	})
 })
 
-app.post('/admin/userlist',(req,res)=>{
+app.post('/admin/userlist',isAuthenticated(),(req,res)=>{
 	console.log('ghj')
 	var data = ''
 	req.on('data',(chunk)=>{
@@ -213,7 +213,7 @@ app.post('/admin/userlist',(req,res)=>{
 	})
 })
 
-app.post('/update',(req,res)=>{
+app.post('/update',isAuthenticated(),(req,res)=>{
 	var data = ''
 	req.on('data',(chunk)=>{
 		data += chunk
@@ -241,7 +241,7 @@ app.post('/update',(req,res)=>{
 // 	})
 // })
 
-app.post('/Activation',(req,res)=>{
+app.post('/Activation',isAuthenticated(),(req,res)=>{
 	var data = ''
 	req.on('data',(chunk)=>{
 		data += chunk
@@ -266,11 +266,11 @@ app.get('/Logout',isAuthenticated(),(req,res)=>{
 	})
 })
 
-app.get('/tags',(req,res)=>{
+app.get('/tags',isAuthenticated(),(req,res)=>{
 	return res.render('Tags')
 })
 
-app.post('/tags',(req,res)=>{
+app.post('/tags',isAuthenticated(),(req,res)=>{
 	var data = ''
 	req.on('data',(chunk)=>{
 		data += chunk
@@ -290,11 +290,11 @@ app.post('/tags',(req,res)=>{
 	})
 })
 
-app.get('/tagslist',(req,res)=>{
+app.get('/tagslist',isAuthenticated(),(req,res)=>{
 	return res.render('taglist2')
 })
 
-app.post('/tagslistdata',(req,res)=>{
+app.post('/tagslistdata',isAuthenticated(),(req,res)=>{
 	var data = ''
 	req.on('data',(chunk)=>{
 		data += chunk
@@ -307,7 +307,7 @@ app.post('/tagslistdata',(req,res)=>{
 	})
 })
 
-app.post('/deletetag',(req,res)=>{
+app.post('/deletetag',isAuthenticated(),(req,res)=>{
 	var data = ''
 	req.on('data',(chunk)=>{
 		data += chunk
@@ -320,11 +320,11 @@ app.post('/deletetag',(req,res)=>{
 	})
 })
 
-app.get('/changePassword',(req,res)=>{
+app.get('/changePassword',isAuthenticated(),(req,res)=>{
 	changePassword(req,res,false)
 })
 
-app.post('/changePassword',(req,res)=>{
+app.post('/changePassword',isAuthenticated(),(req,res)=>{
 	var data = req.body
 	con.query(`select Password from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
@@ -337,11 +337,11 @@ app.post('/changePassword',(req,res)=>{
 	})
 })
 
-app.get('/community/communityList',(req,res)=>{
+app.get('/community/communityList',isAuthenticated(),(req,res)=>{
 	return res.render('communityList')
 })
 
-app.post('/community/communityList',(req,res)=>{
+app.post('/community/communityList',isAuthenticated(),(req,res)=>{
 	var data = ''
 	console.log('dfghj')
 	req.on('data',(chunk)=>{
@@ -362,11 +362,11 @@ app.post('/community/communityList',(req,res)=>{
 	})
 })
 
-app.get('/manageCommunity',(req,res)=>{
+app.get('/manageCommunity',isAuthenticated(),(req,res)=>{
 	return res.render('manageCommunity')
 })
 
-app.get('/communitypanel',(req,res)=>{
+app.get('/communitypanel',isAuthenticated(),(req,res)=>{
 	con.query(`update Users set LoginAs = 'User' where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 	})
@@ -380,43 +380,23 @@ app.get('/communitypanel',(req,res)=>{
 	})
 })
 
-app.get('/notfound',(req,res)=>{
-	return res.render('404NotFound')
-})
-
-app.get('/editInformation',(req,res)=>{
+app.get('/editInformation',isAuthenticated(),(req,res)=>{
 	editInformation(req,res)
 })
 
-app.get('/getInformation',(req,res)=>{
+app.get('/getInformation',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		res.send(JSON.stringify(result[0]))
 	})
 })
 
-app.post('/updateInfo',(req,res)=>{
+app.post('/updateInfo',isAuthenticated(),(req,res)=>{
 	console.log(req.body)
 	var data = req.body
 	con.query(`update Users set Name = '${data.name}', DOB = '${data.dob}', Gender = '${data.gender}', Phno = '${data.phone}', City = '${data.city}', About = '${data.about}', Expectations = '${data.expectations}', Verified = 'True' where Email = '${req.user}'`,(err,result)=>{
 		if (err) throw err
 		res.redirect('/profile')
-	})
-})
-
-app.get('/faltu',(req,res)=>{
-	res.render('faltu')
-})
-
-app.post('/faltu',(req,res)=>{
-	console.log(req.body)
-
-})
-
-app.get('/qwert',(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
-		if(err) throw err
-		res.render('editInfomation_starting',{data : result[0]})
 	})
 })
 

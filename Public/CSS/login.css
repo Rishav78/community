@@ -15,37 +15,53 @@ body{
 	max-width: 800px;
 	margin: auto;
 	margin-top: 7%;
+	text-align: center;
 	box-sizing: border-box;
-	padding: 10px 20px 80px 20px;
+	padding: 10px;
+	min-height: 400px;
 	box-shadow: 2px 2px 10px gray;
 }
 .text{
-	transform: translateX(-40%);
 	padding: 0;
 	font-size: 35px;
-	margin-left: 50%;
 }
 .textBox{
 	display: block;
 	padding: 9px;
-	font-size: 20px;
+	font-size: 17px;
 	box-sizing: border-box;
 	width: 100%;
-	margin: 30px 0px 35px 0px;
+	margin: 30px 0px 30px 0px;
 }
 .login{
-	transform: translateX(-50%);
-	margin-left: 50%;
 	border: none;
 	font-size: 15px;
 	color: white;
 	cursor: pointer;
 	background-color: rgba(0, 102, 0, 0.8);
 	border-radius: 5px;
+	transition: background 0.5s;
 	padding: 15px 20px 15px 20px;
+	outline: none;
+	margin-top: 5px;
 }
+
 .login:hover{
 	background-color: rgb(0, 102, 0);
+}
+.login:active{
+	border: 5px solid rgb(175,222,186);
+	margin-top: 0px;
+}
+.error{
+	background-color: rgb(248,215,218);
+	padding: 20px;
+	text-align: center;
+	color: rgb(123,63,87);
+	max-width: 600px;
+	width: 600px;
+	border-radius: 5px;
+	display: inline-block;
 }
 .footer{
 	text-align: center;

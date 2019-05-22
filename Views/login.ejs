@@ -7,9 +7,14 @@
 </head>
 <body>
 <div class="heading">cq</div>
-<form method="post" action="/login">
+<form method="post" action="/">
 	<div class="loginForm">
 		<h1 class="text">Log Into Your Account</h1>
+		<% if(visible == true) { %>
+			<div class="error">
+				Username/Password Incorrect.
+			</div>
+		<% } %>
 		<input type="text" name="Email" class="textBox" placeholder="Username" required>
 		<input type="text" name="Password" class="textBox" placeholder="Password" required>
 		<button class="login">Login</button>
