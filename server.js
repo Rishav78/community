@@ -126,9 +126,6 @@ app.post('/',(req,res)=>{
 })
 
 app.get('/admin/profile',isAuthenticated(),(req,res)=>{
-	con.query(`update Users set LoginAs = 'Admin' where Email = '${req.user}'`,(err,result)=>{
-		if(err) throw err
-	})
 	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
@@ -367,9 +364,6 @@ app.get('/manageCommunity',isAuthenticated(),(req,res)=>{
 })
 
 app.get('/communitypanel',isAuthenticated(),(req,res)=>{
-	con.query(`update Users set LoginAs = 'User' where Email = '${req.user}'`,(err,result)=>{
-		if(err) throw err
-	})
 	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		if(result[0].Role == 'User'){
@@ -397,6 +391,21 @@ app.post('/updateInfo',isAuthenticated(),(req,res)=>{
 	con.query(`update Users set Name = '${data.name}', DOB = '${data.dob}', Gender = '${data.gender}', Phno = '${data.phone}', City = '${data.city}', About = '${data.about}', Expectations = '${data.expectations}', Verified = 'True' where Email = '${req.user}'`,(err,result)=>{
 		if (err) throw err
 		res.redirect('/profile')
+	})
+})
+
+app.get('/switchAsUser',(req,res)=>{
+	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+		if(err) throw err
+		if(result[0].LoginAs == 'Admin'){
+			var data = {switch: 'User',msg:'Switch Admin To User'}
+			con.query("update Users set LoginAs = 'User'")
+			res.render('Switch',{data})
+		}else{
+			var data = {switch: 'Admin',msg: 'Switch User To Admin'}
+			con.query("update Users set LoginAs = 'Admin'")
+			res.render('Switch',{data})
+		}
 	})
 })
 

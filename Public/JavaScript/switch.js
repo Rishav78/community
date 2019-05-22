@@ -9,7 +9,7 @@ document.querySelector('#switchUser').onclick = (event)=>{
 	console.log(event.clientY)
 	div2.style.top = event.clientY + 'px'
 	div2.style.left = event.clientX + 'px'
-	div2.innerHTML = '<h1>Switch As User</h1><span>Do you really want switch state...</span><div><a href="/communityPanel" id="switch">Yes</a><a id="exit">No</a></div>'
+	div2.innerHTML = '<h1>Switch As User</h1><span>Do you really want switch state...</span><div><a href="/SwitchAsUser" id="switch">Yes</a><a id="exit">No</a></div>'
 	document.querySelector('body').appendChild(div1)
 	document.querySelector('body').appendChild(div2)
 
