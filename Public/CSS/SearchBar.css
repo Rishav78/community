@@ -1,0 +1,19 @@
+.searchbar{
+	background-color: rgb(58,169,196);
+	padding: 10px;
+	text-align: left;
+}
+.searchbar > a{
+	padding: 10px 14px;
+	border: 1px solid white;
+	margin: 0px 10px;
+	color: white;
+	text-decoration: none;
+}
+.searchbar > .fa-users{
+	border-bottom: 5px solid white;
+	margin-left: 100px;
+}
+.searchbar > .fa-search:hover{
+	background-color: #62bad0;
+}

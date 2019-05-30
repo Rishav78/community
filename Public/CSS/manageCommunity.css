@@ -22,7 +22,7 @@
 	position: relative;
 	display: inline-block;
 }
-img{
+.image > img{
 	width: 100px;
 	height: 100px;
 	position: absolute;
@@ -90,6 +90,7 @@ img{
 	padding: 10px;
 	box-sizing: border-box;
 	border-bottom: 1px solid gray;
+	text-align: left;
 }
 .manageCommunity > a{
 	float: right;
@@ -156,3 +157,5 @@ img{
 		left: 50%;
 	}
 }
+
+

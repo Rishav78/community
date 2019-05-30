@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
 	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
 	<link rel="stylesheet" type="text/css" href="/static/Home.css">
-	<link rel="stylesheet" type="text/css" href="/static/LogoutCover.css">
 	<link rel="stylesheet" type="text/css" href="/static/switch.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 	<title></title>
 	<style type="text/css">
 		#home{
@@ -18,8 +21,7 @@
 	</style>
 </head>
 <body>
-<% include partials/LogoutCover.ejs %>
-<div class="container">
+<div class="Container">
 	<% include partials/navBar.ejs %>
 	<div class="container2">
 		<% include partials/tabBar.ejs %>

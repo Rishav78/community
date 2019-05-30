@@ -2,14 +2,19 @@
 <html>
 <head>
 	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/manageCommunity.css">
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
+	<link rel="stylesheet" type="text/css" href="/static/switch.css">
+	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 </head>
 <body>
-<div class="container">
-	<div class="header">
-	</div>
+<div class="Container">
+	<% include partials/navBar.ejs %>
 	<div class="container2">
 		<% include partials/tabBar2.ejs %>
 		<div class="content">
@@ -48,6 +53,7 @@
 	</div>
 </div>
 <script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
+<script type="text/javascript" src="/static/switch.js"></script>
 <script type="text/javascript">
 document.querySelector('#moredetail').onclick = ()=>{
 	if(document.querySelector('.community-profile-option').style.display == 'block'){

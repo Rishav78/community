@@ -23,56 +23,51 @@ function Show(){
 	s.style.display = 'block'
 }
 
-// refresh.onclick = updateData
-// userType.onchange = updateData
+$(document).ready(function(){
+	var table = $('#myTable').DataTable({
+		"lengthMenu": [[10, 25, 50], [ 10, 25, 50]],
+		"serverSide": true,
+        "processing": true,
+		"ajax": {
+	        url: '/community/communityList',
+	        type: 'POST',
+	        // "dataSrc": "",
+	        // "data": function ( d ) {
+	        //   d.roleFilter   = $('.Role').val();
+	        //   d.statusFilter = $('.Status').val();
+	        // },
+	     },
+	     "columns": [
+            { title : "Community Name", "data": "CommunityName", 'sClass':'username'},
+            { title : "Membership Rule", "data": "MembershipRule", 'sClass':'phone'},
+            { title : "Community Location", "data": "CommunityLocation", 'sClass':'city'},
+            { title : "Community Owner", "data": "CommunityOwner", 'sClass':'status'},
+            { title : "Create Date", "data": "CreateDate", 'sClass':'role'},
+            { title : "Action", "data": null, 'sClass':'active'},
+            { title : "Community Pic", "data": "CommunityPic", 'sClass':'active'},
+            // { title : "Community Pic","data": null, 'orderable' : false, 'sClass':'action'}
+        ],
+        // "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+        // 	if(aData.Role === 'Superadmin'){
+        // 		console.log(aData.Role)
+        // 		$('td:eq(5)', nRow).html( '<div style="min-width: 100px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i></div>' );
+        // 	}else{
+        // 		if(aData.ActivationState == 'True'){
+	       //  		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event,'Deactivate User?')" class="fa fa-times-circle icon"></i></div>` );
+	       //  	}else{
+	       //  		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event,'Activate User?')" class="fa fa-check-circle icon"></i></div>`);
+	       //  	}
+        // 	}
+        // }
+	});
+	// $('.Status').on('change', function () {
+	//     table.ajax.reload(null, false);
+	// });
+	// $('.Role').on('change', function () {
+	//     table.ajax.reload(null, false);
+	// });
+	// $('.refresh').on('click', function () {
+	//     table.ajax.reload(null, false);
+	// });
+})
 
-function updateData(){
-	var j=0
-	numberOfPage = 0
-	rows = []
-	var obj = {
-		Rule : userType.value,
-	}
-	var req = new XMLHttpRequest()
-	req.onload = ()=>{
-		console.log(req.response)
-		var users = document.querySelectorAll('.Community')
-		console.log(users)
-		users.forEach((value)=>{
-			document.querySelector('tbody').removeChild(value)
-		})
-		users = JSON.parse(req.responseText)
-		console.log(users)
-		users.forEach((value)=>{
-			var tr = document.createElement('tr')
-			tr.className = 'Community'
-			var td1 = document.createElement('td')
-			td1.innerHTML = value.CommunityName
-			td1.style.fontWeight = 'bold'
-			tr.appendChild(td1)
-			var td2 = document.createElement('td')
-			td2.innerHTML = value.MembershipRule
-			tr.appendChild(td2)
-			var td3 = document.createElement('td')
-			td3.innerHTML = value.CommunityOwner
-			tr.appendChild(td3)
-			var td4 = document.createElement('td')
-			td4.innerHTML = value.CreateDate
-			tr.appendChild(td4)
-			var td5 = document.createElement('td')
-			td5.innerHTML = '<div style="min-width: 100px;"><i onclick="Show()" class="fa fa-edit icon"></i><i class="fa fa-info icon"></i></div>'
-			tr.appendChild(td5)
-			var td6 = document.createElement('td')
-			td6.innerHTML = value.CommunityPic
-			tr.appendChild(td6)
-			var td7 = document.createElement('td')
-			td7.innerHTML = value.CommunityPic
-			tr.appendChild(td7)
-			document.querySelector('tbody').appendChild(tr)
-		})
-		$('#myTable').DataTable();
-	}
-	req.open('POST','/community/communityList')
-	req.send(JSON.stringify(obj))
-}
-window.onload = updateData

@@ -27,11 +27,11 @@ function expand(){
 		tabBar.style.width = '250px'
 	}
 }
-bar.onclick = (event)=>{
-	event.preventDefault()
-	expand()
-}
-document.querySelectorAll('.icon').forEach((value)=>{
+// bar.onclick = (event)=>{
+// 	event.preventDefault()
+// 	expand()
+// }
+document.querySelectorAll('.bar').forEach((value)=>{
 	value.onclick = expand
 })
 // document.querySelector('#switch').onclick = ()=>{

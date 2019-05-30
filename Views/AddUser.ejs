@@ -1,17 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
 	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
 	<link rel="stylesheet" type="text/css" href="/static/AddUser.css">
-	<link rel="stylesheet" type="text/css" href="/static/LogoutCover.css">
 	<link rel="stylesheet" type="text/css" href="/static/switch.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 	<title></title>
+	<style type="text/css">
+		.availabe{
+			padding: 17px;
+			width: 90%;
+			margin: auto;
+			border: 1px solid #999;
+			color: #999;
+			text-align: center;
+			display: none;
+		}
+	</style>
 </head>
 <body>
-<% include partials/LogoutCover.ejs %>
-<div class="container">
+<div class="Container">
 	<% include partials/navBar.ejs %>
 	<div class="container2">
 		<% include partials/tabBar.ejs %>
@@ -22,6 +35,9 @@
 				</div>
 			<% } %>
 			<div class="AddUser">
+				<div class="availabe">
+					
+				</div>
 				<h1>Add User</h1>
 				<form method="post" action="/admin/adduser">
 					<input type="text" name="name" class="textBox" id="name" placeholder="Name" required>
@@ -45,5 +61,22 @@
 <script type="text/javascript" src="/static/AddUser.js"></script>
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript" src="/static/switch.js"></script>
+<script type="text/javascript">
+	var email = document.querySelector('#email')
+	email.onblur = ()=>{
+		if(email.value){
+			var req = new XMLHttpRequest();
+			req.onload = ()=>{
+				console.log('dfghj')
+				document.querySelector('.availabe').textContent = email.value + req.response
+				document.querySelector('.availabe').style.display = 'block'
+			}
+			req.open('POST','/Available');
+			req.send(email.value)
+		}else{
+			document.querySelector('.availabe').style.display = 'none'
+		}
+	}
+</script>
 </body>
 </html>

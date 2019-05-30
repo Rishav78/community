@@ -33,5 +33,5 @@ alert.forEach((value)=>{
 
 
 showtags.onclick = ()=>{
-	window.location = '/tagslist'
+	window.location = '/tags/tagslist'
 }

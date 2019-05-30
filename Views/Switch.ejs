@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<% if(data.switch == 'User'){ %>
-		<meta http-equiv="refresh" content="2;url=/communityPanel" />
-	<% } else{ %>
-		<meta http-equiv="refresh" content="2;url=/admin/profile" />
-	<% } %>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title></title>
 	<style type="text/css">
 		body{
@@ -29,5 +25,8 @@
 	<h1><%= data.msg %></h1>
 	<img src="/static/loading.gif">
 </div>
+<script type="text/javascript">
+	setTimeout(function(){ window.location.replace("/"); }, 1000);
+</script>
 </body>
 </html>

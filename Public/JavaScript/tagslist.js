@@ -139,6 +139,6 @@ function updateData(){
 		})
 		pagination()
 	}
-	req.open('POST','tagslistdata')
+	req.open('POST','/tags/tagslistdata')
 	req.send(search.value)
 }

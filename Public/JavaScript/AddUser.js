@@ -4,7 +4,7 @@ var password = document.querySelector('#Password')
 var phone = document.querySelector('#phone')
 var city = document.querySelector('#city')
 var role = document.querySelector('#role')
-
+var close = document.querySelector('.close')
 // document.querySelector('form').onsubmit = (event)=>{
 // 	console.log('fghjk')
 // 	var isValidEmail = /^\w+(\.\w+)*@[a-zA-Z]+(\.[a-zA-Z]+)*\.[a-zA-Z]+$/
@@ -49,6 +49,8 @@ function add(){
 	req.send(JSON.stringify(data))
 }
 
-document.querySelector('.close').onclick = ()=>{
-	document.querySelector('.added').style.display = 'none'
+if(close){
+	close.onclick = ()=>{
+		document.querySelector('.added').style.display = 'none'
+	}
 }

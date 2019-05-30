@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
+	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/SearchBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+	<script type="text/javascript" src="/static/trumbowgy.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/trumbowgy.css">
+	<style type="text/css">
+		.Ccontainer{
+			max-width: 600px;
+			margin: auto;
+			text-align: left;
+			color: rgb(131,112,112);
+			padding: 10px;
+		}
+		.Ccontainer  h1{
+			padding: 10px;
+			box-sizing: border-box;
+			font-weight: lighter;
+			border-bottom: 1px solid #eee;
+		}
+		.textBox{
+			padding: 7px 9px;
+			font-size: 17px;
+			box-sizing: border-box;
+			width: 100%;
+			border: 1px solid #b3b3b3;
+			border-radius: 3px;
+		}
+		.role > h4{
+			display: inline-block;
+			font-weight: bolder;
+		}
+		.Ccontainer .upload, .Ccontainer .create{
+			color: white;
+			margin-bottom: 20px;
+			cursor: pointer;
+		}
+		.Ccontainer .upload{
+			background-color: #f0ad4e;
+			padding: 8px 12px;
+			display: block;
+			width: 100px;
+			margin-left: 10px;
+		}
+		.Ccontainer .upload:hover{
+			background-color: #eea236
+		}
+		.Ccontainer .create{
+			text-align: center;
+			padding: 10px 12px;
+			background-color: #337ab7;
+			width: 100%;
+			border: none;
+		}
+		.Ccontainer .create:hover{
+			background-color: #2e6da4;
+		}
+		.Ccontainer .upload:active{
+			box-shadow: inset 1px 1px 5px gray;
+		}
+		.created{
+			color: #31708f;
+			padding: 20px;
+			max-width: 90%;
+			box-sizing: border-box;
+			margin: auto;
+			border: 2px solid #bce8f1;
+			font-weight: bolder;
+			margin-bottom: 20px;
+			background-color: #d9edf7;
+			border-radius: 5px;
+		}
+		input[type="file"]{
+			display: none;
+		}
+		@media screen and (max-width: 950px) {
+			.Ccontainer{
+				max-width: 100%;
+			}
+		}
+	</style>
+</head>
+<body>
+<div class="Container">
+	<% include partials/navBar.ejs %>
+	<div class="container2">
+		<% include partials/tabBar2.ejs %>
+		<div class="content">
+			<% include partials/SearchBar.ejs %>
+			<div class="Ccontainer">
+				<form action="/community/AddCommunity/create" method="post">
+					<h1>
+						Create Community
+					</h1>
+					<% if(created == true){ %>
+						<div class="created">
+							Community Successfully Created
+						</div>
+					<% } %>
+					<input type="text" name="CommunityName" class="textBox" placeholder="name" required>
+					<h4>
+						Description
+					</h4>
+					<textarea id="body" name="Discription"></textarea>
+					<div class="role">
+						<h4>Role : </h4> <input type="radio" name="MembershipRule" value="Direct" checked>Direct &nbsp; <input type="radio" name="MembershipRule" value="Permission">Permission
+					</div>
+					<input type="file" name="">
+					<span class="upload">upload Image</span>
+					<button class="create">Create Community</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="/static/Switch.js"></script>
+<script type="text/javascript" src="/static/LogoutCover.js"></script>
+<script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
+<script type="text/javascript">
+	$.trumbowyg.svgPath = '/aaa';
+  	$('#body').trumbowyg();
+</script>
+<script type="text/javascript">
+	document.querySelector('.upload').onclick = ()=>{
+		document.querySelector('input[type="file"]').click()
+	}
+</script>
+</body>
+</html> 

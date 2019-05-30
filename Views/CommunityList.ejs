@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="/static/CommunityList.css">
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
 	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
-	<link rel="stylesheet" type="text/css" href="/static/LogoutCover.css">
 	<link rel="stylesheet" type="text/css" href="/static/communityEdit.css">
 	<link rel="stylesheet" type="text/css" href="/static/switch.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -14,16 +14,31 @@
   	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 	<style type="text/css">
-		table{
-			border: 1px solid rgba(0,0,0,0.1);
+		.username, .phone, .city, .status, .role, .action{
+			padding: 10px 10px !important;
+			padding-bottom: 15px !important;
+			min-width: 150px !important;
 		}
-		td{
-			border-bottom: 1px solid rgba(0,0,0,0.3);
-			padding: 10px;
+		.action{
+			text-align: center;
+		}
+		th,td{
+			text-align: left;
+		}
+		tr:first-child > th{
+			border-bottom: 3px solid rgb(224,224,224) !important;
+		}
+		table{
+			border: 1px solid rgb(224,224,224) !important;
+		}
+		td,th{
+			border: 1px solid rgb(224,224,224) !important;
 		}
 		table.dataTable tbody tr:nth-child(odd){
-			background-color: transparent;
+			background-color: rgb(249,249,249);
 		}
 		table.dataTable{
 			border-collapse: unset;
@@ -33,17 +48,23 @@
 </head>
 <body>
 	<% include partials/communityEdit.ejs %>
-	<% include partials/LogoutCover.ejs %>
-<div class="container">
+<div class="Container">
 	<% include partials/navBar.ejs %>
 	<div class="container2">
 		<% include partials/tabBar.ejs %>
 		<div class="content">
-			<div class="FilterButtons">
-				<div class="communityList">community List</div>
-				<div class="Rcontainer">
-					<div class="refresh"><i class="fa fa-refresh" style="width: 10px;height: 10px;margin-right: 5px;font-size: 17px"></i>Refresh</div><select class="CommunityRule">
-						<option selected>All</option>
+			<div class="filterButtons">
+				<div class="Fleft">
+					<div class="userlist">
+						User List
+					</div>
+				</div>
+				<div class="Fright">
+					<div class="refresh">
+						<i class="fa fa-refresh"></i> Refresh
+					</div>
+					<select class="Role">
+						<option>All</option>
 						<option>Direct</option>
 						<option>Permission</option>
 					</select>
@@ -51,34 +72,7 @@
 			</div>
 			<div class="Users">
 				<table id="myTable" width="100%" cellpadding="0" cellspacing="0">
-					<thead>
-						<tr>
-							<th class="Username" style="border-bottom: 3px solid rgb(221,221,221);">
-								Community Name
-							</th>
-							<th class="Phone" style="border-bottom: 3px solid rgb(221,221,221);">
-								Membership Rule
-							</th>
-							<th class="City" style="border-bottom: 3px solid rgb(221,221,221);">
-								Community Location
-							</th>
-							<th class="Status" style="border-bottom: 3px solid rgb(221,221,221);">
-								Community Owner
-							</th>
-							<th class="Role" style="border-bottom: 3px solid rgb(221,221,221);">
-								Create Date
-							</th>
-							<th class="Action" style="border-bottom: 3px solid rgb(221,221,221);">
-								Action
-							</th>
-							<th class="Action" style="border-bottom: 3px solid rgb(221,221,221);">
-								Community Pic
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						
-					</tbody>
+					
 				</table>
 			</div>
 		</div>

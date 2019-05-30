@@ -15,6 +15,6 @@ bar.onclick = (event)=>{
     expand()
 }
 
-document.querySelectorAll('.icon').forEach((value)=>{
+document.querySelectorAll('.bar').forEach((value)=>{
 	value.onclick = expand
 })

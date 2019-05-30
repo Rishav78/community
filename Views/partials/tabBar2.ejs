@@ -1,8 +1,9 @@
 <div class="tabBar">
+	<div><img src="/static/default.png"></div>
 	<a class="bar"><i class="fa fa-bars"></i><span>cq</span></a>
-	<a href="profile" id="profile"><i class="fa fa-user"></i><span>superadmin</span></a>
-	<a href="communityPanel" id="users"><i class="fa fa-users"></i><span>Communities</span></a>
-	<a id="switchUser"><i class="fa fa-toggle-on"></i><span>Switch As User</span></a>
-	<a href="changePassword" id="changePassword"><i class="fa fa-lock"></i><span>Change Password</span></a>
-	<a id="logout"><i class="fa fa-sign-out"></i><span>logout</span></a>
+	<a href="/profile" id="profile"><i class="fa fa-user"></i><span>superadmin</span></a>
+	<a href="/community/communitypanel" id="users"><i class="fa fa-users"></i><span>Communities</span></a>
+	<a id="switchUser" onclick="switchState('Do you wanna')"><i class="fa fa-toggle-on"></i><span>Switch As User</span></a>
+	<a href="/changePassword" id="changePassword"><i class="fa fa-lock"></i><span>Change Password</span></a>
+	<a id="logout" onclick="logout()"><i class="fa fa-sign-out"></i><span>logout</span></a>
 </div>

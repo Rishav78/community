@@ -1,49 +1,35 @@
-.filters{
+.filterButtons{
 	display: flex;
-	flex-direction: column;
+	padding: 10px;
+	color: white;
+	min-width: 300px;
 }
-.FilterButtons{
+.Fleft{
 	text-align: left;
-	width: 100%;
-	min-width: 600px;
 }
-.communityList, .refresh, .CommunityRule{
+.Fright{
+	flex: 1;
+	text-align: right;
+}
+select{
+	margin: 0;
+}
+.userlist,.refresh, .filterButtons select{
+	background-color: rgb(45,49,44);
 	display: inline-block;
 	color: white;
-	background-color: #333;
-	font-size: 20px;
-	font-weight: bolder;
-	display: inline-block;
-	padding: 5px 12px;
-	border-radius: 3px;
-	border: none;
-	margin-left: 5px;
-	cursor: pointer;
 }
-.listUsers{
-	box-shadow: 1px 1px 10px gray;
+.filterButtons select{
+	min-width: 70px;
+	width: 10%;
 }
-.listUsers,.PCusers, .userType{
-	padding: 9px 15px;
+.userlist{
+	border-radius: 5px;
+	box-shadow: 1px 1px 10px rgb(154,154,154);
 }
-.refresh{
-	border-radius: 0;
+.userlist,.refresh{
+	padding: 5px 10px;
 }
-.Rcontainer, .Rfilterbox{
-	float: right;
-}
-.PCusers, .userType{
-	padding: 4px 8px;
-}
-.FilterBox{
-	text-align: left;
-	margin-top: 20px;
-}
-.leftbox{
-	display: inline-block;
-}
-
-
 select, input{
 	padding: 5px 8px;
 	border-radius: 3px;
@@ -55,7 +41,6 @@ select, input{
 	font-size: 17px;
 	box-sizing: border-box;
 	width: 100%;
-	box-shadow: 0 8px 6px -6px gray;
 	border: 1px solid #b3b3b3;
 	border-radius: 3px;
 	margin: 10px 0px 10px 0px;
@@ -84,14 +69,5 @@ i.fa-edit, i.fa-info{
 @media screen and (max-width: 950px) {
 	.userImg{
 		display: none;
-	}
-	.leftbox{
-		display: block;
-	}
-	.FilterBox{
-		text-align: center;
-	}
-	.Rfilterbox{
-		float: none;
 	}
 }

@@ -1,77 +1,56 @@
-.searchbar{
-	background-color: rgb(58,169,196);
-	padding: 10px;
-	text-align: left;
-}
-.searchbar > i{
-	padding: 10px 14px;
-	border: 1px solid white;
-	margin: 0px 10px;
-	color: white;
-	cursor: pointer;
-}
-.searchbar > .fa-users{
-	border-bottom: 5px solid white;
-	margin-left: 100px;
-}
-.searchbar > .fa-search:hover{
-	background-color: #62bad0;
-}
 .list{
 	width: 90%;
 	max-width: 1300px;
-	background-color: pink;
 	margin: auto;
 	box-shadow: 1px 1px 10px gray;
 	margin-top: 50px;
 }
-.list > .myCommunity{
-	padding: 5px 10px;
-	background-color: rgb(58,169,196);
-	font-size: 17px;
-	color: white;
+
+.myCommunity{
+	/*height: 100px;*/
+	display: flex;
+	align-items: center;
 }
-.myCommunity a{
-	float: right;
-	position: relative;
-	top: -10px;
-	right: 10px;
-	border: 1px solid white;
-	padding: 10px 8px;
-	text-decoration: none;
-	color: white;
+
+img{
+	width: 100%;
+	height: 100%;
 }
 .communities{
 	background-color: white;
 	padding: 10px;
 	box-sizing: border-box;
 }
-.communities > .community{
-	border-top: 1px solid gray;
-	border-bottom: 1px solid gray;
-	padding: 10px;
-	margin: 20px 0px;
+.community{
+	display: flex;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+	padding: 10px 30px;
+	text-align: left;
+	align-items: center;
 }
-.community > div{
-	display: inline-block;
+.CommunityImg{
+	flex: 1;
 }
-.communityimage{
-	padding: 20px;
-	width: 9%;
-	box-sizing: border-box;
+.CommunityImg > img{
+	width: 50px;
+	height: 50px;
 }
-.communitydetail{
-	width: 90%;
-	box-sizing: border-box;
+.nameNreq{
+	flex: 6;
 }
-.communitydetail > a{
-	padding: 2px 7px;
-	color: white;
-	background-color: rgb(92,184,92);
-	position: relative;
+.setting{
+	flex: 1;
+	text-align: right;
+}
+.fa-cogs{
+	padding: 3px 7px;
+	background-color: #6c6;
 	font-size: 12px;
+	color: white;
+	text-decoration: none;
 	border-radius: 5px;
-	float: right;
+	/*display: inline-block;*/
 }
 #users{
 	background-color: rgb(51,122,183);

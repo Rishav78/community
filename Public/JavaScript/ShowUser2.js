@@ -1,81 +1,87 @@
 
 var refresh = document.querySelector('.refresh')
-var cover = document.querySelector('.cover')
 var popup = document.querySelector('.edit')
 var close = document.querySelector('#close')
-var update = document.querySelector('#Update')
-var PCuser = document.querySelector('.PCusers')
-var userType = document.querySelector('.userType')
-var alert = document.querySelectorAll('.alert')
+var update = document.querySelector('#editsubmit')
+var PCuser = document.querySelector('.status')
+var userType = document.querySelector('.Role')
+var alert = document.querySelectorAll('.a')
+
 var child;
-close.onclick = hidePopup
-function hidePopup(){
-	cover.style.zIndex = '-1'
-	cover.style.opacity = '0'
-	popup.style.top = '-200%'
-	popup.style.opacity = '0'
-}
 
-function popUp(e){
-	console.log(e)
-	var value = e.target
-	var users = value.parentNode.parentNode.parentNode
-	child = value.parentNode.parentNode.parentNode.childNodes
-	for(var i=0;i<child.length-1;i++){
-		if(child[i].nodeType == 1){
-			document.querySelector('#' + child[i].classList[0]).value =  (child[i].textContent).trim()
-		}
-	}
-	cover.style.zIndex = '4'
-	cover.style.opacity = '0.6'
-	popup.style.opacity = '1'
-	popup.style.top = '0px'
-}
-
-// function del(e){
-// 	var value = e.target
-// 	var user = value.parentNode.parentNode.parentNode
-// 	var req = new XMLHttpRequest()
-// 	req.onload = ()=>{
-// 		console.log('deleted')
-// 	}
-// 	req.open('POST','deleteuser')
-// 	req.send(user.firstChild.textContent.trim())
-// }
-
-function Activate(event){
-	var target = event.target
-	var user = event.target.parentNode.parentNode.parentNode.firstChild.textContent.trim()
+function sendMail(event){
+	console.log('rishav')
 	var data = {
-		user : user,
-		state : 'True'
+		to: document.querySelector('.to').value,
+		subject: document.querySelector('.subject').value,
+		msg: document.querySelector('.body')
 	}
-	var req = new XMLHttpRequest()
+	console.log(data)
+	var req = new XMLHttpRequest
 	req.onload = ()=>{
-		event.target.classList.remove('fa-check-circle')
-		event.target.classList.add('fa-times-circle')
-		event.target.setAttribute('onclick','Deactivate(event)')
-		document.querySelector('.added').innerHTML = `User ${user} Activated`
-		document.querySelector('.added').classList.add('animate')
+		console.log('Mail Send')
+		document.querySelector('.mailContainer').classList.add('animatereverse')
 	}
-	req.open('POST','/Activation')
+	req.open('POST','/sendMail')
 	req.send(JSON.stringify(data))
 }
 
-function Deactivate(event){
-	var target = event.target
-	var user = event.target.parentNode.parentNode.parentNode.firstChild.textContent.trim()
+function showUpdateBox(event){
+	child = event.target.parentNode.parentNode.parentNode.parentNode.childNodes
+	document.querySelector('#eheading').innerHTML = `Update ${child[1].textContent.trim()}`
+	for(var i=0;i<child.length-1;i++){
+		if(child[i].nodeType == 1){
+			console.log(document.querySelector('#' + child[i].classList[0]))
+			document.querySelector('#' + child[i].classList[0]).value = child[i].textContent.trim()
+		}
+	}
+}
+
+function switchRole(e,msg){
+	$.confirm({
+	  title: msg,
+	  content: "Do you really want switch state...",
+	  boxWidth: '350px',
+	  useBootstrap: false,
+	  buttons: {
+	      'Yes': {
+	          btnClass: 'btn-success',
+	          action: function () {
+	            changeActivationState(e)
+	          }
+	      },
+	      'No': {btnClass: 'btn-danger',}
+	  }
+	});
+}
+
+function changeActivationState(e){
+	var target = e.target
+	var user = target.parentNode.parentNode.parentNode.firstElementChild.textContent.trim()
+	var state = target.classList.contains('fa-check-circle') ? "True" : "False"
+	console.log(user)
 	var data = {
 		user : user,
-		state : 'False'
+		state : state
 	}
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
-		event.target.classList.remove('fa-times-circle')
-		event.target.classList.add('fa-check-circle')
-		event.target.setAttribute('onclick','Activate(event)')
-		document.querySelector('.exist').innerHTML = `User ${user} Deactivated`
-		document.querySelector('.exist').classList.add('animate')
+		console.log(target.classList)
+		if(target.classList.contains('fa-check-circle')){
+			console.log('rishav')
+			target.classList.remove('fa-check-circle')
+			target.classList.add('fa-times-circle')
+			target.setAttribute('onclick','switchRole(event,"Deactivate User")')
+			document.querySelector('.added').innerHTML = `User ${user} Activated`
+			document.querySelector('.added').classList.add('animate')
+		}else{
+			console.log('garg')
+			target.classList.remove('fa-times-circle')
+			target.classList.add('fa-check-circle')
+			target.setAttribute('onclick','switchRole(event,"Activate User")')
+			document.querySelector('.exist').innerHTML =`User ${user} Deactivated`
+			document.querySelector('.exist').classList.add('animate')
+		}
 	}
 	req.open('POST','/Activation')
 	req.send(JSON.stringify(data))
@@ -89,11 +95,11 @@ alert.forEach((value)=>{
 
 update.onclick = ()=>{
 	var data = {
-		Email : document.querySelector('#Username').value,
-		Phone : document.querySelector('#Phone').value,
-		City : document.querySelector('#City').value,
-		Status : document.querySelector('#Status').value,
-		Role : document.querySelector('#Role').value,
+		Email : document.querySelector('#username').value,
+		Phone : document.querySelector('#phone').value,
+		City : document.querySelector('#city').value,
+		Status : document.querySelector('#status').value,
+		Role : document.querySelector('#role').value,
 	}
 	for(var i=0;i<child.length-1;i++){
 		if(child[i].nodeType == 1){
@@ -102,78 +108,55 @@ update.onclick = ()=>{
 	}
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
-		hidePopup()
+		console.log('updated')
 	}
-	req.open('POST','update')
+	req.open('POST','/update')
 	req.send(JSON.stringify(data))
 }
-refresh.onclick = updateData
-PCuser.onchange = updateData
-userType.onchange = updateData
 
-function updateData(){
-	console.log('u')
-	var j=0
-	numberOfPage = 0
-	rows = []
-	var obj = {
-		status : PCuser.value,
-		userType : userType.value,
-	}
-	var req = new XMLHttpRequest()
-	req.onload = ()=>{
-		var users = document.querySelectorAll('.USER')
-		users.forEach((value)=>{
-			document.querySelector('tbody').removeChild(value)
-		})
-		users = JSON.parse(req.responseText)
-		console.log(users)
-		users.forEach((value)=>{
-			var tr = document.createElement('tr')
-			tr.className = 'USER'
-			var td1 = document.createElement('td')
-			td1.className = 'Username'
-			td1.innerHTML = value.Email
-			td1.style.fontWeight = 'bold'
-			tr.appendChild(td1)
-			var td2 = document.createElement('td')
-			td2.className = 'Phone'
-			td2.innerHTML = value.Phno
-			tr.appendChild(td2)
-			var td3 = document.createElement('td')
-			td3.className = 'City'
-			td3.innerHTML = value.City
-			tr.appendChild(td3)
-			var td4 = document.createElement('td')
-			td4.className = 'Status'
-			td4.innerHTML = value.Status
-			tr.appendChild(td4)
-			var td5 = document.createElement('td')
-			td5.className = 'Role'
-			td5.innerHTML = value.Role
-			tr.appendChild(td5)
-			var td6 = document.createElement('td')
-			td6.className = 'Action'
-			if(value.Role == 'Superadmin'){
-				td6.innerHTML = '<div style="min-width: 100px;"><i  class="fa fa-envelope-o icon"></i></div>'
-			}else{
-				if(value.ActivationState == 'True'){
-					td6.innerHTML = '<div style="min-width: 100px;"><i class="fa fa-envelope-o icon"></i><i onclick="popUp(event)" class="fa fa-edit icon"></i><i onclick="Deactivate(event)" class="fa fa-times-circle icon"></i></div>'
-				}else{
-					td6.innerHTML = '<div style="min-width: 100px;"><i class="fa fa-envelope-o icon"></i><i onclick="popUp(event)" class="fa fa-edit icon"></i><i onclick="Activate(event)" class="fa fa-check-circle icon"></i></div>'
-				}
-			}
-			tr.appendChild(td6)
-			document.querySelector('tbody').appendChild(tr)
-		})
-	}
-	req.open('POST','/admin/userlist')
-	req.send(JSON.stringify(obj))
-}
-// window.onload = updateData
+
 $(document).ready(function(){
-	var table = $('#myTable').DataTable();
-	$('#myTable').on("click", ".fa-close", function(){
-	  	table.row($(this).parents('tr')).remove().draw(false);
+	var table = $('#myTable').DataTable({
+		"lengthMenu": [5, 10, 25, 50],
+		"serverSide": true,
+        "processing": true,
+		"ajax": {
+	        url: '/admin/user',
+	        type: 'POST',
+	        "data": function ( d ) {
+	          d.roleFilter   = $('.Role').val();
+	          d.statusFilter = $('.Status').val();
+	        },
+	     },
+	     "columns": [
+            { title : "Usename/Email", "data": "Email", 'sClass':'username'},
+            { title : "Phone", "data": "Phno", 'sClass':'phone'},
+            { title : "City", "data": "City", 'sClass':'city'},
+            { title : "Status", "data": "Status", 'sClass':'status'},
+            { title : "Role", "data": "Role", 'sClass':'role'},
+            { title : "Active", "data": "ActivationState", 'sClass':'active',visible: false },
+            { title : "Actions","data": null, 'orderable' : false, 'sClass':'action'}
+        ],
+        "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+        	if(aData.Role === 'Superadmin'){
+        		console.log(aData.Role)
+        		$('td:eq(5)', nRow).html( '<div style="min-width: 100px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i></div>' );
+        	}else{
+        		if(aData.ActivationState == 'True'){
+	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event,'Deactivate User?')" class="fa fa-times-circle icon"></i></div>` );
+	        	}else{
+	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event,'Activate User?')" class="fa fa-check-circle icon"></i></div>`);
+	        	}
+        	}
+        }
+	});
+	$('.Status').on('change', function () {
+	    table.ajax.reload(null, false);
+	});
+	$('.Role').on('change', function () {
+	    table.ajax.reload(null, false);
+	});
+	$('.refresh').on('click', function () {
+	    table.ajax.reload(null, false);
 	});
 })

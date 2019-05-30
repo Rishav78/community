@@ -1,73 +1,32 @@
-.filters{
+.filterButtons{
 	display: flex;
-	flex-direction: column;
+	padding: 10px;
+	color: white;
+	min-width: 300px;
 }
-.FilterButtons{
+.Fleft{
 	text-align: left;
-	width: 100%;
-	min-width: 600px;
 }
-.pagination{
-	margin-top: 15px;
+.Fright{
+	flex: 1;
 	text-align: right;
 }
-.pagebutton{
-	padding: 7px 12px;
-	font-size: 16px;
-	background-color: rgb(51,122,183);
-	border: 1px solid rgb(51,122,183);
-	margin: 0px 7px;
-	color: white;
+select{
+	margin: 0;
 }
-#next, #prev{
-	color: black;;
-	background-color: white;
-	border: 1px solid gray;
-	margin: 0px 15px;
-}
-.listUsers, .refresh, .PCusers, .userType{
+.userlist,.refresh, .filterButtons select{
+	background-color: rgb(45,49,44);
 	display: inline-block;
 	color: white;
-	background-color: #333;
-	font-size: 20px;
-	font-weight: bolder;
-	display: inline-block;
-	padding: 5px 12px;
-	border-radius: 3px;
-	border: none;
-	margin-left: 5px;
-	cursor: pointer;
 }
-.listUsers{
-	box-shadow: 1px 1px 10px gray;
+.userlist{
+	border-radius: 5px;
+	box-shadow: 1px 1px 10px rgb(154,154,154);
 }
-.listUsers,.PCusers, .userType{
-	padding: 9px 15px;
+.userlist,.refresh{
+	padding: 5px 10px;
 }
-.refresh{
-	border-radius: 0;
-}
-.Rcontainer, .Rfilterbox{
-	float: right;
-}
-.PCusers, .userType{
-	padding: 4px 8px;
-}
-.FilterBox{
-	text-align: left;
-	margin-top: 20px;
-}
-.leftbox{
-	display: inline-block;
-}
-.searchbox{
-	padding: 5px 12px;
-	border-radius: 3px;
-}
-#myTable{
-	/*background-color: pink;*/
-}
-.cover{
+.Ecover{
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -77,7 +36,7 @@
 	opacity: 0;
 	transition: 1s;
 	background-color: #333333;
-	pointer-events: auto;
+	pointer-events: none;
 }
 .edit{
 	position: absolute;
@@ -90,6 +49,7 @@
 	left: 50%;
 	width: 600px;
 	top: -200%;
+	/*visibility: hidden;*/
 	z-index: 10;
 }
 .data{
@@ -97,22 +57,25 @@
 	padding: 25px 10px;
 }
 .head{
-	border-bottom: 1px solid gray;
+	/*border-bottom: 1px solid gray;*/
 	padding: 15px 20px;
+	font-size: 20px;
 }
 .bottom{
-	border-top: 1px solid gray;
+	/*border-top: 1px solid gray;*/
 	padding: 15px 20px;
 }
 .info{
 	width: 100%;
 	box-sizing: border-box;
 	padding: 0px 10px;
+	margin-bottom: 15px;
 }
 .info1{
 	width: 18%;
 	box-sizing: border-box;
 	padding: 10px 15px;
+	font-weight: bold;
 	display: inline-block;
 	text-align: right;
 }
@@ -129,6 +92,8 @@ select, input{
 	padding: 5px 8px;
 	border-radius: 3px;
 	border: 1px solid rgba(0,0,0,0.3);
+}
+select[name="myTable_length"]{
 	margin-bottom: 20px;
 }
 .textBox{
@@ -136,10 +101,8 @@ select, input{
 	font-size: 17px;
 	box-sizing: border-box;
 	width: 100%;
-	box-shadow: 0 8px 6px -6px gray;
 	border: 1px solid #b3b3b3;
 	border-radius: 3px;
-	margin: 10px 0px 10px 0px;
 }
 .bottom{
 	text-align: right;
@@ -172,7 +135,7 @@ i.fa-times-circle{
 i.fa-check-circle{
 	background-color: rgb(92,184,92);
 }
-.alert{
+.a{
 	position: absolute;
 	width: 100%;
 	height: 0;
@@ -184,12 +147,13 @@ i.fa-check-circle{
 }
 .added{
 	background-color: rgb(87,191,87);
+	padding: 0;
 }
 .exist{
 	background-color: rgb(225,113,91);
 }
 .animate{
-	animation: alert 2s;
+	animation: alert 2s both;
 }
 @keyframes alert{
 	0%{
@@ -208,6 +172,13 @@ i.fa-check-circle{
 		height: 0px;
 	}
 }
+@media screen and (max-width: 1100px) {
+	.filterButtons select{
+		min-width: 50px;
+		width: 20%;
+	}
+}
+
 @media screen and (max-width: 950px) {
 	.userImg{
 		display: none;

@@ -22,9 +22,9 @@ body{
 .info .ProfilePic{
 	width: 150px;
 	height: 150px;
-	background-color: pink;
 	position: relative;
 	border: 1px solid #b3b3b3;
+	box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
 }
 .ProfilePic > span{
 	position: absolute;

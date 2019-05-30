@@ -1,10 +1,12 @@
-<form action="/updateInfo" method="post">
-	<input type="file" style="display:none">
-	<div class="info">
+<div class="info">
+	<form method="post" action="/updateProfilePic" enctype="multipart/form-data" id="profilePic">
 		<div class="ProfilePic">
-			<img src="sdfg">
+			<img src="/static/<%= data.Image %>">
+			<input type="file" style="display:none" name="file">
 			<span onclick="upload()">Change</span>
 		</div>
+	</form>
+	<form action="/updateInfo" method="post" id="userData" onsubmit="updateProfilePic(event)">
 		<div class="basicInfo">
 			<div class="heading">
 				Basic Info
@@ -55,7 +57,7 @@
 			</div>
 		</div>
 		<div class="action">
-			<button type="submit" class="update" id="submit">Update</button><a href="" class="cancel">Cancel</a>
+			<button type="submit" class="update">Update</button><a href="" class="cancel">Cancel</a>
 		</div>
-	</div>
-</form>
+	</form>
+</div>
