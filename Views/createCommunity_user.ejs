@@ -6,12 +6,14 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
 	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
-	<link rel="stylesheet" type="text/css" href="/static/communityAsUser.css">
-	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
 	<link rel="stylesheet" type="text/css" href="/static/SearchBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+	<script type="text/javascript" src="/static/trumbowgy.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/trumbowgy.css">
+	<link rel="stylesheet" type="text/css" href="/static/createCommunity.css">
 </head>
 <body>
 <div class="Container">
@@ -22,12 +24,21 @@
 			<div class="searchbar">
 				<div class="communityButtons"><a class="fa fa-users" href="/community/communitypanel"></a><a href="/community/list" class="fa fa-search"></a></div>
 			</div>
-			<% include partials/communityPanel.ejs %>
+			<% include partials/createCommunity.ejs %>
 		</div>
 	</div>
-</div>>
+</div>
 <script type="text/javascript" src="/static/Switch.js"></script>
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
+<script type="text/javascript">
+	$.trumbowyg.svgPath = '/static/trumbowgy.svg';
+  	$('#body').trumbowyg();
+</script>
+<script type="text/javascript">
+	document.querySelector('.upload').onclick = ()=>{
+		document.querySelector('input[type="file"]').click()
+	}
+</script>
 </body>
-</html>
+</html> 

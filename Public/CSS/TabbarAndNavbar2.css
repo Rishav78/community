@@ -7,7 +7,7 @@ body{
 	font-family: sans-serif;
 }
 img{
-	border-radius: 50%;
+	/*border-radius: 50%;*/
 }
 .Container{
 	display: flex;
@@ -68,7 +68,7 @@ img{
 	height: 100px !important;
 	border-radius: 50%;
 }
-a:hover{
+.tabBar a:hover{
 	cursor: pointer;
 	text-decoration: none !important;
 	color: white;

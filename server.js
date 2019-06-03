@@ -8,6 +8,7 @@ var mysql = require('mysql')
 var session = require('express-session')
 var MySQLStorage = require('express-mysql-session')(session)
 var passport = require('passport')
+var GitHubStrategy = require('passport-github').Strategy;
 var app = express()
 
 // <-------------------------------------------------------------------->
@@ -32,6 +33,32 @@ var Community = require('./Router/community.js')
 
 
 // <---------- Integreating modules with express ---------------------->
+
+passport.use(new GitHubStrategy({
+    clientID: 'Iv1.13d8fc580d101b03',
+    clientSecret: 'd3b582904a88c27b5692c6ac6c9b503164496342',
+  },
+  function(accessToken, refreshToken, profile, cb) {
+
+    con.query(`select * from Users where Email = '${profile.emails[0].value}'`,(err,result)=>{
+    	if(err) throw err;
+    	if(result.length > 0){
+    		console.log('express-session')
+    		return cb(null,result[0].Email)
+    	}else{
+    		console.log('no')
+    		con.query('select max(Id) as Id from Users',(err,result)=>{
+    			if(err) throw err
+    			con.query(`insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values(${result[0].Id+1}, '${profile.displayName}', '${profile.emails[0].value}', '${profile.username}', null, '${profile._json.location}', 'User', 'Pending', 'default.png', 'True', 'Admin')`,(err,result)=>{
+    				if(err) throw err;
+    				return cb(null,profile.emails[0].value)
+    			})
+    		})
+    		// console.log(profile.emails[0].value)
+    	}
+    })
+  }
+));
 
 app.set('view engine','ejs')
 app.use(bodyParser.urlencoded({
@@ -65,6 +92,17 @@ app.use(passport.session())
 
 // <-------------------------------------------------------------------->
 
+app.get('/auth/github',
+  passport.authenticate('github',{
+  	scope: ['profile']
+  }));
+
+app.get('/code', passport.authenticate('github', { failureRedirect: '/' }), (req,res)=>{
+	console.log(req.user)
+	console.log('done')
+	res.redirect('/')
+});
+
 
 // function checkFileType(file,cb){
 // 	const filetypes = /jpeg|jpg|png|gif/
@@ -76,28 +114,32 @@ app.use(passport.session())
 // 		cb('error')
 // 	}
 // }
-// con.connect((err)=>{
-	// if (err) throw err
+con.connect((err)=>{
+	if (err) throw err
 	// var q = `insert into Users(Name, Email, Password, Phno, City, Role, Status, ActivationState, LoginAs) values('rishav', 'rishav@gmail.com', '123456789', '1234567890', 'sdfghj,', 'User', 'Pending', 'True', 'Admin')`
 	// 	con.query(q,(err,result)=>{
 	// 		if(err) throw err;
 	// 		console.log('add')
 	// 		// return res.render('AddUser',{added : true})
 	// 	})
+	// con.query('truncate table CommunityMembers')
+	// con.query('create table CommunityMembers(Id int, User char(100), Accepted char(5), Type char(5))')
+	// con.query('truncate table Request')
 	// con.query('create database UCA_WebProject')
 	// con.query('drop table communityList')
 	// con.query('truncate table Users')
-	// con.query('drop table Users')
 	// con.query('truncate table communityList')
+	// con.query('drop table tags')
+	// con.query('update communityList set totalreq = 0, members = 0')
 	// var q = `create table Users(Id int, Name char(100), Email varchar(100), Password varchar(100), Phno char(15), City char(100), DOB char(10), Gender char(6), About char(250), Expectations char(250), Role char(50), Status char(50), Image char(100), ActivationState char(5), LoginAs char(20), Verified char(5))`
-	// var q = `create table Tags(Id int, name char(100), CreatedBy varchar(100), CreationDate date)`
-	// var q = 'create table CommunityList(CommunityName char(50), MembershipRule char(50), CommunityLocation varchar(50), CommunityOwner char(50), Discription char(250), CreateDate date, CommunityPic varchar(200))'
-	// var q = `insert into communityList values('asdfg', 'sdfg', 'sdfgh' , 'werty', '0/0/0', 'dfghjk')`
+	// var q = `create table Tags(Id int, name char(100), CreatedBy varchar(100), CreationDate varchar(10))`
+	// var q = 'create table CommunityList(Id int, CommunityName char(50), MembershipRule char(50), CommunityLocation varchar(50), CommunityOwner char(50), Discription char(250), CreateDate char(10), TotalReq int, Members int, Users int, Admin int, CommunityPic varchar(200))'
+	// var q = `insert into communityList values(1, 'First Community', 'Direct', 'Mandi' , 'Rishav', 'nothing', '1/1/1', 0, 0, 0, 0, 'defaultCommunity.jpg')`
 	// var q = `insert into Users values(1, 'Rishav', 'rishavgarg789@gmail.com', 'hacker12', '1234567890', 'Mandi GobindGarh', '13/9/1999', 'Male', null, null, 'Superadmin', 'Confirmed', '1.gif', 'True', 'Admin', 'True')`
-	//  
+	 
 	// con.query(q)
-// 	console.log('connected...')
-// })
+	// console.log('connected...')
+})
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -114,7 +156,14 @@ app.use('/community',Community)
 
 // <----------------------------------------------------------------------------------->
 
-
+app.get('/editCommunity',(req,res)=>{
+	con.query(`select * from Users where Email = '${req.user}'`,(err,user)=>{
+		con.query(`select * from communityList`,(err,community)=>{
+			console.log(community)
+			res.render('editCommunity',{data: user[0], community: community[0]})
+		})
+	})	
+})
 
 // <----------------------------------- Maintaining Passport(session) ----------------->
 

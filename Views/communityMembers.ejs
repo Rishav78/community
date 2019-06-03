@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
+	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
+	<link rel="stylesheet" type="text/css" href="/static/SearchBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/commonCommunity.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+	<style type="text/css">
+		.showMembers{
+			display: flex;
+			flex-direction: column;
+			width: 1150px;
+			max-width: 90%;
+			margin: 50px auto;
+		}
+		.userType{
+			display: flex;
+			color: #38b;
+			font-size: 16px;
+			color: #38b;
+			font-weight: bolder;
+			text-align: left;
+		}
+		.userType span:hover{
+			cursor: pointer;
+			text-decoration: underline;
+		}
+		.Managers, .pic{
+			width: 15%;
+		}
+		.Members, .name{
+			width: 85%;
+		}
+		.admin{
+			display: flex;
+			margin: 10px 0px;
+			align-items: center;
+			padding: 5px;
+			border-bottom: 1px solid rgba(0,0,0,0.1);
+			border-top: 1px solid rgba(0,0,0,0.1);
+			text-align: left;
+		}
+		.pic, .name{
+			padding: 0px 15px;
+			box-sizing: border-box;
+		}
+		.name{
+			font-size: 20px;
+			color: #38b;
+			font-weight: bolder;
+		}
+		.name span:hover{
+			text-decoration: underline;
+			cursor: pointer;
+			color: #7D7D7D;
+		}
+		.name span:active{
+			color: #333;
+		}
+		.pic{
+			display: flex;
+			align-items: center;
+		}
+		.pic img{
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+		}
+		.pic span{
+			font-size: small;
+			display: inline-block;
+			border-radius: 3px;
+			padding: 3px 5px;
+			color: white;
+			margin: 0px 3px;
+		}
+		.hidden{
+			display: none;
+		}
+		.selected{
+			color: #333;
+		}
+	</style>
+</head>
+<body>
+<div class="Container">
+	<% include partials/navBar.ejs %>
+	<div class="container2">
+		<% include partials/tabBar3.ejs %>
+		<div class="content">
+			<% include partials/AboutCommunity.ejs %>
+			<div class="showMembers">
+				<div class="userType">
+					<div class="Managers">
+						<span class="selected" onclick="switchUser(event)">Admins (<%= community.Admin %>)</span>
+					</div>
+					<div class="Members">
+						<span onclick="switchUser(event)">Members (<%= community.Users %>)</span>
+					</div>
+				</div>
+				<div class="admins visible">
+					<% members.forEach((value)=>{ %>
+						<% if(value.Type != 'User') {%>
+							<div class="admin">
+								<div class="pic">
+									<div>
+										<img src="/static/<%= value.Image %>">
+									</div>
+									<% if(value.Type == 'Admin') { %>
+										<div>
+											<span style="background-color: #38b">Admin</span>
+										</div>
+									<% } else {%>
+										<div>
+											<span style="background-color: #6c6;">owner</span>
+										</div>
+									<% } %>
+								</div>
+								<div class="name">
+									<span><%= value.Name %></span>
+								</div>
+							</div>
+						<% } %>
+					<% }) %>
+				</div>
+				<div class="users hidden">
+					<% members.forEach((value)=>{ %>
+						<% if(value.Type == 'User') {%>
+							<div class="admin">
+								<div class="pic">
+									<div>
+										<img src="/static/<%= value.Image %>">
+									</div>
+								</div>
+								<div class="name">
+									<span><%= value.Name %></span>
+								</div>
+							</div>
+						<% } %>
+					<% }) %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>>
+<script type="text/javascript" src="/static/Switch.js"></script>
+<script type="text/javascript" src="/static/LogoutCover.js"></script>
+<script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
+<script type="text/javascript" src="/static/aboutCommunity.js"></script>
+<script type="text/javascript">
+	function switchUser(event) {
+		var x = document.querySelector('.hidden')
+		var y = document.querySelector('.visible')
+		x.classList.remove('hidden')
+		x.classList.add('visible')
+		y.classList.remove('visible')
+		y.classList.add('hidden')
+		document.querySelector('.selected').classList.remove('selected')
+		event.target.classList.add('selected');
+	}
+</script>
+</body>
+</html>

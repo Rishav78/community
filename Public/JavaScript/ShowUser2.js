@@ -11,10 +11,14 @@ var child;
 
 function sendMail(event){
 	console.log('rishav')
+	msg = ''
+	document.querySelector('.trumbowyg-editor').childNodes.forEach((value)=>{
+		msg += value.textContent + '\n';
+	})
 	var data = {
 		to: document.querySelector('.to').value,
 		subject: document.querySelector('.subject').value,
-		msg: document.querySelector('.body')
+		msg: msg
 	}
 	console.log(data)
 	var req = new XMLHttpRequest
@@ -22,7 +26,7 @@ function sendMail(event){
 		console.log('Mail Send')
 		document.querySelector('.mailContainer').classList.add('animatereverse')
 	}
-	req.open('POST','/sendMail')
+	req.open('POST','/admin/userlist/sendMail')
 	req.send(JSON.stringify(data))
 }
 
@@ -110,7 +114,7 @@ update.onclick = ()=>{
 	req.onload = ()=>{
 		console.log('updated')
 	}
-	req.open('POST','/update')
+	req.open('POST','userlist/update')
 	req.send(JSON.stringify(data))
 }
 

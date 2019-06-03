@@ -19,7 +19,9 @@
 	<div class="container2">
 		<% include partials/tabBar2.ejs %>
 		<div class="content">
-			<% include partials/SearchBar.ejs %>
+			<div class="searchbar">
+				<div class="communityButtons"><a class="fa fa-users" href="/community/communitypanel"></a><a href="/community/list" class="fa fa-search"></a></div>
+			</div>
 			<% include partials/communityPanel.ejs %>
 		</div>
 	</div>

@@ -1,161 +1,68 @@
-.head{
-	background-color: rgb(51,170,200);
-	padding: 10px;
-	height: 50px;
-	text-align: center;
-}
-.community, .manageCommunity, .editCommunity{
-	width: 80%;
-	margin: auto;
-	max-width: 1180px;
-}
-.community{
+.userslist{
+	margin: 10px auto;
 	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
 }
-.basicDetal{
-	box-sizing: border-box;
-	height: 75px;
-}
-.image{
-	width: 100px;
-	height: 70px;
-	position: relative;
-	display: inline-block;
-}
-.image > img{
-	width: 100px;
-	height: 100px;
-	position: absolute;
-	top: -50%;
-}
-.communityName{
-	flex: 5;
-}
-.communityName, .moredetail{
-	padding: 15px 30px; 
-	box-sizing: border-box;
-}
-.communityName > span{
-	font-size: 20px;
-	color: rgb(51,122,183);
-	font-weight: bold;
-}
-.heading{
-	font-size: 17px;
-	color: white;
-	display: none;
-}
-.moredetail{
-	flex: 1;
-	text-align: right;
-	display: inline-block;
-}
-.moredetail > i{
-	padding: 12px 15px;
-	border: 3px solid rgb(209,207,207);
-	box-sizing: border-box;
-	background-color: rgb(230,230,230);
-	position: relative;
-	cursor: pointer;
-	outline: none;
-}
-.moredetail > i > div{
-	width: 200px;
-	box-sizing: border-box;
-	text-align: left;
+.userstype{
+	width: 20%;
 	background-color: white;
-	border-radius: 3px;
-	position: absolute;
-	transform: translateY(100%);
-	border: 2px solid rgb(170,193,247);
-	bottom: 0;
-	right: 0;
-	display: none;
+	padding: 15px;
+	text-align: left;
 }
-.moredetail > i > div > a{
-	display: block;
-	text-decoration: none;
-	color: black;
-	padding: 5px 10px;
+.users{
+	width: 75%;
+}
+.users > .block{
+	display: flex;
+	padding: 5px 25px;
+	align-items: center;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	margin: 10px 0px;
+}
+.users > .block:hover{
+	border-top: 1px solid #333;
+	border-bottom: 1px solid #333;
+}
+.userstype > div{
 	margin: 5px 0px;
+	font-size: 18px;
+	color: gray;
+	cursor: pointer;
 }
-.moredetail > i > div > a:hover{
-	background-color: #2d6a9f;
-	color: white;
-}
-.moredetail > i:active{
-	box-shadow: inset 0px 0px 20px gray;
-}
-.manageCommunity{
-	padding: 10px;
-	box-sizing: border-box;
-	border-bottom: 1px solid gray;
+.block1, .block3, .block4{
+	flex: 1;
 	text-align: left;
 }
-.manageCommunity > a{
-	float: right;
-	margin: 0px 10px;
-	text-decoration: none;
-	color: rgb(51,122,183);
-	font-weight: bold;
+.ActionIcons{
+	color: gray ;
+	font-size: 20px;
+	cursor: pointer;
 }
-.manageCommunity > span{
-	color: rgb(111,110,111);
-	font-weight: bold;
-	font-size: 18px;
+.ActionIcons:hover{
+	color: #333;
 }
-.editCommunity{
-	background-color: white;
-	text-align: center;
-	box-sizing: border-box;
-	padding: 20px;
-	display: none;
+.block2{
+	flex: 5;
+	text-align: left;
+	font-weight: bolder;
+	color: #38b;
+	font-size: 20px;
 }
-.editCommunity > a{
-	background-color: rgb(51,122,183);
-	text-decoration: none;
-	color: white;
-	border: none;
-	padding: 10px;
+.block2 > span:hover{
+	cursor: pointer;
+	text-decoration: underline;
 }
-@media (max-width: 950px) {
-	.community{
-		display: block;
-	}
-	.basicDetal{
-		height: 150px;
-	}
-	.head{
-		height: 70px;
-	}
-	.community, .editCommunity, .manageCommunity{
-		width: 100%;
-	}
-	.heading{
-		display: block;
-	}
-	.communityName{
-		display: none;
-	}
-	.image{
-		width: 100%;
-		display: block;
-	}
-	.moredetail{
-		width: 100%;
-		display: block;
-		text-align: center;
-	}
-	.edit{
-		display: none;
-	}
-	.editCommunity{
-		display: block;
-	}
-	img{
-		transform: translateX(-50%);
-		left: 50%;
-	}
+.block4{
+	text-align: right;
 }
-
-
+.block1 > img{
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+}
+.active{
+	color: #38b !important;
+	font-weight: bolder !important;
+}

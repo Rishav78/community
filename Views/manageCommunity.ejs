@@ -4,13 +4,14 @@
 	<title></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link rel="stylesheet" type="text/css" href="/static/manageCommunity.css">
+	<link rel="stylesheet" type="text/css" href="/static/commonCommunity.css">
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
 	<link rel="stylesheet" type="text/css" href="/static/switch.css">
 	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/manageCommunity.css">
 </head>
 <body>
 <div class="Container">
@@ -18,53 +19,189 @@
 	<div class="container2">
 		<% include partials/tabBar2.ejs %>
 		<div class="content">
-
-			<div class="head">
-				<span class="heading">First community</span>
-			</div>
-			<div class="community basicDetal">
-				<div class="image">
-					<img src="dfghjk">
+			<% include partials/aboutCommunity.ejs %>
+			<% include partials/manageCommunity.ejs %>
+			<div class="userslist">
+				<div class="userstype">
+					<div class="noOfUsers" onclick="showMembers()">Users (<span class="usersNo"><%= community.Users %></span>)</div>
+					<div class="noOfAdmins" onclick="showAdmins()">Admins (<span class="adminsNo"><%= community.Admin %></span>) </div>
+					<div>Invited Members (0)</div>
 				</div>
-				<div class="communityName">
-					<span>First Community</span>
+				<div class="users">
+					
 				</div>
-				<div class="moredetail">
-					<i class="fa fa-bars" id="moredetail" onblur="hide()" tabindex="0">
-						<div class="community-profile-option">
-							<a href="">Discussions</a>
-							<a href="">Manage Community</a>
-							<a href="">Community Profile</a>
-							<a href="">Community Members</a>
-						</div>
-					</i>
-				</div>
-			</div>
-			<hr style="width: 90%;margin: auto;">
-			<div class="manageCommunity">
-				<span>Manage Community</span>
-				<a href="">Invite Users</a>
-				<a href="" class="edit">Edit Community</a>
-			</div>
-			<div class="editCommunity">
-				<a href="">Edit Community</a>
 			</div>
 		</div>
 	</div>
 </div>
 <script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
 <script type="text/javascript" src="/static/switch.js"></script>
+<script type="text/javascript" src="/static/aboutCommunity.js"></script>
 <script type="text/javascript">
-document.querySelector('#moredetail').onclick = ()=>{
-	if(document.querySelector('.community-profile-option').style.display == 'block'){
-		document.querySelector('.community-profile-option').style.display = 'none'
-	}else{
-		document.querySelector('.community-profile-option').style.display = 'block'
+	function Deactivate(){
+		if(document.querySelector('.active')){
+			document.querySelector('.active').classList.remove('active')
+		}
 	}
-}
-var hide = ()=>{
-	document.querySelector('.community-profile-option').style.display = 'none'
-}
+	function RemoveUser(user){
+		user.parentElement.removeChild(user)
+	}
+	function EmptyUsers(){
+		document.querySelector('.users').childNodes.forEach((value) => {
+			console.log(value)
+		  document.querySelector('.users').removeChild(value)
+		})
+	}
+	function showMembers(){
+		var req  = new XMLHttpRequest()
+		req.onload = ()=>{
+			var users = JSON.parse(req.responseText)
+			Deactivate();
+			document.querySelector('.noOfUsers').classList.add('active')
+			EmptyUsers()
+			users.forEach((value) => {
+				console.log(value)
+			  var div1 = `
+			  		<div style="display : none">
+			  			${value.Email}
+			  		</div>
+					<div class="block1">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="block2">
+						<span>${value.Name}</span>
+					</div>
+					<div class="block3">
+						<i class="fa fa-chevron-up ActionIcons" onclick="Promot(event)"></i>
+					</div>
+					<div class="block4">
+						<i class="fa fa-times ActionIcons" onclick="deleteUser(event)"></i>
+					</div>
+				`
+				var div2 = document.createElement('div')
+				div2.classList.add('block')
+				div2.innerHTML = div1;
+				document.querySelector('.users').appendChild(div2)
+			})
+		}
+		req.open('POST','/community/CommunityMembers')
+		req.send(document.querySelector('#communityId').textContent)
+	}
+	function Promot(event){
+		var req = new XMLHttpRequest()
+		var data = {
+			user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
+			communityId: document.querySelector('#communityId').textContent
+		}
+		req.onload = ()=>{
+			document.querySelector('.adminsNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) + 1
+			document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) - 1
+			RemoveUser(event.target.parentElement.parentElement)
+		}
+		req.open('POST','/community/promot');
+		req.send(JSON.stringify(data))
+	}
+	function Demote(event){
+		var req = new XMLHttpRequest()
+		var data = {
+			user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
+			communityId: document.querySelector('#communityId').textContent
+		}
+		req.onload = ()=>{
+			document.querySelector('.adminsNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) - 1
+			document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) + 1
+			RemoveUser(event.target.parentElement.parentElement)
+		}
+		req.open('POST','/community/Demote');
+		req.send(JSON.stringify(data))
+	}
+	function deleteUser(event){
+		var req = new XMLHttpRequest()
+		var data = {
+			user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
+			communityId: document.querySelector('#communityId').textContent,
+			Type: 'Users'
+		}
+		req.onload = ()=>{
+			document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) - 1
+			RemoveUser(event.target.parentElement.parentElement)
+		}
+		req.open('POST','/community/deleteMember');
+		req.send(JSON.stringify(data))
+	}
+	function deleteAdmin(event){
+		var req = new XMLHttpRequest()
+		var data = {
+			user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
+			communityId: document.querySelector('#communityId').textContent,
+			Type: 'Admin'
+		}
+		req.onload = ()=>{
+			document.querySelector('.adminsNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) - 1
+			RemoveUser(event.target.parentElement.parentElement)
+		}
+		req.open('POST','/community/deleteMember');
+		req.send(JSON.stringify(data))
+	}
+	function showAdmins(){
+		var req  = new XMLHttpRequest()
+		req.onload = ()=>{
+			console.log(req.responseText)
+			var users = JSON.parse(req.responseText)
+			Deactivate();
+			document.querySelector('.noOfAdmins').classList.add('active')
+			EmptyUsers()
+			users.forEach((value) => {
+			  if(value.Type == 'Admin'){
+			  	var div1 = `
+			  		<div style="display : none">
+			  			${value.Email}
+			  		</div>
+					<div class="block1">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="block2">
+						<span>${value.Name}</span>
+					</div>
+					<div class="block3">
+						<i class="fa fa-chevron-down ActionIcons" onclick="Demote(event)"></i>
+					</div>
+					<div class="block4">
+						<i class="fa fa-times ActionIcons" onclick="deleteAdmin(event)"></i>
+					</div>
+				`
+				var div2 = document.createElement('div')
+				div2.classList.add('block')
+				div2.innerHTML = div1;
+				document.querySelector('.users').appendChild(div2)
+			}else{
+				var div1 = `
+					<div style="display : none">
+			  			${value.UserId}
+			  		</div>
+					<div class="block1">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="block2">
+						<span>${value.Name}</span>
+					</div>
+					<div class="block4">
+						<span>rishav</span>
+					</div>
+				`
+				var div2 = document.createElement('div')
+				div2.classList.add('block')
+				div2.innerHTML = div1;
+				document.querySelector('.users').appendChild(div2)
+			}
+			})
+		}
+		req.open('POST','/community/CommunitysAdmins')
+		req.send(document.querySelector('#communityId').textContent)
+	}
+	$(document).ready(function(){
+		showMembers()
+	})
 </script>
 </body>
 </html>

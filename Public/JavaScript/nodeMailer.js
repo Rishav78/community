@@ -11,7 +11,7 @@ function nodeMailer(event){
 	document.querySelector('.Mcover').onclick = ()=>{
 		document.querySelector('.mailContainer').classList.add('animatereverse')
 	}
-	$.trumbowyg.svgPath = '/aaa';
+	$.trumbowyg.svgPath = '/static/trumbowgy.svg';
   	$('#body').trumbowyg();
   	document.querySelector('.mailContainer').classList.add('Manimate')
   	document.querySelector('.mailContainer').addEventListener('animationend',(event)=>{

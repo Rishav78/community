@@ -28,9 +28,11 @@ router.post('/',isAuthenticated(),(req,res)=>{
 		con.query(`select * from tags where name = '${data}'`,(err,result)=>{
 			if(err) throw err
 			if(result.length==0){
-				con.query(`insert into tags values(${Math.random()*Math.pow(10,8)}, '${data}', '${req.user}', date '12/12/12')`,(err,result)=>{
-					if(err) throw err
-					return res.send('added')
+				con.query(`select max(Id) as id from tags`,(err,result)=>{
+					con.query(`insert into tags values(${result[0].id+1}, '${data}', '${req.user}', SYSDATE())`,(err,result)=>{
+						if(err) throw err
+						return res.send('added')
+					})
 				})
 			}else{
 				return res.send('exist')
@@ -43,16 +45,22 @@ router.get('/tagslist',isAuthenticated(),(req,res)=>{
 		return res.render('taglist2',{data: result[0]})
 	})
 })
-router.post('/tagslistdata',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',(chunk)=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		con.query(`select * from tags`,(err,result)=>{
-			if (err) throw err
-			return res.send(result)
+
+router.post('/tagslist',isAuthenticated(),(req,res)=>{
+	var q = `select * from tags`;
+	console.log(req.body)
+	if(req.body.search.value){
+		q = q + ` where instr(name,'${req.body. search.value}')`
+	}
+	// console.log(q)
+	con.query(q,(err,result)=>{
+		if (err) throw err
+		var filtered = result.filter((value, index)=>{
+    		return index>=req.body.start && req.body.length-->0
 		})
+		con.query(`select count(*) as Total from tags`,(err,total)=>{
+			return res.json({'recordsTotal': total[0].Total, 'recordsFiltered' : result.length, data: filtered})
+		}) 
 	})
 })
 function isAuthenticated(){

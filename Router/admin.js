@@ -1,10 +1,20 @@
 var express = require('express')
 var router = express.Router()
-// var bodyParser = require('body-parser')
 var mysql = require('mysql')
-var session = require('express-session')
-var MySQLStorage = require('express-mysql-session')(session)
-var passport = require('passport')
+var nodeMailer = require('nodemailer')
+
+const transporter = nodeMailer.createTransport({
+	service: 'gmail',
+	secure: false,
+	port: 25,
+	auth: {
+		user: 'rishavgarg789@gmail.com',
+		pass: 'Port_123456'
+	},
+	tls: {
+		rejectUnauthorized: false
+	}
+})
 
 const con = mysql.createConnection({
 	host : 'localhost',
@@ -21,6 +31,7 @@ router.get('/profile',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
+	console.log(data)
 		return res.render('Home',{data : data,visible : false})
 	})
 })
@@ -49,11 +60,13 @@ router.post('/adduser',isAuthenticated(),(req,res)=>{
 		}
 	})
 })
+
 router.get('/userlist',isAuthenticated(),(req,res)=>{
 	con.query('select Image, Role, Name from Users',(err,result)=>{
 		return res.render('ShowUser2',{data : result[0]})
 	})
 })
+
 router.post('/user',isAuthenticated(),(req,res)=>{
 	var arr = ['Email', 'Phno', 'City', 'Status', 'Role', 'Action']
 	var data = req.body
@@ -82,6 +95,41 @@ router.post('/user',isAuthenticated(),(req,res)=>{
 		})
 		con.query('select count(Email) from Users',(err,total)=>{
 			res.json({'recordsTotal': total[0]['count(Email)'], 'recordsFiltered' : result.length, data: record});
+		})
+	})
+})
+
+router.post('/userlist/sendMail',(req,res)=>{
+	var data = ''
+	req.on('data', chunk=>{
+		data += chunk
+	})
+	req.on('end',()=>{
+		data = JSON.parse(data);
+		let mail = {
+			from: 'rishavgarg789@gmail.com',
+			to: data.to,
+			subject: data.subject,
+			text: data.msg
+		}
+		transporter.sendMail(mail,(err,info)=>{
+			if(err) throw err;
+			console.log('send')
+			res.send('send')
+		})
+	})
+})
+
+router.post('/userlist/update',isAuthenticated(),(req,res)=>{
+	var data = ''
+	req.on('data',(chunk)=>{
+		data += chunk
+	})
+	req.on('end',()=>{
+		data = JSON.parse(data)
+		con.query(`update Users set Email = '${data.Email}', Phno = '${data.Phone}', City = '${data.City}', Status = '${data.Status}', Role = '${data.Role}' where Email = '${data.Email}'`,(err,result)=>{
+			if(err) throw err
+		  	return res.send('done')
 		})
 	})
 })

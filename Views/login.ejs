@@ -4,6 +4,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" type="text/css" href="/static/login.css">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<title>Login</title>
 </head>
 <body>
@@ -18,7 +19,7 @@
 		<% } %>
 		<input type="text" name="Email" class="textBox" placeholder="Username" required>
 		<input type="text" name="Password" class="textBox" placeholder="Password" required>
-		<button class="login">Login</button>
+		<button class="login local">Login</button><a href="/auth/github" class="login github"><i class="fa fa-github"></i> github</a>
 	</div>
 </form>
 <div class="footer">cq © 2019</div>

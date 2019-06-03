@@ -1,0 +1,24 @@
+<div class="head">
+	<span class="heading"><%= community.CommunityName %></span>
+	<span id="communityId" style="display: none"><%= community.Id %></span>
+</div>
+<div class="community">
+	<div class="image">
+		<img src="/static/<%= community.CommunityPic %>">
+	</div>
+	<div class="communityName">
+		<span><%= community.CommunityName %></span>
+	</div>
+	<div class="dropdown">
+		<i class="fa fa-bars"></i>
+		<ul class="hidedropdown">
+			<li><a href="">Discussions</a></li>
+			<% if(visible == true){ %>
+			<li><a href="">Manage Community</a></li>
+			<% } %>
+			<li><a href="">Community Profile</a></li>
+			<li><a href="">Community Members</a></li>
+		</ul>
+	</div>
+</div>
+<hr style="width: 90%;margin: auto;">

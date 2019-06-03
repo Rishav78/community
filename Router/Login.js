@@ -3,20 +3,6 @@ var router = express.Router()
 var mysql = require('mysql')
 var multer = require('multer')
 var path = require('path')
-var nodeMailer = require('nodemailer')
-
-const transporter = nodeMailer.createTransport({
-	service: 'gmail',
-	secure: false,
-	port: 25,
-	auth: {
-		user: 'rishavgarg789@gmail.com',
-		pass: 'Port_123456'
-	},
-	tls: {
-		rejectUnauthorized: false
-	}
-})
 
 const con = mysql.createConnection({
 	host : 'localhost',
@@ -39,6 +25,7 @@ const storage = multer.diskStorage({
 		})
 	}
 })
+
 const upload = multer({
 	storage: storage,
 }).single('file');
@@ -107,20 +94,6 @@ router.get('/profile',isAuthenticated(),(req,res)=>{
 	})
 })
 
-router.post('/update',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',(chunk)=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`update Users set Email = '${data.Email}', Phno = '${data.Phone}', City = '${data.City}', Status = '${data.Status}', Role = '${data.Role}' where Email = '${data.Email}'`,(err,result)=>{
-			if(err) throw err
-		  	return res.send('done')
-		})
-	})
-})
-
 router.post('/Activation',isAuthenticated(),(req,res)=>{
 	var data = ''
 	req.on('data',(chunk)=>{
@@ -169,7 +142,7 @@ router.post('/deletetag',isAuthenticated(),(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		con.query(`delete from tags where name = '${data}'`,(err,result)=>{
+		con.query(`delete from tags where Id = ${data}`,(err,result)=>{
 			if(err) throw err
 			return res.send('done')
 		})
@@ -191,10 +164,6 @@ router.post('/changePassword',isAuthenticated(),(req,res)=>{
 			changePassword(req,res,'wrong')
 		}
 	})
-})
-
-router.get('/manageCommunity',isAuthenticated(),(req,res)=>{
-	return res.render('manageCommunity')
 })
 
 router.get('/editInformation',isAuthenticated(),(req,res)=>{
@@ -222,34 +191,13 @@ router.get('/switchAsUser',(req,res)=>{
 		if(err) throw err
 		if(result[0].LoginAs == 'Admin'){
 			var data = {switch: 'User',msg:'Switch Admin To User'}
-			con.query("update Users set LoginAs = 'User'")
+			con.query(`update Users set LoginAs = 'User' where Email = '${req.user}'`)
 			res.render('Switch',{data})
 		}else{
 			var data = {switch: 'Admin',msg: 'Switch User To Admin'}
-			con.query("update Users set LoginAs = 'Admin'")
+			con.query(`update Users set LoginAs = 'Admin' where Email = '${req.user}'`)
 			res.render('Switch',{data})
 		}
-	})
-})
-
-router.post('/sendMail',(req,res)=>{
-	var data = ''
-	req.on('data', chunk=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		data = JSON.parse(data);
-		let mail = {
-			from: 'rishavgarg789@gmail.com',
-			to: data.to,
-			subject: data.subject,
-			text: data.msg
-		}
-		transporter.sendMail(mail,(err,info)=>{
-			if(err) throw err;
-			console.log('send')
-			res.send('send')
-		})
 	})
 })
 
@@ -258,10 +206,6 @@ router.post('/updateProfilePic',(req,res)=>{
 		if(err) throw err;
 		res.redirect('/profile')
 	})
-})
-
-router.get('/aaa',(req,res)=>{
-	res.sendFile(path.join(__dirname,'Public','CSS','trumbowgy.svg'))
 })
 
 function editInformation(req,res) {

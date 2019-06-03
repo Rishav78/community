@@ -5,6 +5,9 @@
 	justify-content: space-between;
 	color: white;
 }
+.header img{
+	border-radius: 50%;
+}
 .left,.right{
 	display: flex;
 	justify-content: space-between;

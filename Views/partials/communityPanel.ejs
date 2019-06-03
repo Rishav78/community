@@ -1,19 +1,30 @@
 <div class="list">
 	<div class="myCommunity">
 		<div class="heading">My Communities</div>
-		<div class="create"><div>Create</div></div>
+		<% if(visible == true){ %>
+			<div class="create"><a href="/community/Addcommunity">Create</a></div>
+		<% } %>
 	</div>
 	<div class="communities">
-		<div class="community">
-			<div class="CommunityImg">
-				<img src="/static/default.png">
+		<% community.forEach((value)=>{ %>
+			<div class="community">
+				<div class="CommunityImg">
+					<img src="/static/<%= value.CommunityPic %>">
+				</div>
+				<div class="nameNreq">
+					<span class="Name"><%= value.CommunityName %></span>&nbsp;&nbsp;&nbsp;
+					<% if(visible == true){ %>
+						<a href="" class="req">Request(<%= value.TotalReq %>)</a>
+					<% } else { %>
+						<a href="/community/communitymembers/<%= value.Id %>" class="req">Members(<%= value.Members %>)</a>
+					<% } %>
+				</div>
+				<% if(visible == true){ %>
+					<div class="setting">
+						<a href="/community/manageCommunity/<%= value.Id %>"><i class="fa fa-cogs"></i></a>
+					</div>
+				<% } %>
 			</div>
-			<div class="nameNreq">
-				<span class="Name">First Community</span>&nbsp;&nbsp;&nbsp;<span class="req">Request(0)</span>
-			</div>
-			<div class="setting">
-				<a href="/manageCommunity"><i class="fa fa-cogs"></i></a>
-			</div>
-		</div>
+		<% }) %>
 	</div>
 </div>
