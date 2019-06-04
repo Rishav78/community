@@ -17,7 +17,15 @@
 <div class="Container">
 	<% include partials/navBar.ejs %>
 	<div class="container2">
-		<% include partials/tabBar2.ejs %>
+		<% if(data.Role == 'User'){ %>
+			<% include partials/tabBar3.ejs %>
+		<% }else{ %>
+			<% if(data.LoginAs == 'Admin'){ %>
+				<% include partials/tabBar.ejs %>
+			<% }else{ %>
+				<% include partials/tabBar2.ejs %>
+			<% } %>
+		<% } %>
 		<div class="content">
 			<div class="searchbar">
 				<div class="communityButtons"><a class="fa fa-users" href="/community/communitypanel"></a><a href="/community/list" class="fa fa-search"></a></div>

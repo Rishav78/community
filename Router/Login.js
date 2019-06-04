@@ -82,15 +82,7 @@ router.get('/profile',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
-		if(data.Role == 'User'){
-			return res.render('profile_user',{data : data, visible : true})
-		}else{
-			if(data.LoginAs == 'Admin'){
-				return res.render('profile_superadmin_admin',{data : data,visible : true})
-			}else{
-				return res.render('profile_superadmin_user',{data : data,visible : true})
-			}
-		}
+		return res.render('profile',{data : data,visible : true})
 	})
 })
 
@@ -150,7 +142,10 @@ router.post('/deletetag',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/changePassword',isAuthenticated(),(req,res)=>{
-	changePassword(req,res,false)
+	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+		if(err) throw err
+		res.render('ChangePassword',{changed: false, data: result[0]})
+	})
 })
 
 router.post('/changePassword',isAuthenticated(),(req,res)=>{
@@ -158,16 +153,27 @@ router.post('/changePassword',isAuthenticated(),(req,res)=>{
 	con.query(`select Password from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		if(result[0].Password === data.old){
-			con.query(`update Users set Password = '${data.new}' where Email = '${req.user}'`)
-			changePassword(req,res,'changed')
+			con.query(`update Users set Password = '${data.new}' where Email = '${req.user}'`,(err,result)=>{
+				con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+					if(err) throw err
+					res.render('ChangePassword',{changed: 'changed', data: result[0]})
+				})
+			})
 		}else{
-			changePassword(req,res,'wrong')
+			con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+				if(err) throw err
+				res.render('ChangePassword',{changed: 'wrong', data: result[0]})
+			})
 		}
 	})
 })
 
 router.get('/editInformation',isAuthenticated(),(req,res)=>{
-	editInformation(req,res)
+	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+		if(err) throw err
+		var data = result[0]
+		return res.render('editInformation',{data})
+	})
 })
 
 router.get('/getInformation',isAuthenticated(),(req,res)=>{

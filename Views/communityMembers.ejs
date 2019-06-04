@@ -102,7 +102,7 @@
 						<span class="selected" onclick="switchUser(event)">Admins (<%= community.Admin %>)</span>
 					</div>
 					<div class="Members">
-						<span onclick="switchUser(event)">Members (<%= community.Users %>)</span>
+						<span onclick="switchUser(event)">Members (<%= community.User %>)</span>
 					</div>
 				</div>
 				<div class="admins visible">
@@ -154,16 +154,19 @@
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
 <script type="text/javascript" src="/static/aboutCommunity.js"></script>
+<script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript">
 	function switchUser(event) {
-		var x = document.querySelector('.hidden')
-		var y = document.querySelector('.visible')
-		x.classList.remove('hidden')
-		x.classList.add('visible')
-		y.classList.remove('visible')
-		y.classList.add('hidden')
-		document.querySelector('.selected').classList.remove('selected')
-		event.target.classList.add('selected');
+		if(!event.target.classList.contains('selected')){
+			var x = document.querySelector('.hidden')
+			var y = document.querySelector('.visible')
+			x.classList.remove('hidden')
+			x.classList.add('visible')
+			y.classList.remove('visible')
+			y.classList.add('hidden')
+			document.querySelector('.selected').classList.remove('selected')
+			event.target.classList.add('selected');
+		}
 	}
 </script>
 </body>

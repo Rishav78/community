@@ -1,13 +1,18 @@
 <div class="head">
-	<span class="heading"><%= community.CommunityName %></span>
-	<span id="communityId" style="display: none"><%= community.Id %></span>
+	<div class="heading"><a href="/community/communityProfile/<%= community.Id %>"><%= community.CommunityName %></a></div>
+	<% if(!join.length){ %>
+		<div class="join">
+			<a href="/community/joinCommunity/<%= community.Id %>">join <i class="fa fa-plus" style="font-size: 12px"></i></a>
+		</div>
+	<% } %>
 </div>
 <div class="community">
+	<span id="communityId" style="display: none"><%= community.Id %></span>
 	<div class="image">
 		<img src="/static/<%= community.CommunityPic %>">
 	</div>
 	<div class="communityName">
-		<span><%= community.CommunityName %></span>
+		<a href="/community/communityProfile/<%= community.Id %>"><%= community.CommunityName %></a>
 	</div>
 	<div class="dropdown">
 		<i class="fa fa-bars"></i>
@@ -21,4 +26,4 @@
 		</ul>
 	</div>
 </div>
-<hr style="width: 90%;margin: auto;">
+<hr style="width: 90%;margin: 15px auto;background-color: rgba(0,0,0,0.1);height: 3px;border: none">

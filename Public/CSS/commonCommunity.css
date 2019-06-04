@@ -1,9 +1,14 @@
 .head{
 	background-color: rgb(51,170,200);
+	display: flex;
 	padding: 10px;
 	padding: 0;
 	height: 50px;
 	text-align: center;
+	width: 100%;
+}
+a{
+	text-decoration: none;
 }
 .community, .manageCommunity, .editCommunity, .userslist{
 	width: 1170px;
@@ -27,6 +32,8 @@
 	height: 100px;
 	top: -30px;
 	left: 0;
+	border: 3px solid white;
+	box-shadow: 1px 1px 10px rgba(0,0,0,0.5);
 	position: absolute;
 }
 .communityName{
@@ -36,15 +43,34 @@
 .communityName, .moredetail{
 	padding: 15px 30px; 
 }
-.communityName > span{
+.communityName > a{
 	font-size: 20px;
 	color: rgb(51,122,183);
 	font-weight: bold;
 }
 .heading{
+	flex: 1;
+	display: none;
+}
+.heading > a{
 	font-size: 17px;
 	color: white;
-	display: none;
+}
+.join{
+	flex: 1;
+	display: block;
+	padding: 5px 10px;
+	text-align: right;
+	box-sizing: border-box;
+}
+.join > a{
+	display: inline-block;
+	padding: 8px 12px;
+	border: 1px solid white;
+	background-color: transparent;
+	color: white;
+	margin-right: 20px;
+	cursor: pointer;
 }
 .dropdown{
 	position: relative;
@@ -127,6 +153,7 @@
 @media (max-width: 950px) {
 	.community{
 		display: block;
+		text-align: center;
 	}
 	.basicDetal{
 		height: 150px;
@@ -165,6 +192,9 @@
 	.userstype, .users{
 		width: 100% !important;
 		text-align: center !important;
+	}
+	.join{
+		display: none;
 	}
 }
 

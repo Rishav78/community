@@ -32,8 +32,11 @@
 	text-align: left;
 	padding-top: 15px;
 	box-sizing:border-box;
-	color: #337ab7;
 	width: 70%;
+}
+.communityName > a{
+	color: #337ab7;
+	text-decoration: none;
 }
 .join{
 	text-align: right;

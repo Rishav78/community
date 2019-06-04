@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
+	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
+	<link rel="stylesheet" type="text/css" href="/static/SearchBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/commonCommunity.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/communityProfile.css">
+</head>
+<body>
+<div class="Container">
+	<% include partials/navBar.ejs %>
+	<div class="container2">
+		<% if(data.Role == 'User'){ %>
+			<% include partials/tabBar3.ejs %>
+		<% }else{ %>
+			<% include partials/tabBar2.ejs %>
+		<% } %>
+		<div class="content">
+			<% include partials/AboutCommunity.ejs %>
+			<div class="profileContainer">
+				<div class="leftConatiner">
+					<% if(!join.length){ %>
+						<div class="joinCommunity">
+							<div class="block1">
+								<a href="/community/joinCommunity/<%= community.Id %>">Join <i class="fa fa-plus" style="font-size: 13px;font-weight: lighter;"></i></a>
+							</div>
+							<div class="block2">
+								<%= community.Members %> Member
+							</div>
+						</div>
+					<% } %>
+					<% if(join.length){ %>
+						<div class="managers">
+							<div class="block1">
+								<div class="Members">
+									Members
+								</div>
+								<div class="viewall">
+									<a href="">View all</a>
+								</div>
+							</div>
+							<div class="block2">
+								<% members.forEach((value)=>{ %>
+									<% if(value.Type == 'User'){ %>
+										<a href=""><img src="/static/<%= value.Image %>"></a>
+									<% } %>
+								<% }) %>
+							</div>
+							<div class="block1">
+								<div class="Members">
+									<%= community.Members %> Members
+								</div>
+								<div class="viewall">
+									<% if(!owner.length){ %>
+										<a href="/community/leaveCommunity/<%= community.Id %>">Leave Community</a>
+									<% } %>
+								</div>
+							</div>
+						</div>
+					<% } %>
+					<div class="members">
+						<div class="block1">
+							Community Managers
+						</div>
+						<% members.forEach((value)=>{ %>
+							<% if(value.Type!='User'){ %>
+								<div class="managerprofile">
+									<div class="pic">
+										<img src="/static/<%= value.Image %>">
+									</div>
+									<div class="Admins">
+										<% if(value.Type == 'Owner') { %>
+											<div class="owner"><span>Owner</span></div>
+										<% }else { %>
+											<div class="owner"><span>User</span></div>
+										<% } %>
+										<div class="name"><%= value.Name %></div>
+									</div>
+								</div>
+							<% } %>
+						<% }) %>
+					</div>
+				</div>
+				<div class="rightContainer">
+					<div class="communityDetail">
+						<div class="block1">
+							About Community
+						</div>
+						<div class="block2">
+							<%= community.Discription %>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="/static/Switch.js"></script>
+<script type="text/javascript" src="/static/LogoutCover.js"></script>
+<script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
+<script type="text/javascript" src="/static/aboutCommunity.js"></script>
+</body>
+</html>

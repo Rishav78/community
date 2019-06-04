@@ -23,7 +23,7 @@ function  displayCommunitys() {
 							<img src="/static/${value.CommunityPic}">
 						</div>
 						<div class="communityName">
-							${value.CommunityName}
+							<a href="/community/communityprofile/${value.Id}">${value.CommunityName}</a>
 						</div>
 						<div class="join">
 							<span onclick="joinReq(event)">
@@ -43,7 +43,7 @@ function  displayCommunitys() {
 							<img src="/static/${value.CommunityPic}">
 						</div>
 						<div class="communityName">
-							${value.CommunityName}
+							<a href="/community/communityprofile/${value.Id}">${value.CommunityName}</a>
 						</div>
 						<div class="join">
 							<span onclick="joinReq(event)">
@@ -70,9 +70,8 @@ function joinReq(event){
 		x.parentElement.parentElement.removeChild(x.parentElement)
 	});
 	}
-	req.open('POST','/community/joinCommunity')
-	console.log(x.firstElementChild.textContent.trim())
-	req.send(x.firstElementChild.textContent.trim())
+	req.open('GET',`/community/joinCommunity/${x.firstElementChild.textContent.trim()}`)
+	req.send()
 }
 
 window.onload = displayCommunitys

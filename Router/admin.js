@@ -44,16 +44,15 @@ router.get('/adduser',isAuthenticated(),(req,res)=>{
 router.post('/adduser',isAuthenticated(),(req,res)=>{
 	var data = req.body
 	con.query(`select * from Users where Email = '${data.email}' or Email = '${req.user}'`,(err,total)=>{
-		if(err) throw err
+		if(err) throw err;
+		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 		if(total.length == 1){
-			con.query(`select max(Id) from Users`,(err,result)=>{
-				var q = `insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values(${result[0]['max(Id)']+1}, '${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', '${data.role}', 'Pending', 'default.png', 'True', 'Admin')`
-				con.query(q,(err,result)=>{
-					if(err) throw err;
-					console.log('add')
-					// console.log()
-					return res.render('AddUser',{added : true, data: total[0]})
-				})
+			var q = `insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values('${id}', '${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', '${data.role}', 'Pending', 'default.png', 'True', 'Admin')`
+			con.query(q,(err,result)=>{
+				if(err) throw err;
+				console.log('add')
+				// console.log()
+				return res.render('AddUser',{added : true, data: total[0]})
 			})
 		}else{
 			return res.send('User Already Exist')
@@ -63,7 +62,7 @@ router.post('/adduser',isAuthenticated(),(req,res)=>{
 
 router.get('/userlist',isAuthenticated(),(req,res)=>{
 	con.query('select Image, Role, Name from Users',(err,result)=>{
-		return res.render('ShowUser2',{data : result[0]})
+		return res.render('ShowUser',{data : result[0]})
 	})
 })
 

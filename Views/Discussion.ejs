@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
+	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
+	<link rel="stylesheet" type="text/css" href="/static/SearchBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/commonCommunity.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+	<style type="text/css">
+		.discussionContainer{
+			max-width: 90%;
+			display: flex;
+			flex-direction: column;
+			text-align: left;
+			width: 1150px;
+			margin: 50px auto;
+			background-color: white;
+			border: 1px solid rgba(0,0,0,0.3);
+			color: rgba(0,0,0,0.5);
+		}
+		.Discussionheading{
+			display: flex;
+			align-items: center;
+			border-bottom: 1px solid rgba(0,0,0,0.3);
+			background-color: rgb(249,249,249);
+		}
+		.communityPic{
+			width: 70px;
+			padding: 3px 0px;
+			text-align: center;
+		}
+		.communityPic > img{
+			width: 50px;
+			height: 50%;
+		}
+		.startADiscussion{
+			flex: 1;
+			font-size: 20px;
+		}
+		.DiscussionTitle, .discussionDetail{
+			padding: 15px;
+			box-sizing: border-box;
+			border-bottom: 1px solid rgba(0,0,0,0.3);
+		}
+		.DiscussionTitle > input, .discussionDetail > textarea{
+			border: none;
+			background-color: transparent;
+			width: 100%;
+			outline: none;
+			display: block;
+		}
+		.DiscussionTitle > input{
+			font-weight: bolder;
+			font-size: 15px;
+		}
+		.discussionDetail > textarea{
+			font-size: 22px;
+			resize: none;
+		}
+		.tags{
+			padding: 10px;
+			border: 1px solid rgba(0,0,0,0.3);
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		.tag{
+			display: inline-block;
+			font-size: small;
+			padding: 1px 2px;
+			border: 1px solid rgba(0,0,0,0.3);
+			color: rgba(0,0,0,0.7);
+			border-radius: 5px;
+			background-color: rgb(249,249,249);
+			margin: 0px 4px;
+		}
+		.tags > input{
+			border: none;
+			outline: none;
+		}
+		.tag > div{
+			display: inline-block;
+		}
+	</style>
+</head>
+<body>
+<div class="Container">
+	<% include partials/navBar.ejs %>
+	<div class="container2">
+		<% include partials/tabBar3.ejs %>
+		<div class="content">
+			<% include partials/AboutCommunity.ejs %>
+			<div class="discussionContainer">
+				<div class="Discussionheading">
+					<div class="communityPic">
+						<img src="/static/default.png">
+					</div>
+					<div class="startADiscussion">
+						Start a discussion
+					</div>
+				</div>
+				<div class="DiscussionTitle">
+					<input type="text" name="" placeholder="Enter a discussion title....">
+				</div>
+				<div class="discussionDetail">
+					<textarea placeholder="Enter discussion details"></textarea>
+					<div class="tags">
+						<input type="text" name="" style="width: 10px;">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>>
+<script type="text/javascript" src="/static/Switch.js"></script>
+<script type="text/javascript" src="/static/LogoutCover.js"></script>
+<script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
+<script type="text/javascript" src="/static/aboutCommunity.js"></script>
+<script type="text/javascript">
+	var width = 10;
+	document.querySelector('.tags').onclick = ()=>{
+		document.querySelector('.tags > input').focus()
+	}
+	document.querySelector('.tags > input').onkeydown = (event)=>{
+		if(event.keyCode == 13){
+			if(document.querySelector('.tags > input').value){
+				width = 10;
+				var div = document.createElement('div')
+				div.classList.add('tag')
+				div.innerHTML = `<div style="padding: 1px">&times</div><div style="padding: 1px;">${document.querySelector('.tags > input').value}</div>`
+				document.querySelector('.tags > input').value = ''
+				document.querySelector('.tags').insertBefore(div, document.querySelector('.tags').lastChild.previousSibling)
+			}
+		}else{
+			width = width + 6;
+		}
+		document.querySelector('.tags > input').style.width = width + 'px';
+	}
+</script>
+</body>
+</html>

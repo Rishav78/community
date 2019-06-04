@@ -28,11 +28,10 @@ router.post('/',isAuthenticated(),(req,res)=>{
 		con.query(`select * from tags where name = '${data}'`,(err,result)=>{
 			if(err) throw err
 			if(result.length==0){
-				con.query(`select max(Id) as id from tags`,(err,result)=>{
-					con.query(`insert into tags values(${result[0].id+1}, '${data}', '${req.user}', SYSDATE())`,(err,result)=>{
-						if(err) throw err
-						return res.send('added')
-					})
+				var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+				con.query(`insert into tags values('${id}', '${data}', '${req.user}', SYSDATE())`,(err,result)=>{
+					if(err) throw err
+					return res.send('added')
 				})
 			}else{
 				return res.send('exist')
@@ -42,7 +41,7 @@ router.post('/',isAuthenticated(),(req,res)=>{
 })
 router.get('/tagslist',isAuthenticated(),(req,res)=>{
 	con.query('select Image, Role, Name from Users',(err,result)=>{
-		return res.render('taglist2',{data: result[0]})
+		return res.render('taglist',{data: result[0]})
 	})
 })
 

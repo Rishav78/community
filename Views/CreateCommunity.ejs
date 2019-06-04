@@ -19,12 +19,42 @@
 <div class="Container">
 	<% include partials/navBar.ejs %>
 	<div class="container2">
-		<% include partials/tabBar3.ejs %>
+		<% if(data.Role == 'User'){ %>
+			<% include partials/tabBar3.ejs %>
+		<% }else{ %>
+			<% if(data.LoginAs == 'Admin'){ %>
+				<% include partials/tabBar.ejs %>
+			<% }else{ %>
+				<% include partials/tabBar2.ejs %>
+			<% } %>
+		<% } %>
 		<div class="content">
 			<div class="searchbar">
 				<div class="communityButtons"><a class="fa fa-users" href="/community/communitypanel"></a><a href="/community/list" class="fa fa-search"></a></div>
 			</div>
-			<% include partials/createCommunity.ejs %>
+			<div class="Ccontainer">
+				<form action="/community/AddCommunity/create" method="post">
+					<h1>
+						Create Community
+					</h1>
+					<% if(created == true){ %>
+						<div class="created">
+							Community Successfully Created
+						</div>
+					<% } %>
+					<input type="text" name="CommunityName" class="textBox" placeholder="name" required>
+					<h4>
+						Description
+					</h4>
+					<textarea id="body" name="Discription"></textarea>
+					<div class="role">
+						<h4>Role : </h4> <input type="radio" name="MembershipRule" value="Direct" checked>Direct &nbsp; <input type="radio" name="MembershipRule" value="Permission">Permission
+					</div>
+					<input type="file" name="">
+					<span class="upload">upload Image</span>
+					<button class="create">Create Community</button>
+				</form>
+			</div>
 		</div>
 	</div>
 </div>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
+	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
+	<link rel="stylesheet" type="text/css" href="/static/SearchBar.css">
+	<link rel="stylesheet" type="text/css" href="/static/commonCommunity.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+	<style type="text/css">
+		.inviteUsers{
+			width: 1150px;
+			max-width: 90%;
+			margin: auto;
+			display: flex;
+		}
+		.search{
+			width: 35%;
+			padding: 5px 0px;
+		}
+		.users{
+			padding: 5px 15px;
+			width: 65%;
+			box-sizing: border-box;
+			border-left: 1px solid rgba(0,0,0,0.1);
+		}
+		.textBox:focus{
+			box-shadow: 1px 1px 10px rgba(51,122,183,0.5);
+		}
+		.noUserFound{
+			padding: 10px;
+			text-align: center;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-weight: bolder;
+			font-size: 15px;
+			box-sizing: border-box;
+		}
+		.user{
+			display: flex;
+			align-items: center;
+			text-align: left;
+			padding: 3px 15px;
+			border-top: 1px solid #ccc;
+			border-bottom: 1px solid #ccc;
+			margin: 5px 0px;
+		}
+		.user:hover{
+			border-top: 1px solid #333;
+			border-bottom: 1px solid #333;
+		}
+		.userpic{
+			width: 20%;
+		}
+		.userpic > img{
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			border: 3px solid white;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.5);
+		}
+		.username{
+			flex: 4;
+			color: #38b;
+			font-weight: bolder;
+			font-size: 20px;
+		}
+		.invite{
+			flex: 1;
+			text-align: right;
+		}
+		.invite > span{
+			display: inline-block;
+			background-color: #38b;
+			color: white;
+			padding: 8px 12px;
+			cursor: pointer;
+		}
+		@media screen and (max-width: 950px) {
+			.inviteUsers{
+				flex-direction: column;
+				text-align: center;
+			}
+			.search{
+				width: 100%;
+				margin: 5px 0px;
+			}
+			.users{
+				padding: 0;
+				width: 100%;
+				margin: 5px 0px;
+				border: none;
+			}
+		}
+	</style>
+</head>
+<body>
+<div class="Container">
+	<% include partials/navBar.ejs %>
+	<div class="container2">
+		<% include partials/tabBar3.ejs %>
+		<div class="content">
+			<% include partials/AboutCommunity.ejs %>
+			<% include partials/manageCommunity.ejs %>
+			<div class="inviteUsers">
+				<div class="search">
+					<input type="text" class="textBox" placeholder="Enter name....">
+				</div>
+				<div class="users">
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="/static/Switch.js"></script>
+<script type="text/javascript" src="/static/LogoutCover.js"></script>
+<script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
+<script type="text/javascript" src="/static/aboutCommunity.js"></script>
+<script type="text/javascript">
+var enter=1
+function removeUsers(){
+	if(enter == 1){
+		enter = 0
+		while(document.querySelector('.users').childElementCount > 0){
+			document.querySelector('.users').removeChild(document.querySelector('.users').firstElementChild)
+		}
+		Users()
+		enter = 1;
+	}else{
+		setTimeout(removeUsers,1000)
+	}
+}
+
+function Users() {
+	var id = document.querySelector('#communityId').textContent.trim()
+	var data = {
+		search: document.querySelector('.search > input').value,
+	}
+	var req = new XMLHttpRequest()
+	req.onload = ()=>{
+		console.log('load')
+		var users = JSON.parse(req.responseText)
+		if(users.length == 0){
+			document.querySelector('.users').innerHTML = `<div class="noUserFound">No any user </div>`
+		}else{
+			users.forEach((value) => {
+		  	var x = `
+		  			<div style="display: none">
+		  				${value.Email}
+		  			</div>
+			  		<div class="userpic">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="username">
+						${value.Name}
+					</div>
+					<div class="invite">
+						<span onclick="invite(event)">Invite</span>
+					</div>
+				`
+				var div = document.createElement('div')
+				div.classList.add('user')
+				div.innerHTML = x;
+				document.querySelector('.users').appendChild(div)
+			})
+		}
+	}
+	req.open('POST',`/community/inviteUserList/${id}`)
+	req.send(JSON.stringify(data))
+}
+
+function invite(event){
+	var id = document.querySelector('#communityId').textContent.trim()
+	var parent = event.target.parentElement.parentElement
+	var req = new XMLHttpRequest()
+	req.onload = ()=>{
+		removeUsers()
+	}
+	req.open('POST',`/community/invite/${id}`)
+	req.send(JSON.stringify({
+		id: parent.firstElementChild.textContent.trim()
+	}))
+}
+
+document.querySelector('.search > input').onkeyup = removeUsers
+window.onload = Users
+</script>
+</body>
+</html>

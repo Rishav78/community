@@ -17,16 +17,54 @@
 <div class="Container">
 	<% include partials/navBar.ejs %>
 	<div class="container2">
-		<% include partials/tabBar3.ejs %>
+		<% if(data.Role == 'User'){ %>
+			<% include partials/tabBar3.ejs %>
+		<% }else{ %>
+			<% if(data.LoginAs == 'Admin'){ %>
+				<% include partials/tabBar.ejs %>
+			<% }else{ %>
+				<% include partials/tabBar2.ejs %>
+			<% } %>
+		<% } %>
 		<div class="content">
 			<div class="searchbar">
 				<div class="communityButtons"><a class="fa fa-users" href="/community/communitypanel"></a><a href="/community/list" class="fa fa-search"></a></div>
 			</div>
-			<% include partials/communityPanel.ejs %>
+			<div class="list">
+				<div class="myCommunity">
+					<div class="heading">My Communities</div>
+					<% if(data.Role != 'User'){ %>
+						<div class="create"><a href="/community/Addcommunity">Create</a></div>
+					<% } %>
+				</div>
+				<div class="communities">
+					<% community.forEach((value)=>{ %>
+						<div class="community">
+							<div class="CommunityImg">
+								<img src="/static/<%= value.CommunityPic %>">
+							</div>
+							<div class="nameNreq">
+								<span class="Name"><%= value.CommunityName %></span>&nbsp;&nbsp;&nbsp;
+								<% if(value.CommunityOwner == data.Email){ %>
+									<a href="" class="req">Request(<%= value.TotalReq %>)</a>
+								<% } else { %>
+									<a href="/community/communitymembers/<%= value.Id %>" class="req">Members(<%= value.Members %>)</a>
+								<% } %>
+							</div>
+							<% if(value.CommunityOwner == data.Email){ %>
+								<div class="setting">
+									<a href="/community/manageCommunity/<%= value.Id %>"><i class="fa fa-cogs"></i></a>
+								</div>
+							<% } %>
+						</div>
+					<% }) %>
+				</div>
+			</div>
 		</div>
 	</div>
-</div>>
+</div>
 <script type="text/javascript" src="/static/Switch.js"></script>
+<!-- <script type="text/javascript" src="/static/Switch2.js"></script> -->
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
 </body>
