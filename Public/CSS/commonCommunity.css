@@ -10,7 +10,7 @@
 a{
 	text-decoration: none;
 }
-.community, .manageCommunity, .editCommunity, .userslist{
+.community, .manageCommunity, .editCommunity{
 	width: 1170px;
 	max-width: 90%;
 	margin: auto;
@@ -185,13 +185,6 @@ a{
 	.image > img{
 		transform: translateX(-50%);
 		left: 50%;
-	}
-	.userslist{
-		display: block !important;
-	}
-	.userstype, .users{
-		width: 100% !important;
-		text-align: center !important;
 	}
 	.join{
 		display: none;

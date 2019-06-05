@@ -31,8 +31,8 @@ router.get('/profile',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
-	console.log(data)
-		return res.render('Home',{data : data,visible : false})
+		console.log(data)
+		return res.render('profile',{data : data,visible : false})
 	})
 })
 router.get('/adduser',isAuthenticated(),(req,res)=>{

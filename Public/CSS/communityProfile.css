@@ -61,7 +61,7 @@
 	width: 100px;
 	text-align: center;
 }
-.managerprofile > .pic > img{
+.managerprofile > .pic > img, .managers .block2 div img{
 	width: 50px;
 	height: 50px;
 	border-radius: 50%;
@@ -107,6 +107,7 @@
 }
 .managers .block1 > div{
 	flex: 1;
+	text-align: left;
 	color: rgba(0,0,0,0.7);
 }
 .managers .block1 .viewall{
@@ -116,12 +117,16 @@
 	color: #38b;
 	text-decoration: none;
 }
-.managers img{
-	width: 50px;
-	height: 50px;
-	margin: 0px 10px;
-}
 .managers .block2{
 	padding: 15px;
 	background-color: white;
+	display: flex;
+	flex-wrap: wrap;
+}
+.managers .block2 div{
+	flex: 1;
+	text-align: center;
+}
+.managers .block2 div img{
+	border: none;
 }

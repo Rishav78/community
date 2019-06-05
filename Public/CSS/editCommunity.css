@@ -38,7 +38,7 @@
 .update{
 	text-align: right;
 }
-.update > span{
+.update > button{
 	display: inline-block;
 	border: 1px solid rgba(0,0,0,0.1);
 	padding: 8px 12px;

@@ -72,6 +72,8 @@
 			width: 50px;
 			height: 50px;
 			border-radius: 50%;
+			border: 4px solid white;
+			box-shadow: 1px 1px 15px rgba(0,0,0,0.5);
 		}
 		.pic span{
 			font-size: small;
@@ -93,13 +95,21 @@
 <div class="Container">
 	<% include partials/navBar.ejs %>
 	<div class="container2">
-		<% include partials/tabBar3.ejs %>
+		<% if(data.Role == 'User'){ %>
+			<% include partials/tabBar3.ejs %>
+		<% }else{ %>
+			<% if(data.LoginAs == 'Admin'){ %>
+				<% include partials/tabBar.ejs %>
+			<% }else{ %>
+				<% include partials/tabBar2.ejs %>
+			<% } %>
+		<% } %>
 		<div class="content">
 			<% include partials/AboutCommunity.ejs %>
 			<div class="showMembers">
 				<div class="userType">
 					<div class="Managers">
-						<span class="selected" onclick="switchUser(event)">Admins (<%= community.Admin %>)</span>
+						<span class="selected" onclick="switchUser(event)">Admins (<%= community.Members - community.User %>)</span>
 					</div>
 					<div class="Members">
 						<span onclick="switchUser(event)">Members (<%= community.User %>)</span>

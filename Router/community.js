@@ -83,7 +83,6 @@ router.get('/AddCommunity',(req,res)=>{
 })
 
 router.post('/AddCommunity/create',(req,res)=>{
-	console.log(striptags(req.body.Discription))
 	con.query(`select * from Users where Email = '${req.user}'`,(err,user)=>{
 		if(err) throw err;
 		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
@@ -105,12 +104,10 @@ router.post('/updateProfilePic',(req,res)=>{
 })
 
 router.get('/manageCommunity/:id',(req,res)=>{
-	console.log(req.params.id)
 	con.query(`select * from Users where Email = '${req.user}'`,(err,user)=>{
 		if(err) throw err;
 		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
-			console.log(community[0])
-			return res.render('manageCommunity',{data: user[0], community: community[0],visible: true, join: false})
+			return res.render('manageCommunity',{data: user[0], community: community[0],visible: true, join: true})
 		})
 	})
 })
@@ -129,9 +126,9 @@ router.post('/promot',(req,res)=>{
 	})
 	req.on('end',()=>{
 		data = JSON.parse(data)
-		con.query(`update CommunityMembers set Type = 'Admin' where User = '${data.user}' and Id = ${data.communityId}`,(err,result)=>{
+		con.query(`update CommunityMembers set Type = 'Admin' where User = '${data.user}' and Id = '${data.communityId}'`,(err,result)=>{
 			if(err) throw err;
-			con.query(`update communityList set User = User - 1, Admin = Admin + 1 where Id = ${data.communityId}`,(err,result)=>{
+			con.query(`update communityList set User = User - 1 where Id = '${data.communityId}'`,(err,result)=>{
 				if(err) throw err;
 				res.send('done')
 			})
@@ -145,10 +142,8 @@ router.post('/CommunityMembers',(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		console.log(data)
 		con.query(`select * from CommunityMembers join users where CommunityMembers.User = users.Email and CommunityMembers.Id = '${data}' and CommunityMembers.Accepted = 'True' and CommunityMembers.Type = 'User'`,(err,result)=>{
 			if(err) throw err;
-			console.log(result)
 			res.json(result)
 		})
 	})
@@ -160,10 +155,8 @@ router.post('/CommunitysAdmins',(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		console.log(data)
 		con.query(`select * from CommunityMembers join users where CommunityMembers.User = users.Email and CommunityMembers.Id = '${data}' and CommunityMembers.Accepted = 'True' and CommunityMembers.Type != 'User'`,(err,result)=>{
 			if(err) throw err;
-			console.log(result)
 			res.json(result)
 		})
 	})
@@ -176,9 +169,9 @@ router.post('/Demote',(req,res)=>{
 	})
 	req.on('end',()=>{
 		data = JSON.parse(data)
-		con.query(`update CommunityMembers set Type = 'User' where User = '${data.user}' and Id = ${data.communityId}`,(err,result)=>{
+		con.query(`update CommunityMembers set Type = 'User' where User = '${data.user}' and Id = '${data.communityId}'`,(err,result)=>{
 			if(err) throw err;
-			con.query(`update communityList set User = User + 1, Admin = Admin - 1 where Id = ${data.communityId}`,(err,result)=>{
+			con.query(`update communityList set User = User + 1 where Id = '${data.communityId}'`,(err,result)=>{
 				if(err) throw err;
 				res.send('done')
 			})
@@ -186,7 +179,7 @@ router.post('/Demote',(req,res)=>{
 	})
 })
 
-router.post('/deleteMember',(req,res)=>{
+router.post('/delete',(req,res)=>{
 	var data = ''
 	req.on('data',chunk=>{
 		data += chunk
@@ -195,9 +188,16 @@ router.post('/deleteMember',(req,res)=>{
 		data = JSON.parse(data)
 		con.query(`delete from CommunityMembers where User = '${data.user}' and Id = '${data.communityId}'`,(err,result)=>{
 			if(err) throw err;
-			con.query(`update communityList set Members = Members - 1, ${data.Type} = ${data.Type} - 1 where Id = '${data.communityId}'`,(err,result)=>{
+			con.query(`update communityList set Members = Members - 1 where Id = '${data.communityId}'`,(err,result)=>{
 				if(err) throw err;
-				res.send('done')
+				if(data.Type == 'User'){
+					con.query(`update communityList set User = User - 1 where Id = '${data.communityId}'`,(err,result)=>{
+						if(err) throw err;
+						res.send('done')
+					})
+				}else {
+					res.send('done');
+				}
 			})
 		})
 	})
@@ -255,8 +255,13 @@ router.get('/communitymembers/:id',(req,res)=>{
 	con.query(`select * from Users where Email = '${req.user}'`,(err,user)=>{
 		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
 			con.query(`select * from users join CommunityMembers on users.Email = communityMembers.User where communityMembers.Id = '${req.params.id}'`,(err,members)=>{
-				console.log(community)
-				res.render('communityMembers',{data: user[0], community: community[0], members: members, visible: false, join: false})
+				res.render('communityMembers',{
+					data: user[0], 
+					community: community[0],
+					members: members, 
+					visible: false, 
+					join: true
+				})
 			})
 		})
 	})
@@ -293,8 +298,10 @@ router.post('/invite/:id',(req,res)=>{
 	req.on('end', ()=>{
 		data = JSON.parse(data)
 		con.query(`insert into invitedUsers values('${req.params.id}', '${data.id}')`,(err,result)=>{
-			if(err) throw err;
-			res.send('done');
+			con.query(`update communityList set Invited = Invited + 1 where Id = '${req.params.id}'`,(err,result)=>{
+				if(err) throw err;
+				res.send('done')
+			})
 		})
 	})
 })
@@ -304,11 +311,10 @@ router.get('/communityProfile/:id',(req,res)=>{
 		con.query(`select * from communityList  where Id = '${req.params.id}'`,(err,community)=>{
 			con.query(`select * from communityMembers join Users on communityMembers.User = Users.Email where communityMembers.Id = '${req.params.id}'`,(err,joined)=>{
 				var join = joined.filter((value)=>{
-					console.log(value.Email, req.user)
 					return value.Email == req.user
 				})
+				join = join.length > 0
 				var owner = joined.filter((value) => {
-					console.log(value.User,req.user,value.Type)
 					return (value.User == req.user) && (value.Type == 'Owner')
 				})
 				res.render('CommunityProfile',
@@ -330,12 +336,58 @@ router.get('/leaveCommunity/:id',(req,res)=>{
 		if(err) throw err;
 		con.query(`delete from communityMembers where Id = '${req.params.id}' and User = '${req.user}'`,(err,result)=>{
 			if(err) throw err;
-			console.log(member[0].Type)
 			con.query(`update communityList set Members = Members - 1, ${member[0].Type} = ${member[0].Type} - 1 where Id = '${req.params.id}'`,(err,result)=>{
 				if(err) throw err;
 				res.redirect(`/community/communityProfile/${req.params.id}`)
 			})
 		})
+	})
+})
+
+router.get('/requests/:id',(req,res)=>{
+	con.query(`select * from communityMembers join Users on communityMembers.User = Users.Email where communityMembers.Id = '${req.params.id}' and Accepted = 'False'`,(err,request)=>{
+		if(err) throw err;
+		res.json(request)
+	})
+})
+
+router.get('/invitedUsers/:id',(req,res)=>{
+	con.query(`select * from invitedUsers join Users on invitedUsers.User = Users.Email where invitedUsers.Id = '${req.params.id}'`,(err,request)=>{
+		if(err) throw err;
+		res.json(request)
+	})
+})
+
+router.post('/deleteInvite/:id',(req,res)=>{
+	var data = ''
+	req.on('data', chunk=>{
+		data += chunk
+	})
+	req.on('end',()=>{
+		data = JSON.parse(data)
+		con.query(`delete from invitedUsers where Id = '${req.params.id}' and User = '${data.user}'`,(err,result)=>{
+			if(err) throw err;
+			con.query(`update communityList set invited = invited - 1 where Id = '${req.params.id}'`,(err,result)=>{
+				if(err) throw err;
+				res.send('done')
+			})
+		})
+	})
+})
+
+router.get('/editCommunity/:id',(req,res)=>{
+	con.query(`select * from Users where Email = '${req.user}'`,(err,user)=>{
+		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
+			res.render('editCommunity',{data: user[0], community: community[0], join: true, visible: false})
+		})
+	})	
+})
+
+router.post('/editCommunity/:id',(req,res)=>{
+	var data = req.body
+	con.query(`update communityList set CommunityName = '${req.body.CommunityName}', MembershipRule = '${req.body.MembershipRule}', Discription = '${req.body.Discription.replace(/<[^>]*>/g, '')}' where Id = '${req.params.id}'`,(err,result)=>{
+		if(err) throw err;
+		res.redirect(`/community/communityprofile/${req.params.id}`)
 	})
 })
 

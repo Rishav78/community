@@ -1,3 +1,22 @@
+
+function confirm(e,cb,title,content){
+	$.confirm({
+	  title: title,
+	  content: content,
+	  boxWidth: '350px',
+	  useBootstrap: false,
+	  buttons: {
+	      'Yes': {
+	          btnClass: 'btn-success',
+	          action: ()=> {
+	          	cb(e)
+	          }
+	      },
+	      'No': {btnClass: 'btn-danger',}
+	  }
+	});
+}
+
 function Deactivate(){
 	if(document.querySelector('.active')){
 		document.querySelector('.active').classList.remove('active')
@@ -7,10 +26,85 @@ function RemoveUser(user){
 	user.parentElement.removeChild(user)
 }
 function EmptyUsers(){
-	document.querySelector('.users').childNodes.forEach((value) => {
-		console.log(value)
-	  document.querySelector('.users').removeChild(value)
-	})
+	while(document.querySelector('.users').childElementCount > 0){
+		document.querySelector('.users').removeChild(document.querySelector('.users').firstElementChild)
+	}
+}
+
+function showInvitedUsers(){
+	var req = new XMLHttpRequest()
+	req.onload = ()=>{
+		var users = JSON.parse(req.responseText)
+		Deactivate();
+		document.querySelector('.invitedusers').classList.add('active')
+		EmptyUsers()
+		if(!users.length){
+			document.querySelector('.users').innerHTML = `<div class="noUserFound">No any user </div>`;
+		}else{
+			users.forEach((value) => {
+			  var div1 = `
+			  		<div style="display : none">
+			  			${value.Email}
+			  		</div>
+					<div class="block1">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="block2">
+						<span>${value.Name}</span>
+					</div>
+					<div class="block4">
+						<i class="fa fa-times ActionIcons" onclick="confirm(event, deleteInvited, 'Cancel Invitation', 'Do you really want cancel invitation ?')"></i>
+					</div>
+				`
+				var div2 = document.createElement('div')
+				div2.classList.add('block')
+				div2.innerHTML = div1;
+				document.querySelector('.users').appendChild(div2)
+			})
+		}
+	}
+	req.open('GET',`/community/invitedUsers/${document.querySelector('#communityId').textContent}`)
+	req.send()
+}
+
+function showRequests(){
+	var req = new XMLHttpRequest()
+	req.onload = ()=>{
+		var users = JSON.parse(req.responseText)
+		Deactivate();
+		document.querySelector('.request').classList.add('active')
+		EmptyUsers()
+		if(!users.length){
+			document.querySelector('.users').innerHTML = `<div class="noUserFound">No any user </div>`;
+		}else{
+			users.forEach((value) => {
+			  var div1 = `
+			  		<div style="display : none">
+			  			${value.Email}
+			  		</div>
+					<div class="block1">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="block2">
+						<span>${value.Name}</span>
+					</div>
+					<div class="block4">
+						<div class="option">
+							<button class="optionButton" onclick="showOptions()">Option</button>
+							<ul class="options"><li>Accept</li><li>Reject</li>
+							</ul>
+						</div>
+					</div>
+				`
+				var div2 = document.createElement('div')
+				div2.classList.add('block')
+				div2.innerHTML = div1;
+				document.querySelector('.users').appendChild(div2)
+			})
+		}
+	}
+	req.open('GET',`/community/requests/${document.querySelector('#communityId').textContent}`)
+	req.send()
 }
 function showMembers(){
 	var req  = new XMLHttpRequest()
@@ -19,30 +113,33 @@ function showMembers(){
 		Deactivate();
 		document.querySelector('.noOfUsers').classList.add('active')
 		EmptyUsers()
-		users.forEach((value) => {
-			console.log(value)
-		  var div1 = `
-		  		<div style="display : none">
-		  			${value.Email}
-		  		</div>
-				<div class="block1">
-					<img src="/static/${value.Image}">
-				</div>
-				<div class="block2">
-					<span>${value.Name}</span>
-				</div>
-				<div class="block3">
-					<i class="fa fa-chevron-up ActionIcons" onclick="Promot(event)"></i>
-				</div>
-				<div class="block4">
-					<i class="fa fa-times ActionIcons" onclick="deleteUser(event)"></i>
-				</div>
-			`
-			var div2 = document.createElement('div')
-			div2.classList.add('block')
-			div2.innerHTML = div1;
-			document.querySelector('.users').appendChild(div2)
-		})
+		if(!users.length){
+			document.querySelector('.users').innerHTML = `<div class="noUserFound">No any user </div>`;
+		}else{
+			users.forEach((value) => {
+			  var div1 = `
+			  		<div style="display : none">
+			  			${value.Email}
+			  		</div>
+					<div class="block1">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="block2">
+						<span>${value.Name}</span>
+					</div>
+					<div class="block3">
+						<i class="fa fa-chevron-up ActionIcons" onclick="confirm(event,Promot,'Confirm promote!','Do you really want promote this user?')"></i>
+					</div>
+					<div class="block4">
+						<i class="fa fa-times ActionIcons" onclick="confirm(event,deleteUser,'Really want remove ?','Do you really want remove this user?')"></i>
+					</div>
+				`
+				var div2 = document.createElement('div')
+				div2.classList.add('block')
+				div2.innerHTML = div1;
+				document.querySelector('.users').appendChild(div2)
+			})
+		}
 	}
 	req.open('POST','/community/CommunityMembers')
 	req.send(document.querySelector('#communityId').textContent)
@@ -56,9 +153,21 @@ function Promot(event){
 	req.onload = ()=>{
 		document.querySelector('.adminsNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) + 1
 		document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) - 1
-		RemoveUser(event.target.parentElement.parentElement)
+		showMembers()
 	}
 	req.open('POST','/community/promot');
+	req.send(JSON.stringify(data))
+}
+function deleteInvited(event){
+	var req = new XMLHttpRequest()
+	var data = {
+		user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
+	}
+	req.onload = ()=>{
+		document.querySelector('.invitedNo').innerHTML = parseInt(document.querySelector('.invitedNo').innerHTML) - 1
+		showInvitedUsers()
+	}
+	req.open('POST',`/community/deleteInvite/${document.querySelector('#communityId').textContent}`);
 	req.send(JSON.stringify(data))
 }
 function Demote(event){
@@ -70,7 +179,7 @@ function Demote(event){
 	req.onload = ()=>{
 		document.querySelector('.adminsNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) - 1
 		document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) + 1
-		RemoveUser(event.target.parentElement.parentElement)
+		showAdmins()
 	}
 	req.open('POST','/community/Demote');
 	req.send(JSON.stringify(data))
@@ -79,82 +188,69 @@ function deleteUser(event){
 	var req = new XMLHttpRequest()
 	var data = {
 		user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
-		communityId: document.querySelector('#communityId').textContent,
-		Type: 'Users'
 	}
 	req.onload = ()=>{
 		document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) - 1
-		RemoveUser(event.target.parentElement.parentElement)
+		showMembers()
 	}
-	req.open('POST','/community/deleteMember');
-	req.send(JSON.stringify(data))
-}
-function deleteAdmin(event){
-	var req = new XMLHttpRequest()
-	var data = {
-		user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
-		communityId: document.querySelector('#communityId').textContent,
-		Type: 'Admin'
-	}
-	req.onload = ()=>{
-		document.querySelector('.adminsNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) - 1
-		RemoveUser(event.target.parentElement.parentElement)
-	}
-	req.open('POST','/community/deleteMember');
+	req.open('POST',`/community/delete/${document.querySelector('#communityId').textContent}`);
 	req.send(JSON.stringify(data))
 }
 function showAdmins(){
 	var req  = new XMLHttpRequest()
 	req.onload = ()=>{
-		console.log(req.responseText)
 		var users = JSON.parse(req.responseText)
 		Deactivate();
 		document.querySelector('.noOfAdmins').classList.add('active')
 		EmptyUsers()
-		users.forEach((value) => {
-		  if(value.Type == 'Admin'){
-		  	var div1 = `
-		  		<div style="display : none">
-		  			${value.Email}
-		  		</div>
-				<div class="block1">
-					<img src="/static/${value.Image}">
-				</div>
-				<div class="block2">
-					<span>${value.Name}</span>
-				</div>
-				<div class="block3">
-					<i class="fa fa-chevron-down ActionIcons" onclick="Demote(event)"></i>
-				</div>
-				<div class="block4">
-					<i class="fa fa-times ActionIcons" onclick="deleteAdmin(event)"></i>
-				</div>
-			`
-			var div2 = document.createElement('div')
-			div2.classList.add('block')
-			div2.innerHTML = div1;
-			document.querySelector('.users').appendChild(div2)
+		if(!users.length){
+			document.querySelector('.users').innerHTML = `<div class="noUserFound">No any user </div>`;
 		}else{
-			var div1 = `
-				<div style="display : none">
-		  			${value.UserId}
-		  		</div>
-				<div class="block1">
-					<img src="/static/${value.Image}">
-				</div>
-				<div class="block2">
-					<span>${value.Name}</span>
-				</div>
-				<div class="block4">
-					<span>owner</span>
-				</div>
-			`
-			var div2 = document.createElement('div')
-			div2.classList.add('block')
-			div2.innerHTML = div1;
-			document.querySelector('.users').appendChild(div2)
+			users.forEach((value) => {
+			  if(value.Type == 'Admin'){
+			  	var div1 = `
+			  		<div style="display : none">
+			  			${value.Email}
+			  		</div>
+					<div class="block1">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="block2">
+						<span>${value.Name}</span>
+					</div>
+					<div class="block3">
+						<i class="fa fa-chevron-down ActionIcons" onclick="confirm(event,Demote,'Confirm demotee!','Do you really want demote this user?')"></i>
+					</div>
+					<div class="block4">
+						<i class="fa fa-times ActionIcons" onclick="confirm(event,deleteUser,'Really want remove ?','Do you really want remove this user?')"></i>
+					</div>
+				`
+				var div2 = document.createElement('div')
+				div2.classList.add('block')
+				div2.innerHTML = div1;
+				document.querySelector('.users').appendChild(div2)
+			}else{
+				var div1 = `
+					<div style="display : none">
+			  			${value.UserId}
+			  		</div>
+					<div class="block1">
+						<img src="/static/${value.Image}">
+					</div>
+					<div class="block2">
+						<span>${value.Name}</span>
+					</div>
+					<div class="block4">
+						<span>owner</span>
+					</div>
+				`
+				var div2 = document.createElement('div')
+				div2.classList.add('block')
+				div2.innerHTML = div1;
+				document.querySelector('.users').appendChild(div2)
+			}
+			})
 		}
-		})
 	}
 	req.open('POST','/community/CommunitysAdmins')
 	req.send(document.querySelector('#communityId').textContent)

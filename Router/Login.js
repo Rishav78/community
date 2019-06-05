@@ -197,12 +197,14 @@ router.get('/switchAsUser',(req,res)=>{
 		if(err) throw err
 		if(result[0].LoginAs == 'Admin'){
 			var data = {switch: 'User',msg:'Switch Admin To User'}
-			con.query(`update Users set LoginAs = 'User' where Email = '${req.user}'`)
-			res.render('Switch',{data})
+			con.query(`update Users set LoginAs = 'User' where Email = '${req.user}'`,(err,result)=>{
+				res.render('Switch',{data})
+			})
 		}else{
 			var data = {switch: 'Admin',msg: 'Switch User To Admin'}
-			con.query(`update Users set LoginAs = 'Admin' where Email = '${req.user}'`)
-			res.render('Switch',{data})
+			con.query(`update Users set LoginAs = 'Admin' where Email = '${req.user}'`,(err,result)=>{
+				res.render('Switch',{data})
+			})
 		}
 	})
 })

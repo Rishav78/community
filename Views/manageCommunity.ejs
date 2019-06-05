@@ -12,6 +12,74 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="/static/manageCommunity.css">
+	<style type="text/css">
+		.noUserFound{
+			padding: 10px;
+			text-align: center;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-weight: bolder;
+			font-size: 15px;
+			box-sizing: border-box;
+		}
+	</style>
+	<style type="text/css">
+		.option{
+			position: relative;
+			display: inline-block;
+		}
+		.option > .optionButton{
+			display: inline-block;
+			border: 1px solid rgba(0,0,0,0.5);
+			color: rgba(0,0,0,0.7);
+			padding: 8px 12px;
+			cursor: pointer;
+			background-color: white;
+			outline: none;
+		}
+		.option > .optionButton:hover{
+			background-color: rgb(230,230,230) !important;
+		}
+		.option > .optionButton:active{
+			box-shadow: inset 1px 1px 5px rgba(0,0,0,0.5);
+		}
+		.activeOption{
+			background-color: rgb(230,230,230) !important;
+		}
+		.options{
+			position: absolute;
+			width: 150px;
+			top: -5px;
+			right: 0;
+			transform: translateY(-100%);
+			display: inline-block;
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			border: 1px solid rgba(0,0,0,0.5);
+			border-radius: 5px;
+			overflow: hidden;
+			box-sizing: border-box;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
+			background-color: white;
+			text-align: left;
+			display: none;
+		}
+		.showOptions{
+			display: block;
+		}
+		.options > li{
+			padding: 2px 20px;
+			color: #888888;
+			margin: 5px 0;
+			cursor: pointer;
+			box-sizing: border-box;
+		}
+		.options > li:hover{
+			background-color: rgb(243,244,244);
+			border-radius: 5px;
+		}
+	</style>
 </head>
 <body>
 <div class="Container">
@@ -28,8 +96,11 @@
 			<div class="userslist">
 				<div class="userstype">
 					<div class="noOfUsers" onclick="showMembers()">Users (<span class="usersNo"><%= community.User %></span>)</div>
-					<div class="noOfAdmins" onclick="showAdmins()">Admins (<span class="adminsNo"><%= community.Admin %></span>) </div>
-					<div>Invited Members (0)</div>
+					<div class="noOfAdmins" onclick="showAdmins()">Admins (<span class="adminsNo"><%= community.Members - community.User %></span>) </div>
+					<% if(community.MembershipRule != 'Direct') { %>
+						<div onclick="showRequests()" class="request">Requests (<%= community.TotalReq %>)</div>
+					<% } %>
+					<div onclick="showInvitedUsers()" class="invitedusers">Invited Members (<span class="invitedNo"><%= community.Invited %></span>)</div>
 				</div>
 				<div class="users">
 					
@@ -43,5 +114,12 @@
 <script type="text/javascript" src="/static/aboutCommunity.js"></script>
 <script type="text/javascript" src="/static/manageCommunity.js"></script>
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
+<script type="text/javascript">
+	function showOptions(){
+		document.querySelector('.options').classList.toggle('showOptions')
+		document.querySelector('.optionButton').classList.toggle('activeOption')
+		document.querySelector('.option').focus()
+	}
+</script>
 </body>
 </html>
