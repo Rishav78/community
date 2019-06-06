@@ -66,9 +66,19 @@
 		}
 		.username{
 			flex: 4;
+		}
+		.username a{
 			color: #38b;
 			font-weight: bolder;
 			font-size: 20px;
+		}
+		.username a:hover{
+			color: #26658c;
+			text-decoration: underline;
+		}
+		.username a:active{
+			color: #333;
+			text-decoration: none;
 		}
 		.invite{
 			flex: 1;
@@ -157,13 +167,13 @@ function Users() {
 			users.forEach((value) => {
 		  	var x = `
 		  			<div style="display: none">
-		  				${value.Email}
+		  				${value.Id}
 		  			</div>
 			  		<div class="userpic">
 						<img src="/static/${value.Image}">
 					</div>
 					<div class="username">
-						${value.Name}
+						<a href="/viewProfile/${value.Id}">${value.Name}</a>
 					</div>
 					<div class="invite">
 						<span onclick="invite(event)">Invite</span>

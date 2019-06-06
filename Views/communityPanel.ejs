@@ -73,13 +73,13 @@
 								</div>
 								<div class="nameNreq">
 									<span class="Name"><%= value.CommunityName %></span>&nbsp;&nbsp;&nbsp;
-									<% if(value.CommunityOwner == data.Email){ %>
+									<% if(value.CommunityOwner == data.Id){ %>
 										<a href="/community/manageCommunity/<%= value.Id %>" class="req">Request(<%= value.TotalReq %>)</a>
 									<% } else { %>
 										<a href="/community/communitymembers/<%= value.Id %>" class="req">Members(<%= value.Members %>)</a>
 									<% } %>
 								</div>
-								<% if(value.CommunityOwner == data.Email){ %>
+								<% if(value.CommunityOwner == data.Id){ %>
 									<div class="setting">
 										<a href="/community/manageCommunity/<%= value.Id %>"><i class="fa fa-cogs"></i></a>
 									</div>

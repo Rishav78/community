@@ -44,13 +44,13 @@ function showInvitedUsers(){
 			users.forEach((value) => {
 			  var div1 = `
 			  		<div style="display : none">
-			  			${value.Email}
+			  			${value.Id}
 			  		</div>
 					<div class="block1">
 						<img src="/static/${value.Image}">
 					</div>
 					<div class="block2">
-						<span>${value.Name}</span>
+						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
 					</div>
 					<div class="block4">
 						<i class="fa fa-times ActionIcons" onclick="confirm(event, deleteInvited, 'Cancel Invitation', 'Do you really want cancel invitation ?')"></i>
@@ -80,18 +80,18 @@ function showRequests(){
 			users.forEach((value) => {
 			  var div1 = `
 			  		<div style="display : none">
-			  			${value.Email}
+			  			${value.Id}
 			  		</div>
 					<div class="block1">
 						<img src="/static/${value.Image}">
 					</div>
 					<div class="block2">
-						<span>${value.Name}</span>
+						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
 					</div>
 					<div class="block4">
 						<div class="option">
-							<button class="optionButton" onclick="showOptions()">Option</button>
-							<ul class="options"><li>Accept</li><li>Reject</li>
+							<button class="optionButton" onclick="showOptions(event)">Option</button>
+							<ul class="options"><li onclick="acceptReq()">Accept</li><li>Reject</li>
 							</ul>
 						</div>
 					</div>
@@ -119,13 +119,13 @@ function showMembers(){
 			users.forEach((value) => {
 			  var div1 = `
 			  		<div style="display : none">
-			  			${value.Email}
+			  			${value.Id}
 			  		</div>
 					<div class="block1">
 						<img src="/static/${value.Image}">
 					</div>
 					<div class="block2">
-						<span>${value.Name}</span>
+						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
 					</div>
 					<div class="block3">
 						<i class="fa fa-chevron-up ActionIcons" onclick="confirm(event,Promot,'Confirm promote!','Do you really want promote this user?')"></i>
@@ -210,13 +210,13 @@ function showAdmins(){
 			  if(value.Type == 'Admin'){
 			  	var div1 = `
 			  		<div style="display : none">
-			  			${value.Email}
+			  			${value.Id}
 			  		</div>
 					<div class="block1">
 						<img src="/static/${value.Image}">
 					</div>
 					<div class="block2">
-						<span>${value.Name}</span>
+						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
 					</div>
 					<div class="block3">
 						<i class="fa fa-chevron-down ActionIcons" onclick="confirm(event,Demote,'Confirm demotee!','Do you really want demote this user?')"></i>
@@ -238,10 +238,10 @@ function showAdmins(){
 						<img src="/static/${value.Image}">
 					</div>
 					<div class="block2">
-						<span>${value.Name}</span>
+						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
 					</div>
 					<div class="block4">
-						<span>owner</span>
+						<span class="owner">owner</span>
 					</div>
 				`
 				var div2 = document.createElement('div')

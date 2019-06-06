@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-var mysql = require('mysql')
+var con = require('./mysql.js')
 var nodeMailer = require('nodemailer')
 
 const transporter = nodeMailer.createTransport({
@@ -16,19 +16,8 @@ const transporter = nodeMailer.createTransport({
 	}
 })
 
-const con = mysql.createConnection({
-	host : 'localhost',
-	user : 'root',
-	password : '',
-	database : 'UCA_WebProject'
-})
-con.connect((err)=>{
-	if (err) throw err
-	console.log('connected...')
-})
-
 router.get('/profile',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
 		console.log(data)
@@ -36,14 +25,14 @@ router.get('/profile',isAuthenticated(),(req,res)=>{
 	})
 })
 router.get('/adduser',isAuthenticated(),(req,res)=>{
-	con.query(`select Image, Role, Name from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select Image, Role, Name from Users where Id = '${req.user}'`,(err,result)=>{
 		if (err) throw err;
 		return res.render('AddUser',{added : false,data: result[0]})
 	})
 })
 router.post('/adduser',isAuthenticated(),(req,res)=>{
 	var data = req.body
-	con.query(`select * from Users where Email = '${data.email}' or Email = '${req.user}'`,(err,total)=>{
+	con.query(`select * from Users where Email = '${data.email}' or Id = '${req.user}'`,(err,total)=>{
 		if(err) throw err;
 		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 		if(total.length == 1){
@@ -98,7 +87,7 @@ router.post('/user',isAuthenticated(),(req,res)=>{
 	})
 })
 
-router.post('/userlist/sendMail',(req,res)=>{
+router.post('/userlist/sendMail',isAuthenticated(),(req,res)=>{
 	var data = ''
 	req.on('data', chunk=>{
 		data += chunk

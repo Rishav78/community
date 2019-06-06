@@ -1,4 +1,4 @@
-
+var table;
 var refresh = document.querySelector('.refresh')
 var close = document.querySelector('#close')
 var searchbox = document.querySelector('#number')
@@ -9,14 +9,14 @@ function del(e){
 	var req = new XMLHttpRequest()
 	var user = value.parentNode.parentNode.parentNode
 	req.onload = ()=>{
-		console.log('deleted')
+		table.ajax.reload(null, false);
 	}
 	req.open('POST','/deletetag')
 	req.send(user.firstChild.textContent.trim())
 }
 
 $(document).ready(function(){
-	var table = $('#myTable').DataTable({
+	table = $('#myTable').DataTable({
 		"lengthMenu": [5, 10, 25, 50],
 		"serverSide": true,
         "processing": true,

@@ -59,9 +59,10 @@ body{
 .local:hover{
 	background-color: rgb(0, 102, 0);
 }
-.local:active{
+.local:focus{
 	border: 5px solid rgb(175,222,186);
 	margin-top: 0px;
+	box-sizing: border-box;
 }
 .error{
 	background-color: rgb(248,215,218);

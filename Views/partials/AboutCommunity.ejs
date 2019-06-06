@@ -2,13 +2,17 @@
 	<div class="heading"><a href="/community/communityProfile/<%= community.Id %>"><%= community.CommunityName %></a></div>
 	<% if(!join){ %>
 		<div class="join">
-			<a href="/community/joinCommunity/<%= community.Id %>">
+			<% if(!request){ %>
+				<a href="/community/joinCommunity/<%= community.Id %>">
 				<% if(community.MembershipRule == 'Direct'){ %>
 					join
 				<% } else { %>
 					Ask To Join
 				<% } %>
-			 <i class="fa fa-plus" style="font-size: 12px"></i></a>
+				<i class="fa fa-plus" style="font-size: 12px"></i></a>
+			<% } else { %>
+				<a class="Requested"> Requested </a>
+			<% } %>
 		</div>
 	<% } %>
 </div>
@@ -24,8 +28,8 @@
 		<i class="fa fa-bars"></i>
 		<ul class="hidedropdown">
 			<li><a href="">Discussions</a></li>
-			<% if(visible == true){ %>
-			<li><a href="/community/managecommunity/<%= community.Id %>">Manage Community</a></li>
+			<% if(data.Role != 'User'){ %>
+				<li><a href="/community/managecommunity/<%= community.Id %>">Manage Community</a></li>
 			<% } %>
 			<li><a href="/community/communityprofile/<%= community.Id %>">Community Profile</a></li>
 			<li><a href="/community/communitymembers/<%= community.Id %>">Community Members</a></li>

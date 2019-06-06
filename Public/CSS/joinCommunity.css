@@ -37,6 +37,16 @@
 .communityName > a{
 	color: #337ab7;
 	text-decoration: none;
+	font-weight: bolder;
+	font-size: 20px;
+}
+.communityName > a:hover{
+	text-decoration: underline;
+	color: #26658c;
+}
+.communityName > a:active{
+	text-decoration: none;
+	color: #333;
 }
 .join{
 	text-align: right;

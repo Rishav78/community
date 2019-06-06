@@ -44,13 +44,13 @@ passport.use(new GitHubStrategy({
     	if(err) throw err;
     	if(result.length > 0){
     		console.log('express-session')
-    		return cb(null,result[0].Email)
+    		return cb(null,result[0].Id)
     	}else{
     		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 			if(err) throw err
 			con.query(`insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values('${id}', '${profile.displayName}', '${profile.emails[0].value}', '${profile.username}', null, '${profile._json.location}', 'User', 'Pending', 'default.png', 'True', 'Admin')`,(err,result)=>{
 				if(err) throw err;
-				return cb(null,profile.emails[0].value)
+				return cb(null,id)
 			})
     	}
     })
@@ -120,7 +120,7 @@ con.connect((err)=>{
 	// 		// return res.render('AddUser',{added : true})
 	// 	})
 	// con.query('truncate table CommunityMembers')
-	// con.query('create table CommunityMembers(Id char(100), User char(100), Accepted char(5), Type char(5))')
+	// con.query('create table CommunityMembers(Id char(100), UserId char(100), Accepted char(5), Type char(5))')
 	// con.query('truncate table communityList')
 	// con.query('create database UCA_WebProject')
 	// con.query('drop table communityList')
@@ -128,7 +128,7 @@ con.connect((err)=>{
 	// con.query('drop table communityList')
 	// con.query('drop table tags')
 	// con.query('truncate table InvitedUsers')
-	// con.query(`create table InvitedUsers(Id char(100), User varchar(100))`)
+	// con.query(`create table InvitedUsers(Id char(100), UserId char(100))`)
 	// con.query('update communityList set totalreq = 0, members = 0')
 	// var q = `create table Users(Id char(100), Name char(100), Email varchar(100), Password varchar(100), Phno char(15), City char(100), DOB char(10), Gender char(6), About char(250), Expectations char(250), Role char(50), Status char(50), Image char(100), ActivationState char(5), LoginAs char(20), Verified char(5))`
 	// var q = `create table Tags(Id char(100), name char(100), CreatedBy varchar(100), CreationDate varchar(10))`

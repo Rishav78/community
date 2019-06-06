@@ -98,7 +98,7 @@
 					<div class="noOfUsers" onclick="showMembers()">Users (<span class="usersNo"><%= community.User %></span>)</div>
 					<div class="noOfAdmins" onclick="showAdmins()">Admins (<span class="adminsNo"><%= community.Members - community.User %></span>) </div>
 					<% if(community.MembershipRule != 'Direct') { %>
-						<div onclick="showRequests()" class="request">Requests (<%= community.TotalReq %>)</div>
+						<div onclick="showRequests()" class="request">Requests (<span class="ReqNo"><%= community.TotalReq %></span>)</div>
 					<% } %>
 					<div onclick="showInvitedUsers()" class="invitedusers">Invited Members (<span class="invitedNo"><%= community.Invited %></span>)</div>
 				</div>
@@ -115,10 +115,31 @@
 <script type="text/javascript" src="/static/manageCommunity.js"></script>
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript">
-	function showOptions(){
-		document.querySelector('.options').classList.toggle('showOptions')
-		document.querySelector('.optionButton').classList.toggle('activeOption')
-		document.querySelector('.option').focus()
+	var element;
+
+	function acceptReq(){
+		var req = new XMLHttpRequest()
+		var data = {
+			user: element.parentElement.parentElement.parentElement.firstElementChild.textContent.trim()
+		}
+		req.onload = ()=>{
+			document.querySelector('.ReqNo').innerHTML = parseInt(document.querySelector('.ReqNo').innerHTML) - 1
+			document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) + 1
+			showRequests()
+		}
+		req.open('POST',`/community/acceptReq/${document.querySelector('#communityId').textContent}`)
+		req.send(JSON.stringify(data))
+	}
+
+	function showOptions(event){
+		element = event.target
+		if(document.querySelector('.showOptions')){
+			document.querySelector('.showOptions').classList.remove('showOptions')
+			document.querySelector('.activeOption').classList.remove('activeOption')
+		}else{
+			event.target.nextElementSibling.classList.toggle('showOptions')
+			event.target.classList.toggle('activeOption')
+		}
 	}
 </script>
 </body>

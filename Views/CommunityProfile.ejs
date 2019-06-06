@@ -30,7 +30,17 @@
 					<% if(!join){ %>
 						<div class="joinCommunity">
 							<div class="block1">
-								<a href="/community/joinCommunity/<%= community.Id %>">Join <i class="fa fa-plus" style="font-size: 13px;font-weight: lighter;"></i></a>
+								<% if(!request){ %>
+									<a href="/community/joinCommunity/<%= community.Id %>">
+										<% if(community.MembershipRule=='Direct'){ %>
+											Join 
+										<% }else { %>
+											Ask To Join 
+										<% } %>
+										<i class="fa fa-plus" style="font-size: 13px;font-weight: lighter;"></i></a>
+									<% } else { %>
+										<a class="Requested"> Requested </a>
+									<% } %>
 							</div>
 							<div class="block2">
 								<%= community.Members %> Member
@@ -49,8 +59,8 @@
 							</div>
 							<div class="block2">
 								<% members.forEach((value, index)=>{ %>
-									<% if(value.Type == 'User' && index <= 4){ %>
-										<div><a href=""><img src="/static/<%= value.Image %>"></a></div>
+									<% if(index <= 4){ %>
+										<div><a href="/viewProfile/<%= value.Id %>"><img src="/static/<%= value.Image %>"></a></div>
 									<% } %>
 								<% }) %>
 							</div>

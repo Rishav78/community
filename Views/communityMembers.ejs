@@ -51,17 +51,18 @@
 			padding: 0px 15px;
 			box-sizing: border-box;
 		}
-		.name{
+		.name a{
 			font-size: 20px;
 			color: #38b;
 			font-weight: bolder;
+			text-decoration: none;
 		}
-		.name span:hover{
+		.name a:hover{
 			text-decoration: underline;
 			cursor: pointer;
 			color: #7D7D7D;
 		}
-		.name span:active{
+		.name a:active{
 			color: #333;
 		}
 		.pic{
@@ -134,7 +135,7 @@
 									<% } %>
 								</div>
 								<div class="name">
-									<span><%= value.Name %></span>
+									<a href="/viewProfile/<%= value.UserId %>"><%= value.Name %></a>
 								</div>
 							</div>
 						<% } %>
@@ -150,7 +151,7 @@
 									</div>
 								</div>
 								<div class="name">
-									<span><%= value.Name %></span>
+									<a href="/viewProfile/<%= value.UserId %>"><%= value.Name %></a>
 								</div>
 							</div>
 						<% } %>

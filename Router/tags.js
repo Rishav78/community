@@ -1,17 +1,6 @@
 var express = require('express')
 var router = express.Router()
-var mysql = require('mysql')
-
-const con = mysql.createConnection({
-	host : 'localhost',
-	user : 'root',
-	password : '',
-	database : 'UCA_WebProject'
-})
-con.connect((err)=>{
-	if (err) throw err
-	console.log('connected...')
-})
+var con = require('./mysql.js')
 
 router.get('/',isAuthenticated(),(req,res)=>{
 	con.query('select Image, Role, Name from Users',(err,result)=>{

@@ -31,8 +31,15 @@ document.querySelector('.editcover').onclick = ()=>{
 	})
 }
 
-function popup2(data){
+function popup2(data,event){
 document.querySelector('.parent').innerHTML = data;
+
+
+
+
+
+
+
 document.querySelector('.about').onclick = (event)=>{
 	 event.cancelBubble = true;
 }
@@ -121,7 +128,7 @@ function Discription(event) {
 		</div>
 	</div>
 	`
-	popup2(data)
+	popup2(data,event)
 }
 
 $(document).ready(function(){
@@ -132,11 +139,10 @@ $(document).ready(function(){
 		"ajax": {
 	        url: '/community/communityList',
 	        type: 'POST',
-	        // "dataSrc": "",
-	        // "data": function ( d ) {
-	        //   d.roleFilter   = $('.Role').val();
-	        //   d.statusFilter = $('.Status').val();
-	        // },
+	        "data": function ( d ) {
+	          d.roleFilter   = $('.Role').val();
+	          d.statusFilter = $('.Status').val();
+	        },
 	     },
 	     "columns": [
             { title : "Community Name", "data": "CommunityName", 'sClass':'Cname'},
@@ -144,23 +150,20 @@ $(document).ready(function(){
             { title : "Community Location", "data": "CommunityLocation", 'sClass':'Clocation'},
             { title : "Community Owner", "data": "CommunityOwner", 'sClass':'Cowner'},
             { title : "Create Date", "data": "CreateDate", 'sClass':'Cdate'},
-            { title : "Action", "data": null, 'sClass':'Action'},
-            { title : "Community Pic", "data": null, 'sClass':'pic'},
-            // { title : "Community Pic","data": null, 'orderable' : false, 'sClass':'action'}
+            { title : "Action", "data": null, 'orderable' : false, 'sClass':'Action'},
+            { title : "Community Pic", "data": null, 'orderable' : false, 'sClass':'pic'},
+            { title : "Discription","data": "Discription", 'orderable' : false, 'sClass':'action', "visible": false}
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
         	$('td:eq(6)', nRow).html(`<img src="/static/${aData.CommunityPic}">`)
         	$('td:eq(5)', nRow).html(`<div class="actions"><i class="fa fa-edit icon" onclick="editCommunity(event)"></i><i class="fa fa-info icon" onclick="Discription(event)"></i><div>`)
         }
 	});
-	// $('.Status').on('change', function () {
-	//     table.ajax.reload(null, false);
-	// });
-	// $('.Role').on('change', function () {
-	//     table.ajax.reload(null, false);
-	// });
-	// $('.refresh').on('click', function () {
-	//     table.ajax.reload(null, false);
-	// });
+	$('.Role').on('change', function () {
+	    table.ajax.reload(null, false);
+	});
+	$('.refresh').on('click', function () {
+	    table.ajax.reload(null, false);
+	});
 })
 

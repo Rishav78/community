@@ -1,26 +1,15 @@
 var express = require('express')
 var router = express.Router()
-var mysql = require('mysql')
+var con = require('./mysql.js')
 var multer = require('multer')
 var path = require('path')
-
-const con = mysql.createConnection({
-	host : 'localhost',
-	user : 'root',
-	password : '',
-	database : 'UCA_WebProject'
-})
-con.connect((err)=>{
-	if (err) throw err
-	console.log('connected...')
-})
 
 const storage = multer.diskStorage({
 	destination: './Public/Files',
 	filename: function(req, file, cb){
-		con.query(`select Id from Users where Email = '${req.user}'`,(err,result)=>{
+		con.query(`select Id from Users where Id = '${req.user}'`,(err,result)=>{
 			if(err) throw err;
-			con.query(`update Users set Image = '${result[0].Id + path.extname(file.originalname)}' where Email = '${req.user}'`)
+			con.query(`update Users set Image = '${result[0].Id + path.extname(file.originalname)}' where Id = '${req.user}'`)
 			cb(null, result[0].Id + path.extname(file.originalname))
 		})
 	}
@@ -32,7 +21,7 @@ const upload = multer({
 
 router.get('/',(req,res)=>{
 	if(req.isAuthenticated()){
-		con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+		con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 			if(err) throw err
 			if(result[0].Verified == 'True'){
 				if(result[0].Role == 'User'){
@@ -53,20 +42,20 @@ router.get('/',(req,res)=>{
 	}
 })
 router.post('/',(req,res)=>{
-	con.query(`select * from Users where Email = '${req.body.Email}' and Password = '${req.body.Password}'`,(err,result)=>{
+	con.query(`select * from Users where Email = '${req.body.Email}' and Password = '${req.body.Password}'`,(err,user)=>{
 		if(err) throw err
-		if(result.length>0){
-			if(result[0].ActivationState == 'True'){
-				req.login(req.body.Email,(err)=>{
+		if(user.length>0){
+			if(user[0].ActivationState == 'True'){
+				req.login(user[0].Id,(err)=>{
 					if(err) throw err
-					if(result[0].Verified == 'True'){
-						if(result[0].Role == 'User'){
+					if(user[0].Verified == 'True'){
+						if(user[0].Role == 'User'){
 							return res.redirect('/profile')	
 						}else{
 							return res.redirect('/admin/profile')
 						}
 					}else{
-						res.render('editInfomation_starting',{data: result[0]})
+						res.render('editInfomation_starting',{data: user[0]})
 					}
 				})
 			}else{
@@ -79,7 +68,7 @@ router.post('/',(req,res)=>{
 })
 
 router.get('/profile',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
 		return res.render('profile',{data : data,visible : true})
@@ -119,7 +108,7 @@ router.post('/Available',(req,res)=>{
 })
 
 router.get('/Logout',isAuthenticated(),(req,res)=>{
-	con.query(`update Users set LoginAs = 'Admin' where Email = '${req.user}'`,(err,result)=>{
+	con.query(`update Users set LoginAs = 'Admin' where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 	})
 	req.session.destroy((err)=>{
@@ -134,7 +123,7 @@ router.post('/deletetag',isAuthenticated(),(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		con.query(`delete from tags where Id = ${data}`,(err,result)=>{
+		con.query(`delete from tags where name = '${data}'`,(err,result)=>{
 			if(err) throw err
 			return res.send('done')
 		})
@@ -142,7 +131,7 @@ router.post('/deletetag',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/changePassword',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		res.render('ChangePassword',{changed: false, data: result[0]})
 	})
@@ -150,17 +139,17 @@ router.get('/changePassword',isAuthenticated(),(req,res)=>{
 
 router.post('/changePassword',isAuthenticated(),(req,res)=>{
 	var data = req.body
-	con.query(`select Password from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select Password from Users where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		if(result[0].Password === data.old){
-			con.query(`update Users set Password = '${data.new}' where Email = '${req.user}'`,(err,result)=>{
-				con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+			con.query(`update Users set Password = '${data.new}' where Id = '${req.user}'`,(err,result)=>{
+				con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 					if(err) throw err
 					res.render('ChangePassword',{changed: 'changed', data: result[0]})
 				})
 			})
 		}else{
-			con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+			con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 				if(err) throw err
 				res.render('ChangePassword',{changed: 'wrong', data: result[0]})
 			})
@@ -169,7 +158,7 @@ router.post('/changePassword',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/editInformation',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		var data = result[0]
 		return res.render('editInformation',{data})
@@ -177,7 +166,7 @@ router.get('/editInformation',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/getInformation',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		res.send(JSON.stringify(result[0]))
 	})
@@ -186,23 +175,23 @@ router.get('/getInformation',isAuthenticated(),(req,res)=>{
 router.post('/updateInfo',isAuthenticated(),(req,res)=>{
 	var data = req.body
 	console.log(data)
-	con.query(`update Users set Name = '${data.name}', DOB = '${data.dob}', Gender = '${data.gender}', Phno = '${data.phone}', City = '${data.city}', About = '${data.about}', Expectations = '${data.expectations}', Verified = 'True' where Email = '${req.user}'`,(err,result)=>{
+	con.query(`update Users set Name = '${data.name}', DOB = '${data.dob}', Gender = '${data.gender}', Phno = '${data.phone}', City = '${data.city}', About = '${data.about}', Expectations = '${data.expectations}', Verified = 'True' where Id = '${req.user}'`,(err,result)=>{
 		if (err) throw err
 		res.redirect('/profile')
 	})
 })
 
 router.get('/switchAsUser',(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
+	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		if(result[0].LoginAs == 'Admin'){
 			var data = {switch: 'User',msg:'Switch Admin To User'}
-			con.query(`update Users set LoginAs = 'User' where Email = '${req.user}'`,(err,result)=>{
+			con.query(`update Users set LoginAs = 'User' where Id = '${req.user}'`,(err,result)=>{
 				res.render('Switch',{data})
 			})
 		}else{
 			var data = {switch: 'Admin',msg: 'Switch User To Admin'}
-			con.query(`update Users set LoginAs = 'Admin' where Email = '${req.user}'`,(err,result)=>{
+			con.query(`update Users set LoginAs = 'Admin' where Id = '${req.user}'`,(err,result)=>{
 				res.render('Switch',{data})
 			})
 		}
@@ -216,37 +205,17 @@ router.post('/updateProfilePic',(req,res)=>{
 	})
 })
 
-function editInformation(req,res) {
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
-		if(err) throw err
-		console.log(result[0])
-		var data = result[0]
-		if(data.Role == 'User'){
-			return res.render('editInformation_user',{data})
-		}else{
-			if(data.LoginAs == 'Admin'){
-				return res.render('editInformation_superadmin_admin',{data})
-			}else{
-				return res.render('editInformation_superadmin_user',{data})
-			}
-		}
+router.get('/viewprofile/:id',(req,res)=>{
+	console.log(req.params.id)
+	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
+		con.query(`select * from Users where Id = '${req.params.id}'`,(err,user2)=>{
+			res.render('MemberProfile',{
+				data: user[0],
+				data2: user2[0]
+			})
+		})
 	})
-}
-
-function changePassword(req,res,value){
-	con.query(`select * from Users where Email = '${req.user}'`,(err,result)=>{
-		if(err) throw err
-		if(result[0].Role == 'User'){
-			res.render('ChangePassword_user',{changed: value, data: result[0]})
-		}else{
-			if(result[0].LoginAs == 'Admin'){
-				return res.render('changePassword_superadmin_admin',{changed: value, data: result[0]})
-			}else{
-				return res.render('ChangePassword_superadmin_user',{changed: value, data: result[0]})
-			}
-		}
-	})
-}
+})
 
 function isAuthenticated(){
 	return (req, res, next)=>{

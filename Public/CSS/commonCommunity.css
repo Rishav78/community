@@ -10,6 +10,17 @@
 a{
 	text-decoration: none;
 }
+.Requested{
+	opacity: 0.8;
+	cursor: default;
+}
+.heading a:hover ,.communityName a:hover{
+	text-decoration: underline;
+}
+.heading a:active ,.communityName a:active{
+	color: #333;
+	text-decoration: none;
+}
 .community, .manageCommunity, .editCommunity{
 	width: 1170px;
 	max-width: 90%;
@@ -44,9 +55,16 @@ a{
 	padding: 15px 30px; 
 }
 .communityName > a{
-	font-size: 20px;
+	font-size: 25px;
 	color: rgb(51,122,183);
-	font-weight: bold;
+}
+.communityName > a:hover{
+	text-decoration: underline;
+	color: #26658c;
+}
+.communityName > a:active{
+	text-decoration: none;
+	color: #333;
 }
 .heading{
 	flex: 1;

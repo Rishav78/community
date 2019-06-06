@@ -1,11 +1,16 @@
 document.querySelector('.textBox').onkeyup = removeCommunities
-
-
+var enter = 1
 function removeCommunities(){
-	while(document.querySelector('.available').childElementCount > 0){
-		document.querySelector('.available').removeChild(document.querySelector('.available').firstElementChild)
+	if(enter){
+		enter = 0;
+		while(document.querySelector('.available').childElementCount > 0){
+			document.querySelector('.available').removeChild(document.querySelector('.available').firstElementChild)
+		}
+		displayCommunitys()
+		enter=1
+	}else {
+		setTimeout(removeCommunities, 1000)
 	}
-	displayCommunitys()
 }
 
 function  displayCommunitys() {
@@ -71,9 +76,9 @@ function joinReq(event){
 	var x = event.target.parentElement.parentElement
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
-		$(x.parentElement).fadeOut(1000,()=>{
-		x.parentElement.parentElement.removeChild(x.parentElement)
-	});
+		$(x.parentElement).fadeOut(500,()=>{
+			removeCommunities()
+		});
 	}
 	req.open('GET',`/community/joinCommunity/${x.firstElementChild.textContent.trim()}`)
 	req.send()
