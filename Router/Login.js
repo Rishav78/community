@@ -20,6 +20,7 @@ const upload = multer({
 }).single('file');
 
 router.get('/',(req,res)=>{
+	console.log(req.user)
 	if(req.isAuthenticated()){
 		con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 			if(err) throw err
@@ -59,7 +60,7 @@ router.post('/',(req,res)=>{
 					}
 				})
 			}else{
-				return res.render('404NotFound')
+				return res.render('404NotFound',{msg: 'Error: Unable to login you are deactivated contact site admin...'})
 			}
 		}else{
 			return res.render('Login',{visible: true})

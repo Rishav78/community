@@ -61,6 +61,10 @@ img{
 	padding: 8px 12px;
 	background-color: rgb(51,122,183);
 }
+#home{
+	background-color: #38b;
+	color: white;
+}
 @media screen and (max-width: 950px) {
 	.userDetails{
 		flex-direction: column;

@@ -196,6 +196,18 @@ function deleteUser(event){
 	req.open('POST',`/community/delete/${document.querySelector('#communityId').textContent}`);
 	req.send(JSON.stringify(data))
 }
+function deleteAdmin(event){
+	var req = new XMLHttpRequest()
+	var data = {
+		user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
+	}
+	req.onload = ()=>{
+		document.querySelector('.adminssNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) - 1
+		showMembers()
+	}
+	req.open('POST',`/community/delete/${document.querySelector('#communityId').textContent}`);
+	req.send(JSON.stringify(data))
+}
 function showAdmins(){
 	var req  = new XMLHttpRequest()
 	req.onload = ()=>{
@@ -222,7 +234,7 @@ function showAdmins(){
 						<i class="fa fa-chevron-down ActionIcons" onclick="confirm(event,Demote,'Confirm demotee!','Do you really want demote this user?')"></i>
 					</div>
 					<div class="block4">
-						<i class="fa fa-times ActionIcons" onclick="confirm(event,deleteUser,'Really want remove ?','Do you really want remove this user?')"></i>
+						<i class="fa fa-times ActionIcons" onclick="confirm(event,deleteAdmin,'Really want remove ?','Do you really want remove this user?')"></i>
 					</div>
 				`
 				var div2 = document.createElement('div')

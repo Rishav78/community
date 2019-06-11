@@ -34,25 +34,50 @@ router.get('/communityList',isAuthenticated(),(req,res)=>{
 
 router.post('/communityList',isAuthenticated(),(req,res)=>{
 	var array = ['CommunityName', 'MembershipRule', 'CommunityLocation', 'CommunityOwner', 'CreateDate', ]
-	con.query(`select * from communityList order by ${array[req.body.order[0].column]} ${req.body.order[0].dir}`,(err,result)=>{
+	var q = `select * from Users join communityList on communityList.CommunityOwner = Users.Id where instr(CommunityName,'${req.body.search.value}')`
+	if(req.body.MembershipRule != 'All'){
+		q = q + ` and MembershipRule = '${req.body.MembershipRule}'`
+	}
+	q = q + ` order by ${array[req.body.order[0].column]} ${req.body.order[0].dir}`
+	con.query(q,(err,result)=>{
 		if(err) throw err;
-		if(req.body.roleFilter!='All'){
-			result = result.filter((value)=>{
-				return value.Role === req.body.roleFilter
-			})
-		}
-		if(req.body.search.value){
-			result = result.filter((value)=>{
-				return value.CommunityName.includes(req.body.search.value)
-			})
-		}
 		var record = result.filter((value,index)=>{
-			if(index >= req.body.start && req.body.length>=0){
+			if(index >= req.body.start && req.body.length>0){
 				req.body.length--
 				return true;
 			}
 		})
-		res.send({'recordsTotal': 1, 'recordsFiltered' : 1, data: result});
+		con.query('select count(Id) as Id from communityList',(err,count)=>{
+			if(err) throw err;
+			res.send({'recordsTotal': count[0].Id, 'recordsFiltered' : result.length, data: record});
+		})
+	})
+})
+
+router.post('/updateCommunity/:id',(req,res)=>{
+	var data = ''
+	req.on('data',chunk=>{
+		data += chunk
+	})
+	req.on('end',()=>{
+		data = JSON.parse(data)
+		con.query(`update communityList set CommunityName = '${data.CommunityName}', Status = '${data.Status}' where Id = '${req.params.id}'`,(err,result)=>{
+			if(err) throw err;
+			res.send('done')
+		})
+	})
+})
+
+router.post('/getCommunity',(req,res)=>{
+	var data = ''
+	req.on('data',chunk=>{
+		data += chunk
+	})
+	req.on('end',()=>{
+		con.query(`select * from communityList join Users on communityList.CommunityOwner = Users.Id where communityList.Id = '${data}'`,(err,result)=>{
+			if(err) throw err;
+			res.json(result[0])
+		})
 	})
 })
 
@@ -60,7 +85,6 @@ router.get('/communitypanel',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
 		if(err) throw err
 		con.query(`select * from communityList join communityMembers on communityList.Id = communityMembers.Id where communityMembers.UserId = '${req.user}' and communityMembers.Accepted = 'True'`,(err,community)=>{
-			console.log(community)
 			return res.render('communitypanel',{
 				data: result[0],
 				community: community
@@ -83,7 +107,7 @@ router.post('/AddCommunity/create',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
 		if(err) throw err;
 		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-		con.query(`insert into communityList values('${id}', '${req.body.CommunityName}', '${req.body.MembershipRule}', 'Not Added', '${req.user}', '${req.body.Discription.replace(/<[^>]*>/g, '')}', SYSDATE(), 0, 0, 0, 0, 'defaultCommunity.jpg')`,(err,result)=>{
+		con.query(`insert into communityList values('${id}', '${req.body.CommunityName}', '${req.body.MembershipRule}', 'Not Added', '${req.user}', '${req.body.Discription.replace(/<[^>]*>/g, '')}', SYSDATE(), 0, 0, 0, 0, 'defaultCommunity.jpg', 'Activate')`,(err,result)=>{
 			if(err) throw err;
 			con.query(`insert into communityMembers values('${id}', '${req.user}', 'True', 'Owner')`,(err,result)=>{
 				if(err) throw err;
@@ -107,12 +131,17 @@ router.get('/manageCommunity/:id',isAuthenticated(),(req,res)=>{
 	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
 		if(err) throw err;
 		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
-			return res.render('manageCommunity',{
-				data: user[0], 
-				community: community[0], 
-				join: true,
-				request: false
-			})
+			if(err) throw err;
+			if(community[0].Status=='Activate'){
+				return res.render('manageCommunity',{
+					data: user[0], 
+					community: community[0], 
+					join: true,
+					request: false
+				})
+			}else{
+				return res.render('404NotFound',{msg: 'Error: This community is deactivated or may be deleted by superadmin'})
+			}
 		})
 	})
 })
@@ -224,16 +253,9 @@ router.post('/list',isAuthenticated(),(req,res)=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		if(data){
-			con.query(`select * from communityList where Id not in (select Id from CommunityMembers where UserId = '${req.user}') and instr(CommunityName,'${data}')`,(err,community)=>{
-				return res.json(community)
-			})
-		}else{
-			con.query(`select * from communityList where Id not in (select Id from CommunityMembers where UserId = '${req.user}')`,(err,community)=>{
-				console.log(community)
-				return res.json(community)
-			})
-		}
+		con.query(`select * from communityList where Id not in (select Id from CommunityMembers where UserId = '${req.user}') and instr(CommunityName,'${data}') and Status = 'Activate'`,(err,community)=>{
+			return res.json(community)
+		})
 	})
 })
 
@@ -298,7 +320,6 @@ router.post('/inviteUserList/:id',isAuthenticated(),(req,res)=>{
 		data = JSON.parse(data)
 		con.query(`select * from Users where Id not in (select UserId from CommunityMembers where Id = '${req.params.id}') and Id not in (select UserId from InvitedUsers where Id = '${req.params.id}') and instr(Name, '${data.search}')`,(err,result)=>{
 			if(err) throw err;
-			console.log(result)
 			res.json(result)
 		})
 	})
@@ -328,7 +349,6 @@ router.get('/communityProfile/:id',isAuthenticated(),(req,res)=>{
 				var join = joined.filter((value)=>{
 					return value.UserId == req.user
 				})
-				console.log(join)
 				if(join[0]){
 					requested = join[0].Accepted == 'False'
 				}
@@ -355,13 +375,11 @@ router.get('/leaveCommunity/:id',isAuthenticated(),(req,res)=>{
 		if(err) throw err;
 		con.query(`delete from communityMembers where Id = '${req.params.id}' and UserId = '${req.user}'`,(err,result)=>{
 			if(err) throw err;
-			console.log(member[0].Type)
 			var q = `update communityList set Members = Members - 1`
 			if(member[0].Type == 'User'){
 				q = q + `, User = User - 1`
 			}
 			q = q + ` where Id = '${req.params.id}'`
-			console.log(q)
 			con.query(q,(err,result)=>{
 				res.redirect(`/community/communityProfile/${req.params.id}`)
 			})
@@ -422,13 +440,11 @@ router.post('/editCommunity/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.post('/acceptReq/:id',isAuthenticated(),(req,res)=>{
-	console.log(req.params.id)
 	var data = ''
 	req.on('data', chunk=>{
 		data += chunk
 	})
 	req.on('end',()=>{
-		console.log(data)
 		data = JSON.parse(data)
 		con.query(`update communityMembers set Accepted = 'True' where Id = '${req.params.id}' and UserId = '${data.user}'`,(err,result)=>{
 			if(err) throw err;

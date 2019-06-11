@@ -36,7 +36,7 @@ router.post('/adduser',isAuthenticated(),(req,res)=>{
 		if(err) throw err;
 		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 		if(total.length == 1){
-			var q = `insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values('${id}', '${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', '${data.role}', 'Pending', 'default.png', 'True', 'Admin')`
+			var q = `insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values('${id}', '${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', '${data.role}', 'Pending', 'default.png', 'True', '${data.role}')`
 			con.query(q,(err,result)=>{
 				if(err) throw err;
 				console.log('add')

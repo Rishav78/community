@@ -27,7 +27,7 @@
 		.Discussionheading{
 			display: flex;
 			align-items: center;
-			border-bottom: 1px solid rgba(0,0,0,0.3);
+			border-bottom: 1px solid rgba(0,0,0,0.1);
 			background-color: rgb(249,249,249);
 		}
 		.communityPic{
@@ -44,9 +44,9 @@
 			font-size: 20px;
 		}
 		.DiscussionTitle, .discussionDetail{
-			padding: 15px;
+			padding: 20px 15px;
 			box-sizing: border-box;
-			border-bottom: 1px solid rgba(0,0,0,0.3);
+			border-bottom: 1px solid rgba(0,0,0,0.1);
 		}
 		.DiscussionTitle > input, .discussionDetail > textarea{
 			border: none;
@@ -54,10 +54,12 @@
 			width: 100%;
 			outline: none;
 			display: block;
+			font-family: sans-serif;
 		}
 		.DiscussionTitle > input{
 			font-weight: bolder;
 			font-size: 15px;
+			margin-bottom: 
 		}
 		.discussionDetail > textarea{
 			font-size: 22px;
@@ -86,6 +88,30 @@
 		.tag > div{
 			display: inline-block;
 		}
+		.upload{
+			display: flex;
+			margin-top: 20px;
+		}
+		.upload > div{
+			flex: 1;
+		}
+		.upload i{
+			font-size: 30px;
+		}
+		.fa-image:hover{
+			background-color: #333;
+		}
+		.upload .Post{
+			background-color: #337ab7;
+			border: none;
+			color: white;
+			cursor: pointer;
+			padding: 10px 14px;
+		}
+		.footer{
+			height: 15px;
+			background-color: rgb(249,249,249);
+		}
 	</style>
 </head>
 <body>
@@ -108,15 +134,24 @@
 					<input type="text" name="" placeholder="Enter a discussion title....">
 				</div>
 				<div class="discussionDetail">
-					<textarea placeholder="Enter discussion details"></textarea>
+					<textarea placeholder="Enter discussion details" onkeydown="textAreaAdjust(this)"></textarea>
 					<div class="tags">
 						<input type="text" name="" style="width: 10px;">
 					</div>
+					<div class="upload">
+						<div>
+							<i class="fa fa-image"></i>
+						</div>
+						<div style="text-align: right"><button class="Post">Post</button></div>
+					</div>
+				</div>
+				<div class="footer">
+					
 				</div>
 			</div>
 		</div>
 	</div>
-</div>>
+</div>
 <script type="text/javascript" src="/static/Switch.js"></script>
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
@@ -140,6 +175,10 @@
 			width = width + 6;
 		}
 		document.querySelector('.tags > input').style.width = width + 'px';
+	}
+	function textAreaAdjust(o) {
+	  o.style.height = "1px";
+	  o.style.height = (25+o.scrollHeight)+"px";
 	}
 </script>
 </body>

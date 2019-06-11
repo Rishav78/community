@@ -125,14 +125,14 @@ con.connect((err)=>{
 	// con.query('create database UCA_WebProject')
 	// con.query('drop table communityList')
 	// con.query('drop table Users')
-	// con.query('drop table communityList')
+	// con.query('truncate table communityList')
 	// con.query('drop table tags')
 	// con.query('truncate table InvitedUsers')
 	// con.query(`create table InvitedUsers(Id char(100), UserId char(100))`)
 	// con.query('update communityList set totalreq = 0, members = 0')
 	// var q = `create table Users(Id char(100), Name char(100), Email varchar(100), Password varchar(100), Phno char(15), City char(100), DOB char(10), Gender char(6), About char(250), Expectations char(250), Role char(50), Status char(50), Image char(100), ActivationState char(5), LoginAs char(20), Verified char(5))`
 	// var q = `create table Tags(Id char(100), name char(100), CreatedBy varchar(100), CreationDate varchar(10))`
-	// var q = 'create table CommunityList(Id char(100), CommunityName char(50), MembershipRule char(50), CommunityLocation varchar(50), CommunityOwner varchar(100), Discription char(250), CreateDate char(10), TotalReq int DEFAULT 0, Members int DEFAULT 0, User int DEFAULT 0, Invited int DEFAULT 0, CommunityPic varchar(200))'
+	// var q = 'create table CommunityList(Id char(100), CommunityName char(50), MembershipRule char(50), CommunityLocation varchar(50), CommunityOwner varchar(100), Discription char(250), CreateDate char(10), TotalReq int DEFAULT 0, Members int DEFAULT 0, User int DEFAULT 0, Invited int DEFAULT 0, CommunityPic varchar(200), Status char(12))'
 	// var q = `insert into communityList values('5fosgdvgy6lcrzh2gc0dzd', 'First Community', 'Direct', 'Mandi' , 'Rishav', 'nothing', '1/1/1', 0, 0, 0, 0, 'defaultCommunity.jpg')`
 	// var q = `insert into Users values('g7yti9e4o7n14gl3n81dw6', 'Rishav', 'rishavgarg789@gmail.com', 'hacker12', '1234567890', 'Mandi GobindGarh', '13/9/1999', 'Male', null, null, 'Superadmin', 'Confirmed', '1.gif', 'True', 'Admin', 'True')`
 	 
@@ -156,10 +156,10 @@ app.use('/community',Community)
 // <----------------------------------------------------------------------------------->
 
 app.get('/discussion',(req,res)=>{
-	con.query(`select * from Users where Email = '${req.user}'`,(err,user)=>{
+	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
 		if(err) throw err;
 		con.query('select * from communityList',(err,community)=>{
-			res.render('Discussion',{data: user[0], community: community[0], visible: true})
+			res.render('Discussion',{data: user[0], community: community[0], visible: true, join:true, request: false})
 		})
 	})
 })

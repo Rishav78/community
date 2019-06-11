@@ -15,9 +15,7 @@ img{
 	width: 70px;
 	height: 70px;
 }
-.Cname, .Mrule ,.Clocation ,.Cowner ,.Cdate{
-	vertical-align: baseline;
-}
+
 select{
 	margin: 0;
 }
@@ -36,6 +34,10 @@ select{
 }
 .userlist,.refresh{
 	padding: 5px 10px;
+	cursor: pointer;
+}
+.CId{
+	display: none;
 }
 select, input{
 	padding: 5px 8px;
