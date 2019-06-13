@@ -155,7 +155,9 @@ function Promot(event){
 		document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) - 1
 		showMembers()
 	}
+	req.set
 	req.open('POST','/community/promot');
+	// req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 function deleteInvited(event){

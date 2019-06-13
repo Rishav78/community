@@ -3,7 +3,7 @@
 <head>
 	<title></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
 	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
 	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
@@ -12,107 +12,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
-	<style type="text/css">
-		.discussionContainer{
-			max-width: 90%;
-			display: flex;
-			flex-direction: column;
-			text-align: left;
-			width: 1150px;
-			margin: 50px auto;
-			background-color: white;
-			border: 1px solid rgba(0,0,0,0.3);
-			color: rgba(0,0,0,0.5);
-		}
-		.Discussionheading{
-			display: flex;
-			align-items: center;
-			border-bottom: 1px solid rgba(0,0,0,0.1);
-			background-color: rgb(249,249,249);
-		}
-		.communityPic{
-			width: 70px;
-			padding: 3px 0px;
-			text-align: center;
-		}
-		.communityPic > img{
-			width: 50px;
-			height: 50%;
-		}
-		.startADiscussion{
-			flex: 1;
-			font-size: 20px;
-		}
-		.DiscussionTitle, .discussionDetail{
-			padding: 20px 15px;
-			box-sizing: border-box;
-			border-bottom: 1px solid rgba(0,0,0,0.1);
-		}
-		.DiscussionTitle > input, .discussionDetail > textarea{
-			border: none;
-			background-color: transparent;
-			width: 100%;
-			outline: none;
-			display: block;
-			font-family: sans-serif;
-		}
-		.DiscussionTitle > input{
-			font-weight: bolder;
-			font-size: 15px;
-			margin-bottom: 
-		}
-		.discussionDetail > textarea{
-			font-size: 22px;
-			resize: none;
-		}
-		.tags{
-			padding: 10px;
-			border: 1px solid rgba(0,0,0,0.3);
-			border-radius: 5px;
-			cursor: pointer;
-		}
-		.tag{
-			display: inline-block;
-			font-size: small;
-			padding: 1px 2px;
-			border: 1px solid rgba(0,0,0,0.3);
-			color: rgba(0,0,0,0.7);
-			border-radius: 5px;
-			background-color: rgb(249,249,249);
-			margin: 0px 4px;
-		}
-		.tags > input{
-			border: none;
-			outline: none;
-		}
-		.tag > div{
-			display: inline-block;
-		}
-		.upload{
-			display: flex;
-			margin-top: 20px;
-		}
-		.upload > div{
-			flex: 1;
-		}
-		.upload i{
-			font-size: 30px;
-		}
-		.fa-image:hover{
-			background-color: #333;
-		}
-		.upload .Post{
-			background-color: #337ab7;
-			border: none;
-			color: white;
-			cursor: pointer;
-			padding: 10px 14px;
-		}
-		.footer{
-			height: 15px;
-			background-color: rgb(249,249,249);
-		}
-	</style>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/Discussion.css">
 </head>
 <body>
 <div class="Container">
@@ -135,9 +37,13 @@
 				</div>
 				<div class="discussionDetail">
 					<textarea placeholder="Enter discussion details" onkeydown="textAreaAdjust(this)"></textarea>
-					<div class="tags">
-						<input type="text" name="" style="width: 10px;">
-					</div>
+					<div class="tag-conatiner-custom-div">
+		              <select id="tagEditor" name="tags" class="form-control input-sm select2-multiple select2-hidden-accessible" style="width:100%" multiple="" tabindex="-1" aria-hidden="true">
+		              	<% tags.forEach((value)=>{ %>
+		                	<option><%= value.name %></option>
+		                <% }) %>
+		              </select>
+		            </div>
 					<div class="upload">
 						<div>
 							<i class="fa fa-image"></i>
@@ -149,6 +55,90 @@
 					
 				</div>
 			</div>
+			<% Topic.forEach((Topic)=>{ %>
+				<div class="topic">
+					<div class="action">
+						<i class="fa fa-ellipsis-h"></i>
+					</div>
+					<div class="aboutTopic">
+						<div class="title"><%= Topic.Topic %></div>
+						<div class="postedUser">
+							posted by <a href="/community/viewprofile/<%= Topic.CreatedBy %>"><%= Topic.UserName %></a> on Jun 10 2019
+						</div>
+						<div class="usedTags">
+							<span>codequotient</span>
+						</div>
+						<div class="Ddetail">
+							<%= Topic.About %>
+						</div>
+						<div style="margin: 10px 0px">
+							<span class="Comment"><i class="fa fa-comment-alt" style="font-size: 15px"></i> <%= Topic.Comments %> Comments</span>
+							<span class="hide">Hide</span>
+						</div>
+					</div>
+					<div class="CommentsOnTopic">
+						<% Comments.forEach((comment)=>{ %>
+							<% if(comment.Ref == Topic.Id){ %>
+								<div class="commentlevel1">
+									<div class="userProfile">
+										<img src="/static/default.png">
+									</div>
+									<div class="userComment">
+										<div>
+											<div>
+												<a>Superman</a>
+												<span style="margin: 0px 5px;" class="days" style="margin: 0px 5px;">2d</span>
+												<i class="fa fa-trash"></i>
+												<i class="fa fa-reply">(1)</i>
+											</div>
+											<div class="text">
+												dfgh
+											</div>
+										</div>
+										<% Comments.forEach((com)=>{ %>
+											<% if(com.Ref == comment.Id){ %>
+												<div class="commentlevel1">
+													<div class="userProfile">
+														<img src="/static/default.png">
+													</div>
+													<div class="userComment">
+														<div>
+															<div>
+																<a>Superman</a>
+																<span style="margin: 0px 5px;" class="days" style="margin: 0px 5px;">2d</span>
+																<i class="fa fa-trash"></i>
+																<!-- <i class="fa fa-reply">(1)</i> -->
+															</div>
+															<div class="text">
+																dfgh
+															</div>
+														</div>
+													</div>
+												</div>
+											<% } %>
+										<% }) %>
+									</div>
+								</div>
+								<div class="replyComment">
+									<textarea placeholder="reply to this comment..."></textarea>
+									<button>Reply</button>
+								</div>
+							<% } %>
+						<% }) %>
+						<div class="commentOnTopic">
+							<div style="width: 100px">
+								<img src="/static/default.png">
+							</div>
+							<div style="flex: 1;padding: 10px;box-sizing: border-box;">
+								<input type="" name="" class="textBox" style="width: 100%">
+							</div>
+							<div style="width: 50px">
+								<button>Post</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			<% }) %>
 		</div>
 	</div>
 </div>
@@ -158,28 +148,28 @@
 <script type="text/javascript" src="/static/aboutCommunity.js"></script>
 <script type="text/javascript">
 	var width = 10;
-	document.querySelector('.tags').onclick = ()=>{
-		document.querySelector('.tags > input').focus()
-	}
-	document.querySelector('.tags > input').onkeydown = (event)=>{
-		if(event.keyCode == 13){
-			if(document.querySelector('.tags > input').value){
-				width = 10;
-				var div = document.createElement('div')
-				div.classList.add('tag')
-				div.innerHTML = `<div style="padding: 1px">&times</div><div style="padding: 1px;">${document.querySelector('.tags > input').value}</div>`
-				document.querySelector('.tags > input').value = ''
-				document.querySelector('.tags').insertBefore(div, document.querySelector('.tags').lastChild.previousSibling)
-			}
-		}else{
-			width = width + 6;
-		}
-		document.querySelector('.tags > input').style.width = width + 'px';
-	}
+	$(document).ready(function() {
+	    $('#tagEditor').select2({
+	      "placeholder" : "Enter tag..."
+	    });
+	})
 	function textAreaAdjust(o) {
 	  o.style.height = "1px";
 	  o.style.height = (25+o.scrollHeight)+"px";
 	}
 </script>
+
+<script type="text/javascript">
+	function showTopics(){
+		// var a = <%= 
+		var req = new XMLHttpRequest()
+		req.onload = ()=>{
+			
+		}
+		req.open()
+		req.send()
+	}
+</script>
+
 </body>
 </html>

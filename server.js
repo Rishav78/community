@@ -120,9 +120,15 @@ con.connect((err)=>{
 	// 		// return res.render('AddUser',{added : true})
 	// 	})
 	// con.query('truncate table CommunityMembers')
+	// con.query('drop table comments')
+	// con.query('create table Comments(Id char(100), Ref char(100), CreatedBy char(100), UserName char(100), Text char(100), Comments int)')
 	// con.query('create table CommunityMembers(Id char(100), UserId char(100), Accepted char(5), Type char(5))')
 	// con.query('truncate table communityList')
 	// con.query('create database UCA_WebProject')
+	// con.query('drop table DiscussionTopic')
+	// con.query('create table DiscussionTopic(Id char(100), CommunityId char(100), CreatedBy char(100), UserName char(100), Topic char(100), About char(100), Date char(10), Comments int)')
+	// con.query("insert into DiscussionTopic values('qwef34', '1wdfgy65', 'SuperAdmin', 'Rishav', 'Nthing', '1/9/1999', 7)")
+	// con.query("insert into comments values('1234', 'qwef34', 'sdfghj', 'Rishav', 'yoyo', 1)")
 	// con.query('drop table communityList')
 	// con.query('drop table Users')
 	// con.query('truncate table communityList')
@@ -155,14 +161,7 @@ app.use('/community',Community)
 
 // <----------------------------------------------------------------------------------->
 
-app.get('/discussion',(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		if(err) throw err;
-		con.query('select * from communityList',(err,community)=>{
-			res.render('Discussion',{data: user[0], community: community[0], visible: true, join:true, request: false})
-		})
-	})
-})
+
 
 // <----------------------------------- Maintaining Passport(session) ----------------->
 

@@ -155,6 +155,7 @@ router.post('/manageCommunity/:id',isAuthenticated(),(req,res)=>{
 
 router.post('/promot',isAuthenticated(),(req,res)=>{
 	var data = ''
+	console.log(req.body)
 	req.on('data',chunk=>{
 		data += chunk
 	})
@@ -455,6 +456,25 @@ router.post('/acceptReq/:id',isAuthenticated(),(req,res)=>{
 		})
 	})
 })
+
+router.get('/discussion/:id',(req,res)=>{
+	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
+		if(err) throw err;
+		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
+			con.query('select name from tags',(err,tags)=>{
+				res.render('Discussion',{
+					data: user[0], 
+					community: community[0], 
+					visible: true, 
+					join:true, 
+					request: false,
+					tags
+				})
+			})
+		})
+	})
+})
+
 
 function isAuthenticated(){
 	return (req, res, next)=>{
