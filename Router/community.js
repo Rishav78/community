@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-var con = require('./mysql.js')
+var knex = require('./mysql.js')
 var path = require('path')
 var multer = require('multer')
 var striptags = require('striptags')
@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({
 	storage: storage,
 }).single('file');
+
 router.post('/updateProfilePic',(req,res)=>{
 	upload(req,res,err=>{
 		if(err) throw err;
@@ -25,7 +26,9 @@ router.post('/updateProfilePic',(req,res)=>{
 })
 
 router.get('/communityList',isAuthenticated(),(req,res)=>{
-	con.query('select Image, Role, Name from Users',(err,result)=>{
+	knex('Users')
+	.where('Id', req.user)
+	.then((result)=>{
 		return res.render('communityList',{
 			data: result[0]
 		})
@@ -34,57 +37,58 @@ router.get('/communityList',isAuthenticated(),(req,res)=>{
 
 router.post('/communityList',isAuthenticated(),(req,res)=>{
 	var array = ['CommunityName', 'MembershipRule', 'CommunityLocation', 'CommunityOwner', 'CreateDate', ]
-	var q = `select * from Users join communityList on communityList.CommunityOwner = Users.Id where instr(CommunityName,'${req.body.search.value}')`
-	if(req.body.MembershipRule != 'All'){
-		q = q + ` and MembershipRule = '${req.body.MembershipRule}'`
-	}
-	q = q + ` order by ${array[req.body.order[0].column]} ${req.body.order[0].dir}`
-	con.query(q,(err,result)=>{
-		if(err) throw err;
+	knex.table('Users').innerJoin('communityList', 'Users.Id', '=', 'communityList.CommunityOwner')
+	.where(function(){
+		knex.raw(`instr(CommunityName, '${req.body.search.value}')`)
+		if(req.body.MembershipRule != 'All'){
+			this.andWhere('MembershipRule', req.body.MembershipRule)
+		}
+	})
+	.orderBy(array[req.body.order[0].column], req.body.order[0].dir)
+	.then((result)=>{
 		var record = result.filter((value,index)=>{
 			if(index >= req.body.start && req.body.length>0){
 				req.body.length--
 				return true;
 			}
 		})
-		con.query('select count(Id) as Id from communityList',(err,count)=>{
-			if(err) throw err;
+		knex('communityList')
+		.count('Id as Id')
+		.then((count)=>{
 			res.send({'recordsTotal': count[0].Id, 'recordsFiltered' : result.length, data: record});
 		})
 	})
 })
 
 router.post('/updateCommunity/:id',(req,res)=>{
-	var data = ''
-	req.on('data',chunk=>{
-		data += chunk
+	knex('communityList')
+	.where('Id', req.params.id)
+	.update({
+		CommunityName: req.body.CommunityName,
+		Status: req.body.Status,
 	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`update communityList set CommunityName = '${data.CommunityName}', Status = '${data.Status}' where Id = '${req.params.id}'`,(err,result)=>{
-			if(err) throw err;
-			res.send('done')
-		})
+	.then(()=>{
+		res.send('done')
 	})
 })
 
-router.post('/getCommunity',(req,res)=>{
-	var data = ''
-	req.on('data',chunk=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		con.query(`select * from communityList join Users on communityList.CommunityOwner = Users.Id where communityList.Id = '${data}'`,(err,result)=>{
-			if(err) throw err;
-			res.json(result[0])
-		})
+router.get('/getCommunity/:id',(req,res)=>{
+	knex.table('communityList')
+	.innerJoin('Users','communityList.CommunityOwner','=','Users.Id')
+	.where('communityList.Id', req.params.id)
+	.then((result)=>{
+		res.json(result[0])
 	})
 })
 
 router.get('/communitypanel',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
-		if(err) throw err
-		con.query(`select * from communityList join communityMembers on communityList.Id = communityMembers.Id where communityMembers.UserId = '${req.user}' and communityMembers.Accepted = 'True'`,(err,community)=>{
+	knex('Users')
+	.where('Id', req.user)
+	.then((result)=>{
+		knex.table('communityList').innerJoin('communityMembers','communityList.Id','=','communityMembers.Id')
+		.where('communityMembers.UserId', req.user)
+		.andWhere('communityMembers.Accepted', 'True')
+		.then((community)=>{
 			return res.render('communitypanel',{
 				data: result[0],
 				community: community
@@ -94,8 +98,9 @@ router.get('/communitypanel',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/AddCommunity',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
-		if(err) throw err;
+	knex('Users')
+	.where('Id',req.user)
+	.then((result)=>{
 		res.render('CreateCommunity',{
 			created: false,
 			data: result[0]
@@ -104,19 +109,41 @@ router.get('/AddCommunity',isAuthenticated(),(req,res)=>{
 })
 
 router.post('/AddCommunity/create',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		if(err) throw err;
+	knex('Users')
+	.where('Id', req.user)
+	.then((user)=>{
 		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-		con.query(`insert into communityList values('${id}', '${req.body.CommunityName}', '${req.body.MembershipRule}', 'Not Added', '${req.user}', '${req.body.Discription.replace(/<[^>]*>/g, '')}', SYSDATE(), 0, 0, 0, 0, 'defaultCommunity.jpg', 'Activate')`,(err,result)=>{
-			if(err) throw err;
-			con.query(`insert into communityMembers values('${id}', '${req.user}', 'True', 'Owner')`,(err,result)=>{
-				if(err) throw err;
+		knex('communityList')
+		.insert({
+			Id,
+			CommunityName:req.body.CommunityName,
+			MembershipRule:req.body.MembershipRule,
+			CommunityLocation:'Not Added',
+			CommunityOwner:req.user,
+			Discription:req.body.Discription.replace(/<[^>]*>/g, ''),
+			CreateDate:knex.raw('SYSDATE()'),
+			TotalReq:0,
+			Members:0,
+			User:0,
+			Invited:0,
+			CommunityPic:'defaultCommunity.jpg',
+			Status:'Activate',
+		})
+		.then(()=>{
+			knex('communityMembers')
+			.insert({
+				Id,
+				UserId: req.user,
+				Accepted: 'True',
+				Type: 'Owner',
+			})
+			.then(()=>{
 				res.render('CreateCommunity',{
 					created: true, 
 					data: user[0]
 				})
 			})
-		});
+		})
 	})
 })
 
@@ -128,10 +155,12 @@ router.post('/updateProfilePic',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/manageCommunity/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		if(err) throw err;
-		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
-			if(err) throw err;
+	knex('Users')
+	.where('Id', req.user)
+	.then((user)=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.then((community)=>{
 			if(community[0].Status=='Activate'){
 				return res.render('manageCommunity',{
 					data: user[0], 
@@ -147,134 +176,165 @@ router.get('/manageCommunity/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.post('/manageCommunity/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from communityList where Id = '${req.params.id}'`,(err,result)=>{
-		if(err) throw err;
+	knex('communityList')
+	.where('Id', req.params.id)
+	.then((result)=>{
 		res.json(result)
 	})
 })
 
-router.post('/promot',isAuthenticated(),(req,res)=>{
-	var data = ''
-	console.log(req.body)
-	req.on('data',chunk=>{
-		data += chunk
+router.post('/promot/:id',isAuthenticated(),(req,res)=>{
+	knex('communityMembers')
+	.where('UserId', req.params.id)
+	.andWhere('Id', req.body.communityId)
+	.update({
+		Type: 'Admin'
 	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`update CommunityMembers set Type = 'Admin' where UserId = '${data.user}' and Id = '${data.communityId}'`,(err,result)=>{
-			if(err) throw err;
-			con.query(`update communityList set User = User - 1 where Id = '${data.communityId}'`,(err,result)=>{
-				if(err) throw err;
-				res.send('done')
-			})
+	.then(()=>{
+		knex('communityList')
+		.where('Id', req.body.communityId)
+		.update({
+			User: knex.raw('User - 1')
+		})
+		.then(()=>{
+			res.send('done')
 		})
 	})
 })
 
-router.post('/CommunityMembers',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',(chunk)=>{
-		data += chunk
+router.get('/CommunityMembers/:id',isAuthenticated(),(req,res)=>{
+	knex.table('CommunityMembers').innerJoin('Users', function(){
+		this.on('CommunityMembers.UserId', '=', 'users.Id')
 	})
-	req.on('end',()=>{
-		con.query(`select * from CommunityMembers join users where CommunityMembers.UserId = users.Id and CommunityMembers.Id = '${data}' and CommunityMembers.Accepted = 'True' and CommunityMembers.Type = 'User'`,(err,result)=>{
-			if(err) throw err;
-			res.json(result)
+	.where('CommunityMembers.Id', '=', req.params.id)
+	.andWhere('CommunityMembers.Accepted', '=', 'True')
+	.andWhere('CommunityMembers.Type', '=', 'User')
+	.then((result)=>{
+		res.json(result)
+	})
+})
+
+router.get('/CommunitysAdmins/:id',isAuthenticated(),(req,res)=>{
+	knex.table('CommunityMembers')
+	.innerJoin('Users', function(){
+		this.on('CommunityMembers.UserId', '=', 'users.Id')
+	})
+	.where('CommunityMembers.Id', '=', req.params.id)
+	.andWhere('CommunityMembers.Accepted', '=', 'True')
+	.andWhere('CommunityMembers.Type', '!=', 'User')
+	.then((result)=>{
+		res.json(result)
+	})
+})
+
+router.post('/Demote/:id',isAuthenticated(),(req,res)=>{
+	knex('communityMembers')
+	.where('UserId', req.params.id)
+	.andWhere('Id', req.body.communityId)
+	.update({
+		Type: 'User'
+	})
+	.then((result)=>{
+		knex('communityList')
+		.where('Id', req.body.communityId)
+		.update({
+			User: knex.raw('User + 1')
+		})
+		.then(()=>{
+			res.send('done')
 		})
 	})
 })
 
-router.post('/CommunitysAdmins',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',(chunk)=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		con.query(`select * from CommunityMembers join users where CommunityMembers.UserId = users.Id and CommunityMembers.Id = '${data}' and CommunityMembers.Accepted = 'True' and CommunityMembers.Type != 'User'`,(err,result)=>{
-			if(err) throw err;
-			res.json(result)
+router.post('/delete/:id',isAuthenticated(),(req,res)=>{
+	knex('communityMembers')
+	.where('User', req.body.user)
+	.andWhere('Id', req.params.id)
+	.del()
+	.then(()=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.update({
+			Members: knex.raw('Members - 1')
+		})
+		.then(()=>{
+			if(req.body.Type == 'User'){
+				knex('communityList')
+				.where('Id', req.params.id)
+				.update({
+					User: knex.raw('User - 1')
+				})
+				.then(()=>{
+					res.send('done')
+				})
+			}else {
+				res.send('done');
+			}
 		})
 	})
-})
 
-router.post('/Demote',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',chunk=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`update CommunityMembers set Type = 'User' where UserId = '${data.user}' and Id = '${data.communityId}'`,(err,result)=>{
-			if(err) throw err;
-			con.query(`update communityList set User = User + 1 where Id = '${data.communityId}'`,(err,result)=>{
-				if(err) throw err;
-				res.send('done')
-			})
-		})
-	})
-})
-
-router.post('/delete',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',chunk=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`delete from CommunityMembers where User = '${data.user}' and Id = '${data.communityId}'`,(err,result)=>{
-			if(err) throw err;
-			con.query(`update communityList set Members = Members - 1 where Id = '${data.communityId}'`,(err,result)=>{
-				if(err) throw err;
-				if(data.Type == 'User'){
-					con.query(`update communityList set User = User - 1 where Id = '${data.communityId}'`,(err,result)=>{
-						if(err) throw err;
-						res.send('done')
-					})
-				}else {
-					res.send('done');
-				}
-			})
-		})
-	})
 })
 
 router.get('/list',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		// con.query(`select * from communityList where Id not in (select Id from CommunityMembers where UserId = '${req.user}')`,(err,community)=>{
-			res.render('joinCommunity',{
+	knex('Users')
+	.where('Id', req.user)
+	.then((user)=>{
+		res.render('joinCommunity',{
 				data: user[0]
 			})
-		// })
 	})
 })
 
 router.post('/list',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',chunk=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		con.query(`select * from communityList where Id not in (select Id from CommunityMembers where UserId = '${req.user}') and instr(CommunityName,'${data}') and Status = 'Activate'`,(err,community)=>{
-			return res.json(community)
+	knex('communityList')
+	.where(function(){
+		this.whereNotIn('Id',function(){
+			this.select('Id')
+			.from('communityMembers')
+			.where('UserId', req.user)
 		})
+	})
+	.andWhere(knex.raw(`instr(CommunityName, '${req.body.search}')`))
+	.andWhere('Status', 'Activate')
+	.then((community)=>{
+		return res.json(community)
 	})
 })
 
 router.get('/joinCommunity/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select MembershipRule from communityList where Id = '${req.params.id}'`,(err,result)=>{
-		if(err) throw err
+	knex.select('MembershipRule')
+	.from('communityList')
+	.where('Id', req.params.id)
+	.then((result)=>{
 		if(result[0].MembershipRule == 'Direct'){
-			con.query(`insert into CommunityMembers values('${req.params.id}', '${req.user}', 'True', 'User')`,(err,result)=>{
-				if(err) throw err
-				con.query(`update communityList set Members = Members + 1, User = User + 1 where Id = '${req.params.id}'`,(err,result)=>{
-					if(err) throw err;
+			knex('CommunityMembers')
+			.insert({
+				Id: req.params.id,
+				UserId: req.user,
+				Accepted: 'True',
+				Type: 'User'
+			})
+			.then(()=>{
+				knex('communityList')
+				.where('Id', req.params.id)
+				.update({
+					Members: knex.raw('Members + 1'),
+					User: knex.raw('User + 1'),
 				})
 			})
 		}else{
-			con.query(`insert into CommunityMembers values('${req.params.id}', '${req.user}', 'False','User')`,(err,result)=>{
-				if(err) throw err
-				con.query(`update communityList set TotalReq = TotalReq + 1 where Id = '${req.params.id}'`,(err,result)=>{
-					if(err) throw err;
+			knex('CommunityMembers')
+			.insert({
+				Id: req.params.id,
+				UserId: req.user,
+				Accepted: 'False',
+				Type: 'User'
+			})
+			.then(()=>{
+				knex('communityList')
+				.where('Id', req.params.id)
+				.update({
+					TotalReq: knex.raw('TotalReq + 1'),
 				})
 			})
 		}
@@ -283,25 +343,32 @@ router.get('/joinCommunity/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/communitymembers/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
-			con.query(`select * from users join CommunityMembers on users.Id = communityMembers.UserId where communityMembers.Id = '${req.params.id}'`,(err,members)=>{
-				res.render('communityMembers',{
-					data: user[0], 
-					community: community[0],
-					members: members, 
-					join: true,
-					request: false
-				})
+	console.log(req.params.id)
+	knex('communityList')
+	.where('Id', req.params.id)
+	.then((community)=>{
+		knex.table('Users')
+		.innerJoin('CommunityMembers', 'users.Id', '=', 'communityMembers.UserId')
+		.where('communityMembers.Id', req.params.id)
+		.then((members)=>{
+			res.render('communityMembers',{
+				data: user[0], 
+				community: community[0],
+				members: members, 
+				join: true,
+				request: false
 			})
 		})
 	})
 })
 
 router.get('/invite/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		if(err) throw err;
-		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
+	knex('Users')
+	.where('Id', req.user)
+	.then((user)=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.then((community)=>{
 			res.render('inviteUsers',{
 				data: user[0],
 				community: community[0],
@@ -313,39 +380,56 @@ router.get('/invite/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.post('/inviteUserList/:id',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',chunk=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`select * from Users where Id not in (select UserId from CommunityMembers where Id = '${req.params.id}') and Id not in (select UserId from InvitedUsers where Id = '${req.params.id}') and instr(Name, '${data.search}')`,(err,result)=>{
-			if(err) throw err;
-			res.json(result)
+	knex('Users')
+	.where(function(){
+		this.whereNotIn('Id', function(){
+			this.select('UserId')
+			.from('communityMembers')
+			.where('Id', req.params.id)
 		})
+	})
+	.andWhere(function(){
+		this.whereNotIn('Id', function(){
+			this.select('UserId')
+			.from('InvitedUsers')
+			.where('Id', req.params.id)
+		})
+	})
+	.andWhere(knex.raw(`INSTR(Name, '${req.body.search}')`))
+	.then((result)=>{
+		res.json(result)
 	})
 })
 
 router.post('/invite/:id',isAuthenticated(),(req,res)=>{
-	data = ''
-	req.on('data', chunk=>{
-		data += chunk
+	knex('invitedUsers')
+	.insert({
+		Id: req.params.id,
+		UserId: req.body.id
 	})
-	req.on('end', ()=>{
-		data = JSON.parse(data)
-		con.query(`insert into invitedUsers values('${req.params.id}', '${data.id}')`,(err,result)=>{
-			con.query(`update communityList set Invited = Invited + 1 where Id = '${req.params.id}'`,(err,result)=>{
-				if(err) throw err;
-				res.send('done')
-			})
+	.then(()=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.update({
+			Invited: knex.raw('Invited + 1')
+		})
+		.then(()=>{
+			res.send('done')
 		})
 	})
 })
 
 router.get('/communityProfile/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		con.query(`select * from communityList  where Id = '${req.params.id}'`,(err,community)=>{
-			con.query(`select * from communityMembers join Users on communityMembers.UserId = Users.Id where communityMembers.Id = '${req.params.id}'`,(err,joined)=>{
+	knex('User')
+	.where('Id', req.user)
+	.then((user)=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.then((community)=>{
+			knex.table('communityMembers')
+			.innerJoin('Users','communityMembers.UserId', '=', 'Users.Id')
+			.where('communityMembers.Id', req.params.id)
+			.then((joined)=>{
 				var requested
 				var join = joined.filter((value)=>{
 					return value.UserId == req.user
@@ -372,16 +456,22 @@ router.get('/communityProfile/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/leaveCommunity/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from communityMembers where Id = '${req.params.id}' and UserId = '${req.user}'`,(err,member)=>{
-		if(err) throw err;
-		con.query(`delete from communityMembers where Id = '${req.params.id}' and UserId = '${req.user}'`,(err,result)=>{
-			if(err) throw err;
-			var q = `update communityList set Members = Members - 1`
-			if(member[0].Type == 'User'){
-				q = q + `, User = User - 1`
-			}
-			q = q + ` where Id = '${req.params.id}'`
-			con.query(q,(err,result)=>{
+	knex('communityMembers')
+	.where('Id', req.params.id)
+	.andWhere('UserId', req.user)
+	.then((member)=>{
+		knex('communityMembers')
+		.where('Id', req.params.id)
+		.andWhere('UserId', req.user)
+		.del()
+		.then((result)=>{
+			knex('communityList')
+			.where('Id', req.params.id)
+			.update({
+				Members: knex.raw('Members - 1'),
+				User: member[0].Type == 'User' ? knex.raw('User - 1') : knex.raw('User')
+			})
+			.then((result)=>{
 				res.redirect(`/community/communityProfile/${req.params.id}`)
 			})
 		})
@@ -389,39 +479,47 @@ router.get('/leaveCommunity/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/requests/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from communityMembers join Users on communityMembers.UserId = Users.Id where communityMembers.Id = '${req.params.id}' and Accepted = 'False'`,(err,request)=>{
-		if(err) throw err;
+	knex.table('communityMembers')
+	.innerJoin('Users','communityMembers.UserId', '=','Users.Id')
+	.where('communityMembers.Id', req.params.id)
+	andWhere('Accepted', 'False')
+	.then((request)=>{
 		res.json(request)
 	})
 })
 
 router.get('/invitedUsers/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from invitedUsers join Users on invitedUsers.UserId = Users.Id where invitedUsers.Id = '${req.params.id}'`,(err,request)=>{
-		if(err) throw err;
+	knex.table('invitedUsers').innerJoin('Users', 'invitedUsers.UserId', '=', 'Users.Id')
+	.where('invitedUsers.Id', req.params.id)
+	.then((request)=>{
 		res.json(request)
 	})
 })
 
 router.post('/deleteInvite/:id',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data', chunk=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`delete from invitedUsers where Id = '${req.params.id}' and UserId = '${data.user}'`,(err,result)=>{
-			if(err) throw err;
-			con.query(`update communityList set invited = invited - 1 where Id = '${req.params.id}'`,(err,result)=>{
-				if(err) throw err;
-				res.send('done')
-			})
+	knex('invitedUsers')
+	.where('Id', req.params.id)
+	.andWhere('UserId', req.body.user)
+	.del()
+	.then(()=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.update({
+			invited: knex.raw('invited - 1')
+		})
+		.then(()=>{
+			res.send('done')
 		})
 	})
 })
 
 router.get('/editCommunity/:id',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
+	knex('Users')
+	.where('Id', req.user)
+	.then((user)=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.then((community)=>{
 			res.render('editCommunity',{
 				data: user[0], 
 				community: community[0], 
@@ -433,35 +531,48 @@ router.get('/editCommunity/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.post('/editCommunity/:id',isAuthenticated(),(req,res)=>{
-	var data = req.body
-	con.query(`update communityList set CommunityName = '${req.body.CommunityName}', MembershipRule = '${req.body.MembershipRule}', Discription = '${req.body.Discription.replace(/<[^>]*>/g, '')}' where Id = '${req.params.id}'`,(err,result)=>{
-		if(err) throw err;
+	knex('communityList')
+	.where('Id', req.params.id)
+	.update({
+		CommunityName: req.body.CommunityName,
+		MembershipRule: req.body.MembershipRule,
+		Discription: req.body.Discription.replace(/<[^>]*>/g, '')
+	})
+	.then(()=>{
 		res.redirect(`/community/communityprofile/${req.params.id}`)
 	})
 })
 
 router.post('/acceptReq/:id',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data', chunk=>{
-		data += chunk
+	knex('communityMembers')
+	.where('Id', req.params.id)
+	.andWhere('UserId', req.body.user)
+	.update({
+		Accepted: 'True'
 	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`update communityMembers set Accepted = 'True' where Id = '${req.params.id}' and UserId = '${data.user}'`,(err,result)=>{
-			if(err) throw err;
-			con.query(`update communityList set TotalReq = TotalReq - 1, Members = Members + 1, User = User + 1 where Id = '${req.params.id}'`,(err,result)=>{
-				if(err) throw err;
-				res.send('done')
-			})
+	.then(()=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.update({
+			TotalReq: knex.raw('TotalReq - 1'),
+			members: knex.raw('members + 1')
+		})
+		.then(()=>{
+			res.send('done')
 		})
 	})
 })
 
 router.get('/discussion/:id',(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,user)=>{
-		if(err) throw err;
-		con.query(`select * from communityList where Id = '${req.params.id}'`,(err,community)=>{
-			con.query('select name from tags',(err,tags)=>{
+	knex('Users')
+	.where('Id', req.user)
+	.then((user)=>{
+		knex('communityList')
+		.where('Id', req.params.id)
+		.then((community)=>{
+			knex.select('name')
+			.from('tags')
+			.then((tags)=>{
 				res.render('Discussion',{
 					data: user[0], 
 					community: community[0], 

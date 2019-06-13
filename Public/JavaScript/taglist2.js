@@ -4,15 +4,13 @@ var close = document.querySelector('#close')
 var searchbox = document.querySelector('#number')
 var search = document.querySelector('#search')
 
-function del(e){
-	var value = e.target
+function del(Id){
 	var req = new XMLHttpRequest()
-	var user = value.parentNode.parentNode.parentNode
 	req.onload = ()=>{
 		table.ajax.reload(null, false);
 	}
-	req.open('POST','/deletetag')
-	req.send(user.firstChild.textContent.trim())
+	req.open('GET',`/deletetag/${Id}`)
+	req.send()
 }
 
 $(document).ready(function(){
@@ -32,7 +30,7 @@ $(document).ready(function(){
             { title : "Action","data": null, 'orderable' : false, 'sClass':'action'}
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-        	$('td:eq(3)', nRow).html( '<div style="min-width: 100px;"><i onclick="del(event)" class="fa fa-trash-o icon"></i></div>' );
+        	$('td:eq(3)', nRow).html( `<div style="min-width: 100px;"><i onclick="del('${aData.Id}')" class="fa fa-trash-o icon"></i></div>` );
         }
 	});
 	$('.refresh').on('click', function () {

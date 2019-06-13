@@ -115,11 +115,11 @@ function updateInfo(event,Id){
 		table.ajax.reload(null, false);
 	}
 	req.open('POST',`/community/updateCommunity/${Id}`)
+	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 
-function Discription(event) {
-	var Id = event.target.parentElement.parentElement.parentElement.firstElementChild.textContent;
+function Discription(Id) {
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
 		var data = JSON.parse(req.responseText)
@@ -151,8 +151,8 @@ function Discription(event) {
 		`
 		popup2(data,event)
 	}
-	req.open('POST','/community/getCommunity')
-	req.send(Id)
+	req.open('GET',`/community/getCommunity/${Id}`)
+	req.send()
 }
 
 $(document).ready(function(){
@@ -183,7 +183,7 @@ $(document).ready(function(){
 	        }else{
 	        	$('td:eq(7)', nRow).html(`<img src="/static/${aData.CommunityPic}" style="border: 5px solid red">`)
 	        }
-        	$('td:eq(6)', nRow).html(`<div class="actions"><i class="fa fa-edit icon" onclick="editCommunity(event)"></i><i class="fa fa-info icon" onclick="Discription(event)"></i><div>`)
+        	$('td:eq(6)', nRow).html(`<div class="actions"><i class="fa fa-edit icon" onclick="editCommunity(event)"></i><i class="fa fa-info icon" onclick="Discription('${aData.Id}')"></i><div>`)
         }
 	});
 	$('.Role').on('change', function () {

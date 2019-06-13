@@ -13,20 +13,20 @@ function sendMail(event){
 	console.log('rishav')
 	msg = ''
 	document.querySelector('.trumbowyg-editor').childNodes.forEach((value)=>{
-		msg += value.textContent + '\n';
+		msg += value.textContent.replace(/<[^>]*>/g, '');
 	})
 	var data = {
 		to: document.querySelector('.to').value,
 		subject: document.querySelector('.subject').value,
-		msg: msg
+		msg
 	}
-	console.log(data)
 	var req = new XMLHttpRequest
 	req.onload = ()=>{
 		console.log('Mail Send')
 		document.querySelector('.mailContainer').classList.add('animatereverse')
 	}
 	req.open('POST','/admin/userlist/sendMail')
+	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 
@@ -88,6 +88,7 @@ function changeActivationState(e){
 		}
 	}
 	req.open('POST','/Activation')
+	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 
@@ -115,6 +116,7 @@ update.onclick = ()=>{
 		console.log('updated')
 	}
 	req.open('POST','userlist/update')
+	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 

@@ -72,7 +72,8 @@
 				document.querySelector('.availabe').style.display = 'block'
 			}
 			req.open('POST','/Available');
-			req.send(email.value)
+			req.setRequestHeader("Content-Type", "application/json");
+			req.send(JSON.stringify(Email: email.value))
 		}else{
 			document.querySelector('.availabe').style.display = 'none'
 		}

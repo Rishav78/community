@@ -69,7 +69,10 @@ function  displayCommunitys() {
 		}
 	}
 	req.open('POST','/community/list')
-	req.send(document.querySelector('.textBox').value)
+	req.setRequestHeader("Content-Type", "application/json");
+	req.send(JSON.stringify({
+		search: document.querySelector('.textBox').value
+	}))
 }
 
 function joinReq(event){

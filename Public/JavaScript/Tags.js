@@ -13,15 +13,13 @@ function saveTag(){
 		var req = new XMLHttpRequest()
 		req.onload = ()=>{
 			text.value = ''
-			if(req.responseText == 'exist'){
-				console.log('fghjk')
-				document.querySelector('.exist').classList.add('animate')
-			}else{
-				document.querySelector('.added').classList.add('animate')
-			}
+			req.responseText == 'exist' ? document.querySelector('.exist').classList.add('animate') : document.querySelector('.added').classList.add('animate')
 		}
 		req.open('POST','tags')
-		req.send(text.value)
+		req.setRequestHeader("Content-Type", "application/json");
+		req.send(JSON.stringify({
+			tag: text.value
+		}))
 	}
 }
 

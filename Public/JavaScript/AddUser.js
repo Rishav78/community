@@ -44,8 +44,8 @@ function add(){
 
 		}
 	}
-	console.log(data)
 	req.open('POST','/admin/adduser')
+	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 

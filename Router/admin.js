@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-var con = require('./mysql.js')
+var knex = require('./mysql.js')
 var nodeMailer = require('nodemailer')
 
 const transporter = nodeMailer.createTransport({
@@ -17,30 +17,44 @@ const transporter = nodeMailer.createTransport({
 })
 
 router.get('/profile',isAuthenticated(),(req,res)=>{
-	con.query(`select * from Users where Id = '${req.user}'`,(err,result)=>{
-		if(err) throw err
-		var data = result[0]
-		console.log(data)
-		return res.render('profile',{data : data,visible : false})
+	knex('Users')
+	.where('Id', req.user)
+	.then((result)=>{
+		return res.render('profile',{data : result[0],visible : false})
 	})
 })
+
 router.get('/adduser',isAuthenticated(),(req,res)=>{
-	con.query(`select Image, Role, Name from Users where Id = '${req.user}'`,(err,result)=>{
-		if (err) throw err;
+	knex('Users')
+	.where('Id', req.user)
+	.then((result)=>{
 		return res.render('AddUser',{added : false,data: result[0]})
 	})
 })
+
 router.post('/adduser',isAuthenticated(),(req,res)=>{
 	var data = req.body
-	con.query(`select * from Users where Email = '${data.email}' or Id = '${req.user}'`,(err,total)=>{
-		if(err) throw err;
+	knex('Users')
+	.where('Email', req.body.email)
+	.orWhere('Id', req.user)
+	.then(function(total){
 		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 		if(total.length == 1){
-			var q = `insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values('${id}', '${data.name}', '${data.email}', '${data.password}', '${data.phone}', '${data.city}', '${data.role}', 'Pending', 'default.png', 'True', '${data.role}')`
-			con.query(q,(err,result)=>{
-				if(err) throw err;
-				console.log('add')
-				// console.log()
+			this.insert({
+				Id,
+				Name: req.body.name,
+				Email: req.body.email,
+				Password:req.body.password,
+				Phone:req.body.phone,
+				City:req.body.city,
+				Role:req.body.role,
+				Status:'Pending',
+				Image:'default.png',
+				ActivationState:'True',
+				LoginAs:req.body.role,
+
+			})
+			.then(()=>{
 				return res.render('AddUser',{added : true, data: total[0]})
 			})
 		}else{
@@ -50,75 +64,69 @@ router.post('/adduser',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/userlist',isAuthenticated(),(req,res)=>{
-	con.query('select Image, Role, Name from Users',(err,result)=>{
+	knex('Users')
+	.where('Id', req.user)
+	.then((result)=>{
 		return res.render('ShowUser',{data : result[0]})
 	})
 })
 
 router.post('/user',isAuthenticated(),(req,res)=>{
 	var arr = ['Email', 'Phno', 'City', 'Status', 'Role', 'Action']
-	var data = req.body
-	con.query(`select * from Users order by ${arr[data.order[0].column]} ${data.order[0].dir}`,(err,result)=>{
-		if(err) throw err;
-		if(data.roleFilter!='All'){
-			result = result.filter((value)=>{
-				return value.Role === data.roleFilter
-			})
+	knex('Users')
+	.where(function(){
+		if(req.body.roleFilter!='All'){
+			this.where(knex.raw(`INSTR(Email, '${req.body.search.value}')`))
+			if(req.body.roleFilter!='All'){
+				this.andWhere('Role', '=', req.body.roleFilter)
+			}
+			if(req.body.statusFilter!='All'){
+				this.andWhere('Status', '=', req.body.statusFilter)
+			}
 		}
-		if(data.statusFilter!='All'){
-			result = result.filter((value)=>{
-				return value.Status === data.statusFilter
-			})
-		}
-		if(data.search.value){
-			result = result.filter((value)=>{
-				return value.Email.includes(data.search.value)
-			})
-		}
+	})
+	.orderBy(arr[req.body.order[0].column], req.body.order[0].dir)
+	.then((result)=>{
 		var record = result.filter((value,index)=>{
-			if(index >= data.start && data.length>0){
-				data.length--
+			if(index >= req.body.start && req.body.length>0){
+				req.body.length--
 				return true;
 			}
 		})
-		con.query('select count(Email) from Users',(err,total)=>{
+		knex('Users')
+		.count('Email')
+		.then((total)=>{
 			res.json({'recordsTotal': total[0]['count(Email)'], 'recordsFiltered' : result.length, data: record});
 		})
 	})
 })
 
 router.post('/userlist/sendMail',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data', chunk=>{
-		data += chunk
-	})
-	req.on('end',()=>{
-		data = JSON.parse(data);
-		let mail = {
-			from: 'rishavgarg789@gmail.com',
-			to: data.to,
-			subject: data.subject,
-			text: data.msg
-		}
-		transporter.sendMail(mail,(err,info)=>{
-			if(err) throw err;
-			console.log('send')
-			res.send('send')
-		})
+	let mail = {
+		from: 'rishavgarg789@gmail.com',
+		to: req.body.to,
+		subject: req.body.subject,
+		text: req.body.msg
+	}
+	transporter.sendMail(mail,(err,info)=>{
+		if(err) throw err;
+		console.log('send')
+		res.send('send')
 	})
 })
 
 router.post('/userlist/update',isAuthenticated(),(req,res)=>{
-	var data = ''
-	req.on('data',(chunk)=>{
-		data += chunk
+	knex('Users')
+	.where('Email', req.body.Email)
+	.update({
+		Email:req.body.Email,
+		Phno:req.body.Phone,
+		City:req.body.City,
+		Status:req.body.Status,
+		Role:req.body.Role,
 	})
-	req.on('end',()=>{
-		data = JSON.parse(data)
-		con.query(`update Users set Email = '${data.Email}', Phno = '${data.Phone}', City = '${data.City}', Status = '${data.Status}', Role = '${data.Role}' where Email = '${data.Email}'`,(err,result)=>{
-			if(err) throw err
-		  	return res.send('done')
-		})
+	.then(()=>{
+		return res.send('done')
 	})
 })
 
