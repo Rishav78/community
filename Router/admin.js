@@ -1,6 +1,6 @@
 var express = require('express')
-var router = express.Router()
-var knex = require('./mysql.js')
+var router = express.Router();
+const user = require('../models/user');
 var nodeMailer = require('nodemailer')
 
 const transporter = nodeMailer.createTransport({
@@ -17,45 +17,42 @@ const transporter = nodeMailer.createTransport({
 })
 
 router.get('/profile',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
+	user
+	.findOne({'_id': req.user._id})
 	.then((result)=>{
-		return res.render('profile',{data : result[0],visible : false})
+		return res.render('profile',{data : result,visible : false})
 	})
 })
 
 router.get('/adduser',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
+	user
+	.findOne({'_id': req.user._id})
 	.then((result)=>{
-		return res.render('AddUser',{added : false,data: result[0]})
+		return res.render('AddUser',{added : false,data: result})
 	})
 })
 
 router.post('/adduser',isAuthenticated(),(req,res)=>{
-	var data = req.body
-	knex('Users')
-	.where('Email', req.body.email)
-	.orWhere('Id', req.user)
+	var data = req.body;
+	user
+	.findOne({'Email': req.body.email})
 	.then(function(total){
-		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-		if(total.length == 1){
-			this.insert({
-				Id,
+		console.log(total)
+		if(!total){
+			const newuser = new user({
 				Name: req.body.name,
 				Email: req.body.email,
 				Password:req.body.password,
 				Phone:req.body.phone,
 				City:req.body.city,
 				Role:req.body.role,
-				Status:'Pending',
+				Status:false,
 				Image:'default.png',
-				ActivationState:'True',
-				LoginAs:req.body.role,
-
-			})
-			.then(()=>{
-				return res.render('AddUser',{added : true, data: total[0]})
+				ActivationState: true,
+				LoginAs:req.body.role
+			});
+			newuser.save((usr) => {
+				return res.render('AddUser',{added : true, data: req.user})
 			})
 		}else{
 			return res.send('User Already Exist')
@@ -64,28 +61,25 @@ router.post('/adduser',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/userlist',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
+	user
+	.findOne({'_id': req.user})
 	.then((result)=>{
-		return res.render('ShowUser',{data : result[0]})
+		return res.render('ShowUser',{data : result})
 	})
 })
 
-router.post('/user',isAuthenticated(),(req,res)=>{
-	var arr = ['Email', 'Phno', 'City', 'Status', 'Role', 'Action']
-	knex('Users')
-	.where(function(){
-		if(req.body.roleFilter!='All'){
-			this.where(knex.raw(`INSTR(Email, '${req.body.search.value}')`))
-			if(req.body.roleFilter!='All'){
-				this.andWhere('Role', '=', req.body.roleFilter)
-			}
-			if(req.body.statusFilter!='All'){
-				this.andWhere('Status', '=', req.body.statusFilter)
-			}
-		}
-	})
-	.orderBy(arr[req.body.order[0].column], req.body.order[0].dir)
+router.post('/userlist',isAuthenticated(),(req,res)=>{
+	const arr = ['Email', 'Phno', 'City', 'Status', 'Role', 'Action'];
+	const query = {};
+	if(req.body.roleFilter!='All') 
+		query.Role = req.body.roleFilter;
+	if(req.body.statusFilter!='All') 
+		query.Status = req.body.statusFilter
+	if(req.body.search.value) 
+		query.Email = {$regex: new RegExp(req.body.search.value)}
+	user
+	.find(query)
+	.sort({[arr[req.body.order[0].column]]: req.body.order[0].dir})
 	.then((result)=>{
 		var record = result.filter((value,index)=>{
 			if(index >= req.body.start && req.body.length>0){
@@ -93,10 +87,10 @@ router.post('/user',isAuthenticated(),(req,res)=>{
 				return true;
 			}
 		})
-		knex('Users')
-		.count('Email')
+		user
+		.countDocuments({})
 		.then((total)=>{
-			res.json({'recordsTotal': total[0]['count(Email)'], 'recordsFiltered' : result.length, data: record});
+			res.json({'recordsTotal': total, 'recordsFiltered' : result.length, data: record});
 		})
 	})
 })
@@ -116,9 +110,10 @@ router.post('/userlist/sendMail',isAuthenticated(),(req,res)=>{
 })
 
 router.post('/userlist/update',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Email', req.body.Email)
-	.update({
+	user.updateOne({
+		'_id': req.user._id,
+	},
+	{
 		Email:req.body.Email,
 		Phno:req.body.Phone,
 		City:req.body.City,

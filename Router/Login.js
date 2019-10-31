@@ -1,8 +1,9 @@
-var express = require('express')
-var router = express.Router()
-var knex = require('./mysql.js')
-var multer = require('multer')
-var path = require('path')
+const express = require('express')
+const router = express.Router()
+const knex = require('./mysql.js')
+const multer = require('multer')
+const path = require('path')
+const user = require('../models/user');
 
 const storage = multer.diskStorage({
 	destination: './Public/Files',
@@ -21,8 +22,8 @@ const upload = multer({
 
 router.get('/',(req,res)=>{
 	if(req.isAuthenticated()){
-		knex('Users').where('Id',req.user).then((result)=>{
-			if(result[0].Verified == 'True'){
+		user.find({"_id": req.user._id}).then((result)=>{
+			if(result[0].Verified == true){
 				if(result[0].Role == 'User'){
 					return res.redirect('/profile')
 				}else{
@@ -37,21 +38,21 @@ router.get('/',(req,res)=>{
 			}
 		})
 	}else{
-		res.render('Login',{visible: false})
+		res.render('login',{visible: false})
 	}
 })
 router.post('/',(req,res)=>{
-	knex('Users')
-	.where({
+	user
+	.find({
 		Email: req.body.Email,
 		Password: req.body.Password
 	})
 	.then((user)=>{
 		if(user.length>0){
-			if(user[0].ActivationState == 'True'){
-				req.login(user[0].Id,(err)=>{
+			if(user[0].ActivationState == true){
+				req.login(user[0]._id,(err)=>{
 					if(err) throw err
-					if(user[0].Verified == 'True'){
+					if(user[0].Verified == true){
 						if(user[0].Role == 'User'){
 							return res.redirect('/profile')	
 						}else{
@@ -66,7 +67,7 @@ router.post('/',(req,res)=>{
 				return res.render('404NotFound',{msg: 'Error: Unable to login you are deactivated contact site admin...'})
 			}
 		}else{
-			return res.render('Login',{visible: true})
+			return res.render('login',{visible: true})
 		}
 	})
 })

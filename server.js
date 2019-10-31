@@ -1,15 +1,16 @@
 // <-------------------- Require Modules ------------------------------>
 
-var express = require('express')
-var path = require('path')
-var multer = require('multer')
-var bodyParser = require('body-parser')
-var mysql = require('mysql')
-var session = require('express-session')
-var MySQLStorage = require('express-mysql-session')(session)
-var passport = require('passport')
-var GitHubStrategy = require('passport-github').Strategy;
-var app = express()
+const express = require('express');
+const app = express();
+const path = require('path');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const MongooseStore = require('connect-mongo')(session);
+const passport = require('passport');
+const GitHubStrategy = require('passport-github').Strategy;
+const user = require('./models/user');
+const db = require('./models/db');
+const Port = 8000;
 
 // <-------------------------------------------------------------------->
 
@@ -20,10 +21,10 @@ var app = express()
 
 // <-------------------- Routes ---------------------------------------->
 
-var Login = require('./Router/Login.js')
-var Admin = require('./Router/admin.js')
-var Tags = require('./Router/tags.js')
-var Community = require('./Router/community.js')
+const Login = require('./Router/Login.js');
+const Admin = require('./Router/admin.js');
+const Tags = require('./Router/tags.js');
+const Community = require('./Router/community.js');
 
 // <------------------------------------------------------------------->
 
@@ -65,23 +66,11 @@ app.use(bodyParser.json());
 app.use('/static',express.static(path.join(__dirname,'Public','JavaScript')))
 app.use('/static',express.static(path.join(__dirname,'Public','CSS')))
 app.use('/static',express.static(path.join(__dirname,'Public','Files')))
-const con = mysql.createConnection({
-	host : 'localhost',
-	user : 'root',
-	password : '',
-	database : 'UCA_WebProject'
-})
-const sessionStore = new MySQLStorage({
-	host : 'localhost',
-	user : 'root',
-	password : '',
-	database : 'UCA_WebProject'
-})
 app.use(session({
 	secret : 'sdfghjkl',
 	resave : false,
 	saveUninitialized : false,
-	store : sessionStore
+	store : new MongooseStore({mongooseConnection: db.connection}),
 }))
 // Date
 app.use(passport.initialize())
@@ -111,8 +100,8 @@ app.get('/code', passport.authenticate('github', { failureRedirect: '/' }), (req
 // 		cb('error')
 // 	}
 // }
-con.connect((err)=>{
-	if (err) throw err
+// con.connect((err)=>{
+// 	if (err) throw err
 	// var q = `insert into Users(Name, Email, Password, Phno, City, Role, Status, ActivationState, LoginAs) values('rishav', 'rishav@gmail.com', '123456789', '1234567890', 'sdfghj,', 'User', 'Pending', 'True', 'Admin')`
 	// 	con.query(q,(err,result)=>{
 	// 		if(err) throw err;
@@ -144,7 +133,7 @@ con.connect((err)=>{
 	 
 	// con.query(q)
 	// console.log('connected...')
-})
+// })
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -165,12 +154,15 @@ app.use('/community',Community)
 
 // <----------------------------------- Maintaining Passport(session) ----------------->
 
-passport.serializeUser((user,done)=>{
-	done(null, user)
-})
-passport.deserializeUser((user, done)=>{
-	done(null,user)
-})
+passport.serializeUser(function(user, done) {
+	done(null, user);
+});
+   
+passport.deserializeUser(function(id, done) {
+	user.findById(id, function (err, user) {
+		done(err, user);
+	});
+});
 
 // <---------------------------------------------------------------------------------->
 
@@ -178,8 +170,6 @@ passport.deserializeUser((user, done)=>{
 
 
 // <------------------------- Initializing Port -------------------------------------->
-
-var Port = 8000
 app.listen(Port,()=>{
 	console.log(`Listening on port ${Port}`)
 })

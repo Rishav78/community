@@ -127,7 +127,7 @@ $(document).ready(function(){
 		"serverSide": true,
         "processing": true,
 		"ajax": {
-	        url: '/admin/user',
+	        url: '/admin/userlist',
 	        type: 'POST',
 	        "data": function ( d ) {
 	          d.roleFilter   = $('.Role').val();

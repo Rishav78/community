@@ -23,10 +23,10 @@ $(document).ready(function(){
 	        type: 'POST',
 	     },
 	     "columns": [
-	     	{ title : "Id", "data": "Id", 'sClass':'tagName', 'visible': false},
+	     	{ title : "Id", "data": "_id", 'sClass':'tagName', 'visible': false},
             { title : "Tag Name", "data": "name", 'sClass':'tagName'},
             { title : "Created By", "data": "CreatedBy", 'sClass':'createdBy'},
-            { title : "Created Date", "data": "CreationDate", 'sClass':'CreationDate'},
+            { title : "Created Date", "data": "createdAt", 'sClass':'CreationDate'},
             { title : "Action","data": null, 'orderable' : false, 'sClass':'action'}
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
