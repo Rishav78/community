@@ -30,7 +30,7 @@ $(document).ready(function(){
             { title : "Action","data": null, 'orderable' : false, 'sClass':'action'}
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-        	$('td:eq(3)', nRow).html( `<div style="min-width: 100px;"><i onclick="del('${aData.Id}')" class="fa fa-trash-o icon"></i></div>` );
+        	$('td:eq(3)', nRow).html( `<div style="min-width: 100px;"><i onclick="del('${aData._id}')" class="fa fa-trash-o icon"></i></div>` );
         }
 	});
 	$('.refresh').on('click', function () {

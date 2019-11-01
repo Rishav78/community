@@ -1,4 +1,3 @@
-
 var refresh = document.querySelector('.refresh')
 var popup = document.querySelector('.edit')
 var close = document.querySelector('#close')
@@ -41,7 +40,7 @@ function showUpdateBox(event){
 	}
 }
 
-function switchRole(e,msg){
+function switchRole(e, msg, user, state){
 	$.confirm({
 	  title: msg,
 	  content: "Do you really want switch state...",
@@ -51,7 +50,7 @@ function switchRole(e,msg){
 	      'Yes': {
 	          btnClass: 'btn-success',
 	          action: function () {
-	            changeActivationState(e)
+	            changeActivationState(e, user, state)
 	          }
 	      },
 	      'No': {btnClass: 'btn-danger',}
@@ -59,27 +58,24 @@ function switchRole(e,msg){
 	});
 }
 
-function changeActivationState(e){
-	var target = e.target
-	var user = target.parentNode.parentNode.parentNode.firstElementChild.textContent.trim()
-	var state = target.classList.contains('fa-check-circle') ? "True" : "False"
+function changeActivationState(e, user, state){
+	const target = e.target;
+	// var user = target.parentNode.parentNode.parentNode.firstElementChild.textContent.trim()
+	// var state = target.classList.contains('fa-check-circle') ? true : false
 	console.log(user)
 	var data = {
 		user : user,
-		state : state
+		state : state, 
 	}
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
-		console.log(target.classList)
 		if(target.classList.contains('fa-check-circle')){
-			console.log('rishav')
 			target.classList.remove('fa-check-circle')
 			target.classList.add('fa-times-circle')
 			target.setAttribute('onclick','switchRole(event,"Deactivate User")')
 			document.querySelector('.added').innerHTML = `User ${user} Activated`
 			document.querySelector('.added').classList.add('animate')
 		}else{
-			console.log('garg')
 			target.classList.remove('fa-times-circle')
 			target.classList.add('fa-check-circle')
 			target.setAttribute('onclick','switchRole(event,"Activate User")')
@@ -144,14 +140,14 @@ $(document).ready(function(){
             { title : "Actions","data": null, 'orderable' : false, 'sClass':'action'}
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
-        	if(aData.Role === 'Superadmin'){
+        	if(aData.Role === 'superadmin'){
         		console.log(aData.Role)
         		$('td:eq(5)', nRow).html( '<div style="min-width: 100px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i></div>' );
         	}else{
-        		if(aData.ActivationState == 'True'){
-	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event,'Deactivate User?')" class="fa fa-times-circle icon"></i></div>` );
+        		if(aData.ActivationState == true){
+	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event, 'Deactivate User?', '${aData._id}', false)" class="fa fa-times-circle icon"></i></div>` );
 	        	}else{
-	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event,'Activate User?')" class="fa fa-check-circle icon"></i></div>`);
+	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event, 'Activate User?', '${aData._id}', true)" class="fa fa-check-circle icon"></i></div>`);
 	        	}
         	}
         }

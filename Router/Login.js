@@ -4,6 +4,7 @@ const knex = require('./mysql.js')
 const multer = require('multer')
 const path = require('path')
 const user = require('../models/user');
+const tag = require('../models/tag');
 
 const storage = multer.diskStorage({
 	destination: './Public/Files',
@@ -56,8 +57,8 @@ router.post('/',(req,res)=>{
 						if(user[0].Role == 'User'){
 							return res.redirect('/profile')	
 						}else{
-							return res.send(user)
-							// return res.redirect('/admin/profile')
+							// return res.send(user)
+							return res.redirect('/admin/profile')
 						}
 					}else{
 						res.render('editInfomation_starting',{data: user[0]})
@@ -73,18 +74,13 @@ router.post('/',(req,res)=>{
 })
 
 router.get('/profile',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
-	.then((result)=>{
-		var data = result[0]
-		return res.render('profile',{data : data,visible : true})
-	})
+	return res.render('profile',{data : req.user,visible : true})
 })
 
 router.post('/Activation',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Email', req.body.user)
-	.update({
+
+	user
+	.updateOne({"_id": req.body.user},{
 		ActivationState: req.body.state,
 	})
 	.then(()=>{
@@ -103,9 +99,8 @@ router.post('/Available',(req,res)=>{
 })
 
 router.get('/Logout',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
-	.update({
+	user
+	.updateOne({'_id': req.user._id},{
 		LoginAs: 'Admin'
 	})
 	.then(()=>{
@@ -116,46 +111,36 @@ router.get('/Logout',isAuthenticated(),(req,res)=>{
 	})
 })
 
-router.post('/deletetag/:id',isAuthenticated(),(req,res)=>{
-	knex('tags')
-	.where('name',req.params.id)
-	.del()
+router.get('/deletetag/:id',isAuthenticated(),(req,res)=>{
+	console.log(req.params.id)
+	tag.findByIdAndRemove(req.params.id)
 	.then(()=>{
 		return res.send('done')
 	})
 })
 
 router.get('/changePassword',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id',req.user)
-	.then((result)=>{
-		res.render('ChangePassword',{changed: false, data: result[0]})
-	})
+	res.render('changePassword',{changed: false, data: req.user})
 })
 
 router.post('/changePassword',isAuthenticated(),(req,res)=>{
-	knex.select().from('Users').where('Id',req.user).then((result)=>{
-		if(result[0].Password === req.body.old){
-			knex('Users')
-			.where('Id', req.user)
-			.update({
+	user.findById(req.user._id)
+	.then((result)=>{
+		if(result.Password === req.body.old){
+			user.updateOne({'_id': req.user._id},{
 				Password: req.body.new
 			})
 			.then(()=>{
-				res.render('ChangePassword',{changed: 'changed', data: result[0]})
+				res.render('changePassword',{changed: 'changed', data: req.user})
 			})
 		}else{
-			res.render('ChangePassword',{changed: 'wrong', data: result[0]})
+			res.render('changePassword',{changed: 'wrong', data: req.user})
 		}
 	})
 })
 
 router.get('/editInformation',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
-	.then((result)=>{
-		return res.render('editInformation',{data: result[0]})
-	})
+	return res.render('editInformation',{data: req.user})
 })
 
 router.get('/getInformation',isAuthenticated(),(req,res)=>{
@@ -166,12 +151,11 @@ router.get('/getInformation',isAuthenticated(),(req,res)=>{
 	})
 })
 
-router.post('/updateInfo',isAuthenticated(),(req,res)=>{
+router.post('/editInformation',isAuthenticated(),(req,res)=>{
 	var data = req.body
-	console.log(data)
-	knex('Users')
-	.where('Id',req.user)
-	.update({
+	console.log(req.body)
+	user.updateOne({'_id': req.user._id},
+	{
 		Name: data.name,
 		DOB: data.dob,
 		Gender: data.gender,
@@ -179,7 +163,7 @@ router.post('/updateInfo',isAuthenticated(),(req,res)=>{
 		City: data.city,
 		About: data.about,
 		Expectations: data.expectations,
-		Verified: 'True'
+		Verified: true
 	})
 	.then(()=>{
 		res.redirect('/profile')
@@ -187,16 +171,16 @@ router.post('/updateInfo',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/switchAsUser',(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
+	user
+	.findById(req.user._id)
 	.then((result)=>{
 		var data = {
-			switch: result[0].LoginAs == 'Admin' ? 'User': 'Admin',
-			msg: result[0].LoginAs == 'Admin' ? 'Switch Admin To User' : 'Switch User To Admin'
+			switch: result.LoginAs == 'Admin' ? 'User': 'Admin',
+			msg: result.LoginAs == 'Admin' ? 'Switch Admin To User' : 'Switch User To Admin'
 		}
-		knex('Users')
-		.where('Id', req.user)
-		.update({
+		
+		user
+		.updateOne({'_id': req.user._id},{
 			LoginAs: data.switch
 		})
 		.then(()=>{

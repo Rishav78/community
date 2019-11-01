@@ -1,10 +1,12 @@
 var express = require('express')
 var router = express.Router()
-var knex = require('./mysql.js')
+const user = require('../models/user');
+const community = require('../models/community');
 var path = require('path')
 var multer = require('multer')
 var striptags = require('striptags')
-
+const communitymembers = require('../models/communityMember');
+const mongoose = require('../models/db');
 
 const storage = multer.diskStorage({
 	destination: './Public/Files',
@@ -26,25 +28,26 @@ router.post('/updateProfilePic',(req,res)=>{
 })
 
 router.get('/communityList',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
+	user
+	.findById(req.user._id)
 	.then((result)=>{
-		return res.render('communityList',{
-			data: result[0]
+		return res.render('CommunityList',{
+			data: result
 		})
 	})
 })
 
 router.post('/communityList',isAuthenticated(),(req,res)=>{
-	var array = ['CommunityName', 'MembershipRule', 'CommunityLocation', 'CommunityOwner', 'CreateDate', ]
-	knex.table('Users').innerJoin('communityList', 'Users.Id', '=', 'communityList.CommunityOwner')
-	.where(function(){
-		knex.raw(`instr(CommunityName, '${req.body.search.value}')`)
-		if(req.body.MembershipRule != 'All'){
-			this.andWhere('MembershipRule', req.body.MembershipRule)
-		}
-	})
-	.orderBy(array[req.body.order[0].column], req.body.order[0].dir)
+	const array = ['CommunityName', 'MembershipRule', 'CommunityLocation', 'CommunityOwner', 'CreateDate'];
+	const query = {};
+	if(req.body.MembershipRule != 'All')
+		query.MembershipRule = req.body.MembershipRule;
+	if(req.body.search.value)
+		query.CommunityName = {$regex: new RegExp(req.body.search.value)};
+	community
+	.find(query)
+	.populate('CommunityOwner')
+	.sort({[array[req.body.order[0].column]]: req.body.order[0].dir})
 	.then((result)=>{
 		var record = result.filter((value,index)=>{
 			if(index >= req.body.start && req.body.length>0){
@@ -52,10 +55,10 @@ router.post('/communityList',isAuthenticated(),(req,res)=>{
 				return true;
 			}
 		})
-		knex('communityList')
-		.count('Id as Id')
+		community
+		.countDocuments({})
 		.then((count)=>{
-			res.send({'recordsTotal': count[0].Id, 'recordsFiltered' : result.length, data: record});
+			res.send({'recordsTotal': count, 'recordsFiltered' : result.length, data: record});
 		})
 	})
 })
@@ -82,66 +85,55 @@ router.get('/getCommunity/:id',(req,res)=>{
 })
 
 router.get('/communitypanel',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
-	.then((result)=>{
-		knex.table('communityList').innerJoin('communityMembers','communityList.Id','=','communityMembers.Id')
-		.where('communityMembers.UserId', req.user)
-		.andWhere('communityMembers.Accepted', 'True')
-		.then((community)=>{
-			return res.render('communitypanel',{
-				data: result[0],
-				community: community
-			})
+	communitymembers
+	.find({
+		'_id': req.user._id,
+		'Accepted': true,
+	})
+	.populate('UserId')
+	.then((community)=>{
+		return res.render('communityPanel',{
+			data: req.user,
+			community: community
 		})
 	})
 })
 
 router.get('/AddCommunity',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id',req.user)
-	.then((result)=>{
-		res.render('CreateCommunity',{
-			created: false,
-			data: result[0]
-		})
+	res.render('CreateCommunity',{
+		created: false,
+		data: req.user
 	})
 })
 
 router.post('/AddCommunity/create',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
-	.then((user)=>{
-		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-		knex('communityList')
-		.insert({
-			Id,
-			CommunityName:req.body.CommunityName,
-			MembershipRule:req.body.MembershipRule,
-			CommunityLocation:'Not Added',
-			CommunityOwner:req.user,
-			Discription:req.body.Discription.replace(/<[^>]*>/g, ''),
-			CreateDate:knex.raw('SYSDATE()'),
-			TotalReq:0,
-			Members:0,
-			User:0,
-			Invited:0,
-			CommunityPic:'defaultCommunity.jpg',
-			Status:'Activate',
-		})
-		.then(()=>{
-			knex('communityMembers')
-			.insert({
-				Id,
-				UserId: req.user,
-				Accepted: 'True',
-				Type: 'Owner',
-			})
-			.then(()=>{
-				res.render('CreateCommunity',{
-					created: true, 
-					data: user[0]
-				})
+	
+	var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+	const newCommunity = new community({
+		CommunityName:req.body.CommunityName,
+		MembershipRule:req.body.MembershipRule,
+		CommunityLocation:'Not Added',
+		CommunityOwner:req.user,
+		Discription:req.body.Discription.replace(/<[^>]*>/g, ''),
+		TotalReq:0,
+		Members:0,
+		User:0,
+		Invited:0,
+		CommunityPic:'defaultCommunity.jpg',
+		Status:'Activate',
+	});
+	newCommunity.save((err) => {
+		if(err) throw err;
+		const newcommunitymember = new communitymembers({
+			communityId: newCommunity._id,
+			UserId: req.user._id,
+			Accepted: 'True',
+			Type: 'Owner',
+		});
+		newcommunitymember.save(() => {
+			res.render('CreateCommunity',{
+				created: true, 
+				data: req.user
 			})
 		})
 	})
@@ -276,37 +268,34 @@ router.post('/delete/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/list',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
-	.then((user)=>{
-		res.render('joinCommunity',{
-				data: user[0]
-			})
+	res.render('joinCommunity',{
+		data: req.user
 	})
 })
 
 router.post('/list',isAuthenticated(),(req,res)=>{
-	knex('communityList')
-	.where(function(){
-		this.whereNotIn('Id',function(){
-			this.select('Id')
-			.from('communityMembers')
-			.where('UserId', req.user)
+	communitymembers
+	.find({UserId: req.user._id}, {communityId: 1})
+	.then((communitys) => {
+		communitys = communitys.map(value => mongoose.Types.ObjectId(value));
+		if(req.body.search)
+			query.CommunityName = new RegExp(req.body.search);
+		community.find({$and: [
+			{'_id': {'$nin': communitys}},
+			{'CommunityName': new RegExp(req.body.search)},
+			{'Status': 'Activate'}
+		]})
+		.then((result) => {
+			return res.json(result)
 		})
-	})
-	.andWhere(knex.raw(`instr(CommunityName, '${req.body.search}')`))
-	.andWhere('Status', 'Activate')
-	.then((community)=>{
-		return res.json(community)
 	})
 })
 
 router.get('/joinCommunity/:id',isAuthenticated(),(req,res)=>{
-	knex.select('MembershipRule')
-	.from('communityList')
-	.where('Id', req.params.id)
+	community
+	.findById(req.params.id,{MembershipRule: 1})
 	.then((result)=>{
-		if(result[0].MembershipRule == 'Direct'){
+		if(result.MembershipRule == 'Direct'){
 			knex('CommunityMembers')
 			.insert({
 				Id: req.params.id,
