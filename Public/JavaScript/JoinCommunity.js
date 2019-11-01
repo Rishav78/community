@@ -47,7 +47,6 @@ function  displayCommunitys() {
 			  	}else{
 			  		div.innerHTML = `
 						<div class="community">
-							<div style="display: none;"> ${value.Id} </div>
 							<div class="communityPic">
 								<img src="/static/${value.CommunityPic}">
 							</div>
@@ -55,7 +54,7 @@ function  displayCommunitys() {
 								<a href="/community/communityprofile/${value.Id}">${value.CommunityName}</a>
 							</div>
 							<div class="join">
-								<span onclick="joinReq(event)">
+								<span onclick="joinReq('${value._id}', event)">
 									Join
 								</span>
 							</div>
@@ -75,7 +74,7 @@ function  displayCommunitys() {
 	}))
 }
 
-function joinReq(event){
+function joinReq(id, event){
 	var x = event.target.parentElement.parentElement
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
@@ -83,7 +82,7 @@ function joinReq(event){
 			removeCommunities()
 		});
 	}
-	req.open('GET',`/community/joinCommunity/${x.firstElementChild.textContent.trim()}`)
+	req.open('GET',`/community/joinCommunity/${id}`)
 	req.send()
 }
 

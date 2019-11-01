@@ -91,16 +91,16 @@
 			<% include partials/tabBar2.ejs %>
 		<% } %>
 		<div class="content">
-			<% include partials/aboutCommunity.ejs %>
+			<% include partials/AboutCommunity.ejs %>
 			<% include partials/manageCommunity.ejs %>
 			<div class="userslist">
 				<div class="userstype">
-					<div class="noOfUsers" onclick="showMembers()">Users (<span class="usersNo"><%= community.User %></span>)</div>
-					<div class="noOfAdmins" onclick="showAdmins()">Admins (<span class="adminsNo"><%= community.Members - community.User %></span>) </div>
+					<div class="noOfUsers" onclick="showMembers('<%= community._id %>')">Users (<span class="usersNo"><%= community.User %></span>)</div>
+					<div class="noOfAdmins" onclick="showAdmins('<%= community._id %>')">Admins (<span class="adminsNo"><%= community.Members - community.User %></span>) </div>
 					<% if(community.MembershipRule != 'Direct') { %>
-						<div onclick="showRequests()" class="request">Requests (<span class="ReqNo"><%= community.TotalReq %></span>)</div>
+						<div onclick="showRequests('<%= community._id %>')" class="request">Requests (<span class="ReqNo"><%= community.TotalReq %></span>)</div>
 					<% } %>
-					<div onclick="showInvitedUsers()" class="invitedusers">Invited Members (<span class="invitedNo"><%= community.Invited %></span>)</div>
+					<div onclick="showInvitedUsers('<%= community._id %>')" class="invitedusers">Invited Members (<span class="invitedNo"><%= community.Invited %></span>)</div>
 				</div>
 				<div class="users">
 					

@@ -153,7 +153,6 @@ router.get('/getInformation',isAuthenticated(),(req,res)=>{
 
 router.post('/editInformation',isAuthenticated(),(req,res)=>{
 	var data = req.body
-	console.log(req.body)
 	user.updateOne({'_id': req.user._id},
 	{
 		Name: data.name,
@@ -197,16 +196,13 @@ router.post('/updateProfilePic',(req,res)=>{
 })
 
 router.get('/viewprofile/:id',(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
-	.the(function(user){
-		this(Users)
-		.where('Id', req.params.id)
-		.then(function(user2){
-			res.render('MemberProfile',{
-				data: user[0],
-				data2: user2[0]
-			})
+	
+	user
+	.findById(req.params.id)
+	.then(function(user2){
+		res.render('MemberProfile',{
+			data: req.user,
+			data2: user2
 		})
 	})
 })

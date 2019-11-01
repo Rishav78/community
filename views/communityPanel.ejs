@@ -7,7 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
 	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
 	<link rel="stylesheet" type="text/css" href="/static/communityAsUser.css">
-	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
+	<link rel="stylesheet" type="text/css" href="/static/switch.css">
 	<link rel="stylesheet" type="text/css" href="/static/SearchBar.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
@@ -72,16 +72,16 @@
 									<img src="/static/<%= value.CommunityPic %>">
 								</div>
 								<div class="nameNreq">
-									<span class="Name"><%= value.CommunityName %></span>&nbsp;&nbsp;&nbsp;
+									<span class="Name"><%= value.communityId.CommunityName %></span>&nbsp;&nbsp;&nbsp;
 									<% if(value.CommunityOwner == data.Id){ %>
-										<a href="/community/manageCommunity/<%= value.Id %>" class="req">Request(<%= value.TotalReq %>)</a>
+										<a href="/community/manageCommunity/<%= value.communityId._id %>" class="req">Request(<%= value.communityId.TotalReq %>)</a>
 									<% } else { %>
-										<a href="/community/communitymembers/<%= value.Id %>" class="req">Members(<%= value.Members %>)</a>
+										<a href="/community/communitymembers/<%= value.communityId._id %>" class="req">Members(<%= value.communityId.Members %>)</a>
 									<% } %>
 								</div>
 								<% if(value.CommunityOwner == data.Id){ %>
 									<div class="setting">
-										<a href="/community/manageCommunity/<%= value.Id %>"><i class="fa fa-cogs"></i></a>
+										<a href="/community/manageCommunity/<%= value.communityId._id %>"><i class="fa fa-cogs"></i></a>
 									</div>
 								<% } %>
 							</div>
@@ -92,7 +92,7 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript" src="/static/Switch.js"></script>
+<script type="text/javascript" src="/static/switch.js"></script>
 <!-- <script type="text/javascript" src="/static/Switch2.js"></script> -->
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>

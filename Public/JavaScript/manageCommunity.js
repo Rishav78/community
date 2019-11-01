@@ -106,7 +106,7 @@ function showRequests(){
 	req.open('GET',`/community/requests/${document.querySelector('#communityId').textContent}`)
 	req.send()
 }
-function showMembers(){
+function showMembers(id){
 	var req  = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)
@@ -122,7 +122,7 @@ function showMembers(){
 						<img src="/static/${value.Image}">
 					</div>
 					<div class="block2">
-						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
+						<a href="/viewProfile/${value.UserId._id}">${value.UserId.Name}</a>
 					</div>
 					<div class="block3">
 						<i class="fa fa-chevron-up ActionIcons" onclick="confirm('${value.Id}',Promot,'Confirm promote!','Do you really want promote this user?')"></i>
@@ -138,7 +138,7 @@ function showMembers(){
 			})
 		}
 	}
-	req.open('GET',`/community/CommunityMembers/${document.querySelector('#communityId').textContent}`)
+	req.open('GET',`/community/CommunityMembers/${id}`)
 	req.send()
 }
 function Promot(Id){
@@ -215,7 +215,7 @@ function deleteAdmin(event){
 	req.send(JSON.stringify(data))
 }
 
-function showAdmins(){
+function showAdmins(id){
 	var req  = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)
@@ -226,19 +226,16 @@ function showAdmins(){
 			document.querySelector('.users').innerHTML = `<div class="noUserFound">No any user </div>`;
 		}else{
 			users.forEach((value) => {
-			  if(value.Type == 'Admin'){
+			  if(value.Type === 'Admin'){
 			  	var div1 = `
-			  		<div style="display : none">
-			  			${value.Id}
-			  		</div>
 					<div class="block1">
-						<img src="/static/${value.Image}">
+						<img src="/static/${value.UserId.Image}">
 					</div>
 					<div class="block2">
-						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
+						<a href="/viewProfile/${value.UserId._id}">${value.UserId.Name}</a>
 					</div>
 					<div class="block3">
-						<i class="fa fa-chevron-down ActionIcons" onclick="confirm('${value.Id}',Demote,'Confirm demotee!','Do you really want demote this user?')"></i>
+						<i class="fa fa-chevron-down ActionIcons" onclick="confirm('${value.communityId}',Demote,'Confirm demotee!','Do you really want demote this user?')"></i>
 					</div>
 					<div class="block4">
 						<i class="fa fa-times ActionIcons" onclick="confirm(event,deleteAdmin,'Really want remove ?','Do you really want remove this user?')"></i>
@@ -247,14 +244,11 @@ function showAdmins(){
 				
 				}else{
 					var div1 = `
-						<div style="display : none">
-				  			${value.UserId}
-				  		</div>
 						<div class="block1">
-							<img src="/static/${value.Image}">
+							<img src="/static/${value.UserId.Image}">
 						</div>
 						<div class="block2">
-							<a href="/viewProfile/${value.UserId}">${value.Name}</a>
+							<a href="/viewProfile/${value.UserId._id}">${value.UserId.Name}</a>
 						</div>
 						<div class="block4">
 							<span class="owner">owner</span>
@@ -269,9 +263,6 @@ function showAdmins(){
 			})
 		}
 	}
-	req.open('GET',`/community/CommunitysAdmins/${document.querySelector('#communityId').textContent}`)
+	req.open('GET',`/community/CommunitysAdmins/${id}`)
 	req.send()
 }
-$(document).ready(function(){
-	showMembers()
-})
