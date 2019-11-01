@@ -7,6 +7,7 @@ var multer = require('multer')
 var striptags = require('striptags')
 const communitymembers = require('../models/communityMember');
 const mongoose = require('../models/db');
+const inviteduser = require('../models/inviteduser');
 
 const storage = multer.diskStorage({
 	destination: './Public/Files',
@@ -403,42 +404,39 @@ router.post('/invite/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/communityProfile/:id',isAuthenticated(),(req,res)=>{
-	knex('User')
-	.where('Id', req.user)
-	.then((user)=>{
-		knex('communityList')
-		.where('Id', req.params.id)
-		.then((community)=>{
-			knex.table('communityMembers')
-			.innerJoin('Users','communityMembers.UserId', '=', 'Users.Id')
-			.where('communityMembers.Id', req.params.id)
-			.then((joined)=>{
-				var requested
-				var join = joined.filter((value)=>{
-					return value.UserId == req.user
-				})
-				if(join[0]){
-					requested = join[0].Accepted == 'False'
-				}
-				join = join.length > 0 && join[0].Accepted == 'True'
-				var owner = joined.filter((value) => {
-					return (value.UserId == req.user) && (value.Type == 'Owner')
-				})
-				res.render('CommunityProfile',
-				{
-					data: user[0], 
-					community: community[0], 
-					join: join, 
-					request :requested,
-					members: joined,
-					owner: owner
-				})
+	community
+	.findById(req.params.id)
+	.then((community)=>{
+		communitymembers
+		.find({'communityId': req.params.id})
+		.populate('UserId')
+		.then((joined) => {
+			var requested
+			var join = joined.filter((value)=>{
+				return value.UserId._id.toString() === req.user._id.toString()
 			})
+			if(join[0]){
+				requested = join[0].Accepted == false
+			}
+			join = join.length > 0 && join[0].Accepted == true
+			var owner = joined.filter((value) => {
+				return (value.UserId == req.user) && (value.Type == 'Owner')
+			})
+			res.render('CommunityProfile', {
+				data: req.user, 
+				community: community, 
+				join: join, 
+				request :requested,
+				members: joined,
+				owner: owner
+			});
 		})
 	})	
 })
 
 router.get('/leaveCommunity/:id',isAuthenticated(),(req,res)=>{
+	console.log(req.params.id)
+	return;
 	knex('communityMembers')
 	.where('Id', req.params.id)
 	.andWhere('UserId', req.user)
@@ -472,8 +470,10 @@ router.get('/requests/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/invitedUsers/:id',isAuthenticated(),(req,res)=>{
-	knex.table('invitedUsers').innerJoin('Users', 'invitedUsers.UserId', '=', 'Users.Id')
-	.where('invitedUsers.Id', req.params.id)
+
+	inviteduser
+	.find({'communityId': req.params.id})
+	.populate('UserId')
 	.then((request)=>{
 		res.json(request)
 	})
@@ -497,26 +497,21 @@ router.post('/deleteInvite/:id',isAuthenticated(),(req,res)=>{
 })
 
 router.get('/editCommunity/:id',isAuthenticated(),(req,res)=>{
-	knex('Users')
-	.where('Id', req.user)
-	.then((user)=>{
-		knex('communityList')
-		.where('Id', req.params.id)
-		.then((community)=>{
-			res.render('editCommunity',{
-				data: user[0], 
-				community: community[0], 
-				join: true,
-				request: false,
-			})
+	community
+	.findById(req.params.id)
+	.then((community)=>{
+		res.render('editCommunity',{
+			data: req.user, 
+			community: community, 
+			join: true,
+			request: false,
 		})
 	})	
 })
 
 router.post('/editCommunity/:id',isAuthenticated(),(req,res)=>{
-	knex('communityList')
-	.where('Id', req.params.id)
-	.update({
+	community
+	.updateOne({'_id': req.params.id},{
 		CommunityName: req.body.CommunityName,
 		MembershipRule: req.body.MembershipRule,
 		Discription: req.body.Discription.replace(/<[^>]*>/g, '')

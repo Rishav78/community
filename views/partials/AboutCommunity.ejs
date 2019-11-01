@@ -3,7 +3,7 @@
 	<% if(!join){ %>
 		<div class="join">
 			<% if(!request){ %>
-				<a href="/community/joinCommunity/<%= community.Id %>">
+				<a href="/community/joinCommunity/<%= community._id %>">
 				<% if(community.MembershipRule == 'Direct'){ %>
 					join
 				<% } else { %>
@@ -22,17 +22,17 @@
 		<img src="/static/<%= community.CommunityPic %>">
 	</div>
 	<div class="communityName">
-		<a href="/community/communityProfile/<%= community.Id %>"><%= community.CommunityName %></a>
+		<a href="/community/communityProfile/<%= community._id %>"><%= community.CommunityName %></a>
 	</div>
 	<div class="dropdown">
 		<i class="fa fa-bars"></i>
 		<ul class="hidedropdown">
 			<li><a href="">Discussions</a></li>
 			<% if(data.Role != 'User'){ %>
-				<li><a href="/community/managecommunity/<%= community.Id %>">Manage Community</a></li>
+				<li><a href="/community/managecommunity/<%= community._id %>">Manage Community</a></li>
 			<% } %>
-			<li><a href="/community/communityprofile/<%= community.Id %>">Community Profile</a></li>
-			<li><a href="/community/communitymembers/<%= community.Id %>">Community Members</a></li>
+			<li><a href="/community/communityprofile/<%= community._id %>">Community Profile</a></li>
+			<li><a href="/community/communitymembers/<%= community._id %>">Community Members</a></li>
 		</ul>
 	</div>
 </div>

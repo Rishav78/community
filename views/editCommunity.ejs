@@ -22,7 +22,7 @@
 		<% include partials/tabBar2.ejs %>
 		<div class="content">
 			<% include partials/AboutCommunity.ejs %>
-			<form action="/community/editCommunity/<%= community.Id %>" method="post">
+			<form action="/community/editCommunity/<%= community._id %>" method="post">
 				<div class="ediContainer">
 					<img src="/static/defaultcommunity.jpg">
 					<h4>Community Name:</h4>

@@ -31,7 +31,7 @@ function EmptyUsers(){
 	}
 }
 
-function showInvitedUsers(){
+function showInvitedUsers(id){
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)
@@ -43,14 +43,11 @@ function showInvitedUsers(){
 		}else{
 			users.forEach((value) => {
 			  var div1 = `
-			  		<div style="display : none">
-			  			${value.Id}
-			  		</div>
 					<div class="block1">
-						<img src="/static/${value.Image}">
+						<img src="/static/${value.UserId.Image}">
 					</div>
 					<div class="block2">
-						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
+						<a href="/viewProfile/${value.UserId._id}">${value.UserId.Name}</a>
 					</div>
 					<div class="block4">
 						<i class="fa fa-times ActionIcons" onclick="confirm(event, deleteInvited, 'Cancel Invitation', 'Do you really want cancel invitation ?')"></i>
@@ -63,7 +60,7 @@ function showInvitedUsers(){
 			})
 		}
 	}
-	req.open('GET',`/community/invitedUsers/${document.querySelector('#communityId').textContent}`)
+	req.open('GET',`/community/invitedUsers/${id}`)
 	req.send()
 }
 
