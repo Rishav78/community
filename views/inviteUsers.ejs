@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/TabbarAndNavbar2.css">
 	<link rel="stylesheet" type="text/css" href="/static/navBar.css">
-	<link rel="stylesheet" type="text/css" href="/static/Switch.css">
+	<link rel="stylesheet" type="text/css" href="/static/switch.css">
 	<link rel="stylesheet" type="text/css" href="/static/SearchBar.css">
 	<link rel="stylesheet" type="text/css" href="/static/commonCommunity.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
@@ -133,7 +133,7 @@
 		</div>
 	</div>
 </div>
-<script type="text/javascript" src="/static/Switch.js"></script>
+<script type="text/javascript" src="/static/switch.js"></script>
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript" src="/static/TabbarAndNavbar2.js"></script>
 <script type="text/javascript" src="/static/aboutCommunity.js"></script>
@@ -145,30 +145,25 @@ function removeUsers(){
 		while(document.querySelector('.users').childElementCount > 0){
 			document.querySelector('.users').removeChild(document.querySelector('.users').firstElementChild)
 		}
-		Users()
+		Users('<%= community._id %>')
 		enter = 1;
 	}else{
 		setTimeout(removeUsers,1000)
 	}
 }
 
-function Users() {
-	var id = document.querySelector('#communityId').textContent.trim()
+function Users(id) {
 	var data = {
 		search: document.querySelector('.search > input').value,
 	}
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
-		console.log('load')
 		var users = JSON.parse(req.responseText)
 		if(users.length == 0){
 			document.querySelector('.users').innerHTML = `<div class="noUserFound">No any user </div>`
 		}else{
 			users.forEach((value) => {
 		  	var x = `
-		  			<div style="display: none">
-		  				${value.Id}
-		  			</div>
 			  		<div class="userpic">
 						<img src="/static/${value.Image}">
 					</div>
@@ -176,7 +171,7 @@ function Users() {
 						<a href="/viewProfile/${value.Id}">${value.Name}</a>
 					</div>
 					<div class="invite">
-						<span onclick="invite(event)">Invite</span>
+						<span onclick="invite('<%= community._id %>', '${value._id}')">Invite</span>
 					</div>
 				`
 				var div = document.createElement('div')
@@ -191,9 +186,7 @@ function Users() {
 	req.send(JSON.stringify(data))
 }
 
-function invite(event){
-	var id = document.querySelector('#communityId').textContent.trim()
-	var parent = event.target.parentElement.parentElement
+function invite(id, user){
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
 		removeUsers()
@@ -201,12 +194,12 @@ function invite(event){
 	req.open('POST',`/community/invite/${id}`)
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify({
-		id: parent.firstElementChild.textContent.trim()
+		id: user
 	}))
 }
 
 document.querySelector('.search > input').onkeyup = removeUsers
-window.onload = Users
+window.onload = () => Users('<%= community._id %>')
 </script>
 </body>
 </html>

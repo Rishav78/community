@@ -9,25 +9,6 @@ const communitymembers = require('../models/communityMember');
 const mongoose = require('../models/db');
 const inviteduser = require('../models/inviteduser');
 
-const storage = multer.diskStorage({
-	destination: './Public/Files',
-	filename: function(req, file, cb){
-		con.query(`update Users set Image = '${req.user + path.extname(file.originalname)}' where Id = '${req.user}'`)
-		cb(null, req.user + path.extname(file.originalname))
-	}
-})
-
-const upload = multer({
-	storage: storage,
-}).single('file');
-
-router.post('/updateProfilePic',(req,res)=>{
-	upload(req,res,err=>{
-		if(err) throw err;
-		res.redirect('/profile')
-	})
-})
-
 router.get('/communityList',isAuthenticated(),(req,res)=>{
 	user
 	.findById(req.user._id)

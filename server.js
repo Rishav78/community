@@ -21,10 +21,10 @@ const Port = 8000;
 
 // <-------------------- Routes ---------------------------------------->
 
-const Login = require('./Router/Login.js');
-const Admin = require('./Router/admin.js');
-const Tags = require('./Router/tags.js');
-const Community = require('./Router/community.js');
+// const Login = require('./routes/Login.js');
+// const Admin = require('./routes/admin.js');
+// const Tags = require('./routes/tags.js');
+// const Community = require('./routes/community.js');
 
 // <------------------------------------------------------------------->
 
@@ -143,10 +143,12 @@ app.get('/code', passport.authenticate('github', { failureRedirect: '/' }), (req
 
 // <--------------------------- initilizing Routes ------------------------------------->
 
-app.use('/',Login)
-app.use('/admin',Admin)
-app.use('/tags',Tags)
-app.use('/community',Community)
+app.use('/', require('./routes'));
+
+// app.use('/',Login)
+// app.use('/admin',Admin)
+// app.use('/tags',Tags)
+// app.use('/community',Community)
 
 // <----------------------------------------------------------------------------------->
 

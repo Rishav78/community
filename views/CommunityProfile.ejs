@@ -69,7 +69,7 @@
 									<%= community.Members %> Members
 								</div>
 								<div class="viewall">
-									<% if(!owner.length){ %>
+									<% if(owner.length > 0){ %>
 										<a href="/community/leaveCommunity/<%= community._id %>">Leave Community</a>
 									<% } %>
 								</div>

@@ -99,7 +99,7 @@ update.onclick = ()=>{
 		Email : document.querySelector('#username').value,
 		Phone : document.querySelector('#phone').value,
 		City : document.querySelector('#city').value,
-		Status : document.querySelector('#status').value,
+		Status : document.querySelector('#status').value === 'Pending' ? false : true,
 		Role : document.querySelector('#role').value,
 	}
 	for(var i=0;i<child.length-1;i++){
@@ -134,12 +134,13 @@ $(document).ready(function(){
             { title : "Usename/Email", "data": "Email", 'sClass':'username'},
             { title : "Phone", "data": "Phno", 'sClass':'phone'},
             { title : "City", "data": "City", 'sClass':'city'},
-            { title : "Status", "data": "Status", 'sClass':'status'},
+            { title : "Status", "data": null, 'sClass':'status'},
             { title : "Role", "data": "Role", 'sClass':'role'},
             { title : "Active", "data": "ActivationState", 'sClass':'active',visible: false },
             { title : "Actions","data": null, 'orderable' : false, 'sClass':'action'}
         ],
         "fnRowCallback": function( nRow, aData, iDisplayIndex ) {
+			$('td:eq(3)', nRow).html( aData.Status ? 'Confirm' : 'Pending');
         	if(aData.Role === 'superadmin'){
         		console.log(aData.Role)
         		$('td:eq(5)', nRow).html( '<div style="min-width: 100px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i></div>' );
