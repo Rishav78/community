@@ -5,7 +5,7 @@ var update = document.querySelector('#editsubmit')
 var PCuser = document.querySelector('.status')
 var userType = document.querySelector('.Role')
 var alert = document.querySelectorAll('.a')
-
+let table, ids;
 var child;
 
 function sendMail(event){
@@ -29,15 +29,31 @@ function sendMail(event){
 	req.send(JSON.stringify(data))
 }
 
-function showUpdateBox(event){
-	child = event.target.parentNode.parentNode.parentNode.parentNode.childNodes
-	document.querySelector('#eheading').innerHTML = `Update ${child[1].textContent.trim()}`
-	for(var i=0;i<child.length-1;i++){
-		if(child[i].nodeType == 1){
-			console.log(document.querySelector('#' + child[i].classList[0]))
-			document.querySelector('#' + child[i].classList[0]).value = child[i].textContent.trim()
-		}
+function showUpdateBox(id) {
+	let req = new XMLHttpRequest();
+	
+	req.onload = () => {
+		ids = id;
+		const user = JSON.parse(req.response);
+		document.querySelector('#eheading').innerHTML = `Update ${user.Email}`;
+		$('#username').val(user.Email);
+		$('#phone').val(user.Phno);
+		$('#city').val(user.City);
+		$('#status').val(user.Status ? 'Confirmed' : 'Pending');
+		$('#role').val(user.Role);
+
 	}
+
+	req.open('GET', `/admin/userlist/${id}`);
+	req.send();
+	// child = event.target.parentNode.parentNode.parentNode.parentNode.childNodes
+	// document.querySelector('#eheading').innerHTML = `Update ${child[1].textContent.trim()}`
+	// for(var i=0;i<child.length-1;i++){
+	// 	if(child[i].nodeType == 1){
+	// 		console.log(document.querySelector('#' + child[i].classList[0]))
+	// 		document.querySelector('#' + child[i].classList[0]).value = child[i].textContent.trim()
+	// 	}
+	// }
 }
 
 function switchRole(e, msg, user, state){
@@ -102,23 +118,18 @@ update.onclick = ()=>{
 		Status : document.querySelector('#status').value === 'Pending' ? false : true,
 		Role : document.querySelector('#role').value,
 	}
-	for(var i=0;i<child.length-1;i++){
-		if(child[i].nodeType == 1){
-			child[i].textContent = document.querySelector('#' + child[i].classList[0]).value
-		}
-	}
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
-		console.log('updated')
+		table.ajax.reload();
 	}
-	req.open('POST','userlist/update')
+	req.open('POST',`userlist/update/${ids}`);
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 
 
 $(document).ready(function(){
-	var table = $('#myTable').DataTable({
+	table = $('#myTable').DataTable({
 		"lengthMenu": [5, 10, 25, 50],
 		"serverSide": true,
         "processing": true,
@@ -146,9 +157,9 @@ $(document).ready(function(){
         		$('td:eq(5)', nRow).html( '<div style="min-width: 100px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i></div>' );
         	}else{
         		if(aData.ActivationState == true){
-	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event, 'Deactivate User?', '${aData._id}', false)" class="fa fa-times-circle icon"></i></div>` );
+	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox('${aData._id}')" class="fa fa-edit icon"></i></a><i onclick="switchRole(event, 'Deactivate User?', '${aData._id}', false)" class="fa fa-times-circle icon"></i></div>` );
 	        	}else{
-	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox(event)" class="fa fa-edit icon"></i></a><i onclick="switchRole(event, 'Activate User?', '${aData._id}', true)" class="fa fa-check-circle icon"></i></div>`);
+	        		$('td:eq(5)', nRow).html( `<div style="min-width: 150px;"><i onclick="nodeMailer(event)" class="fa fa-envelope-o icon"></i><a data-toggle="modal" data-target="#editModal"><i onclick="showUpdateBox('${aData._id}')" class="fa fa-edit icon"></i></a><i onclick="switchRole(event, 'Activate User?', '${aData._id}', true)" class="fa fa-check-circle icon"></i></div>`);
 	        	}
         	}
         }

@@ -9,15 +9,7 @@ const communitymembers = require('../models/communityMember');
 const mongoose = require('../models/db');
 const inviteduser = require('../models/inviteduser');
 
-router.get('/communityList',isAuthenticated(),(req,res)=>{
-	user
-	.findById(req.user._id)
-	.then((result)=>{
-		return res.render('CommunityList',{
-			data: result
-		})
-	})
-})
+
 
 router.post('/communityList',isAuthenticated(),(req,res)=>{
 	const array = ['CommunityName', 'MembershipRule', 'CommunityLocation', 'CommunityOwner', 'CreateDate'];

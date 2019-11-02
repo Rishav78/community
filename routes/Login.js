@@ -21,56 +21,9 @@ const upload = multer({
 	storage: storage,
 }).single('file');
 
-router.get('/',(req,res)=>{
-	if(req.isAuthenticated()){
-		user.find({"_id": req.user._id}).then((result)=>{
-			if(result[0].Verified == true){
-				if(result[0].Role == 'User'){
-					return res.redirect('/profile')
-				}else{
-					if(result[0].LoginAs == 'Admin'){
-						return res.redirect('/admin/profile')
-					}else{
-						return res.redirect('/community/communitypanel')
-					}
-				}
-			}else{
-				res.render('editInfomation_starting',{data: result[0]})
-			}
-		})
-	}else{
-		res.render('login',{visible: false})
-	}
-})
+
 router.post('/',(req,res)=>{
-	user
-	.find({
-		Email: req.body.Email,
-		Password: req.body.Password
-	})
-	.then((user)=>{
-		if(user.length>0){
-			if(user[0].ActivationState == true){
-				req.login(user[0]._id,(err)=>{
-					if(err) throw err
-					if(user[0].Verified == true){
-						if(user[0].Role == 'User'){
-							return res.redirect('/profile')	
-						}else{
-							// return res.send(user)
-							return res.redirect('/admin/profile')
-						}
-					}else{
-						res.render('editInfomation_starting',{data: user[0]})
-					}
-				})
-			}else{
-				return res.render('404NotFound',{msg: 'Error: Unable to login you are deactivated contact site admin...'})
-			}
-		}else{
-			return res.render('login',{visible: true})
-		}
-	})
+	
 })
 
 router.get('/profile',isAuthenticated(),(req,res)=>{

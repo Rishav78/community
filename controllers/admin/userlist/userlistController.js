@@ -9,3 +9,7 @@ exports.serveUserlistPage = (req, res, next) => {
 exports.userlist = (req, res, next) => {
     services.admin.userlist.userlist.userlist(req, res);
 }
+
+exports.userinfo = (req, res, next) => {
+    services.admin.userlist.userlist.userinfo(req, res);
+}

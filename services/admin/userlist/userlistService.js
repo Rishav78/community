@@ -25,3 +25,14 @@ exports.userlist = async (req, res) => {
     const total = await user.countDocuments({});
     return res.json({'recordsTotal': total, 'recordsFiltered' : result.length, data: record});
 }
+
+exports.userinfo = async (req, res) => {
+    const userinfo = await user.findById(req.params.id,{
+        Email: 1,
+        Phno: 1,
+        City: 1,
+        Status: 1,
+        Role: 1,
+    });
+    return res.json(userinfo);
+}
