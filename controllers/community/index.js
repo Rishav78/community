@@ -6,6 +6,8 @@ const managecommunity = require('./managecommunityController');
 const communitymembers = require('./communitymembersController');
 const communityadmin = require('./communityadminController');
 const invitedusers = require('./inviteduserController');
+const inviteusers = require('./inviteuserController');
+const invitelist = require('./invitelistController');
 
 module.exports = {
     uploadProfilePic,
@@ -16,4 +18,6 @@ module.exports = {
     communitymembers,
     communityadmin,
     invitedusers,
+    inviteusers,
+    invitelist
 }

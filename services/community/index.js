@@ -5,6 +5,8 @@ const managecommunity = require('./managecommunityService');
 const communitymember = require('./communitymemberService');
 const communityadmin = require('./communityadminServices');
 const invitedusers = require('./inviteduserService');
+const inviteusers = require('./inviteuserServices');
+const invitelist = require('./invitelistServices');
 
 module.exports = {
     communitylist,
@@ -14,4 +16,6 @@ module.exports = {
     communitymember,
     communityadmin,
     invitedusers,
+    inviteusers,
+    invitelist,
 }

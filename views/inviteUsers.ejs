@@ -139,6 +139,7 @@
 <script type="text/javascript" src="/static/aboutCommunity.js"></script>
 <script type="text/javascript">
 var enter=1
+
 function removeUsers(){
 	if(enter == 1){
 		enter = 0
@@ -181,7 +182,7 @@ function Users(id) {
 			})
 		}
 	}
-	req.open('POST',`/community/inviteUserList/${id}`)
+	req.open('POST',`/community/inviteList/${id}`)
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }

@@ -8,4 +8,7 @@ router.use('/manageCommunity', require('./managecommuityRoute'));
 router.use('/CommunityMembers', require('./communnitymembersRoute'));
 router.use('/CommunitysAdmins', require('./communityadminsRoute'));
 router.use('/invitedUsers', require('./inviteduserRoute'));
+router.use('/invite', require('./inviteuserRoute'));
+router.use('/inviteList', require('./invitelistRoute'));
+
 module.exports = router;
