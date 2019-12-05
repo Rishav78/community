@@ -48,15 +48,9 @@ router.post('/Available',(req,res)=>{
 })
 
 router.get('/Logout',isAuthenticated(),(req,res)=>{
-	user
-	.updateOne({'_id': req.user._id},{
-		LoginAs: 'Admin'
-	})
-	.then(()=>{
-		req.session.destroy((err)=>{
-			if(err) throw err
-			return res.redirect('/')
-		})
+	req.session.destroy((err)=>{
+		if(err) throw err
+		return res.redirect('/')
 	})
 })
 

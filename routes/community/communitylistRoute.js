@@ -9,4 +9,5 @@ router.get('/',
 router.post('/',
         auth.isAuthenticated(),
         controllers.community.communitylist.communitylist);
+
 module.exports = router;     

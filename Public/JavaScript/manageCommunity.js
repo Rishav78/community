@@ -115,7 +115,7 @@ function showMembers(id){
 		}else{
 			users.forEach((value) => {
 			  var div1 = `
-					<div class="block1">
+					<div class="block1">robot-Lenovo-ideapad-310-15IKB
 						<img src="/static/${value.Image}">
 					</div>
 					<div class="block2">
