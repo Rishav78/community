@@ -10,5 +10,7 @@ router.use('/CommunitysAdmins', require('./communityadminsRoute'));
 router.use('/invitedUsers', require('./inviteduserRoute'));
 router.use('/invite', require('./inviteuserRoute'));
 router.use('/inviteList', require('./invitelistRoute'));
+router.use('/deleteInvite', require('./deleteinviteRoute'));
+
 
 module.exports = router;

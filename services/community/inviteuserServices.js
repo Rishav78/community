@@ -13,7 +13,6 @@ exports.inviteuser = (req, res) => {
 		'communityId': req.params.id,
 		'UserId': req.body.id
 	});
-
 	newinvited.save(async (err) => {
 		if(err) throw err;
 		await communitys.updateOne({
@@ -21,6 +20,6 @@ exports.inviteuser = (req, res) => {
 		},{
 			'$inc': { 'Invited': 1 }
 		});
-		return res.send('done')
-	})
+		return res.send('done');
+	});
 }

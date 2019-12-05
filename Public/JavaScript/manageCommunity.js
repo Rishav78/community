@@ -1,4 +1,4 @@
-
+let communityid;
 function confirm(e,cb,title,content){
 	$.confirm({
 	  title: title,
@@ -32,6 +32,7 @@ function EmptyUsers(){
 }
 
 function showInvitedUsers(id){
+	communityid = id;
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)
@@ -50,7 +51,7 @@ function showInvitedUsers(id){
 						<a href="/viewProfile/${value.UserId._id}">${value.UserId.Name}</a>
 					</div>
 					<div class="block4">
-						<i class="fa fa-times ActionIcons" onclick="confirm(event, deleteInvited, 'Cancel Invitation', 'Do you really want cancel invitation ?')"></i>
+						<i class="fa fa-times ActionIcons" onclick="confirm('${value.UserId._id}', deleteInvited, 'Cancel Invitation', 'Do you really want cancel invitation ?')"></i>
 					</div>
 				`
 				var div2 = document.createElement('div')
@@ -103,7 +104,9 @@ function showRequests(){
 	req.open('GET',`/community/requests/${document.querySelector('#communityId').textContent}`)
 	req.send()
 }
+
 function showMembers(id){
+	communityid = id;
 	var req  = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)
@@ -153,14 +156,13 @@ function Promot(Id){
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
-function deleteInvited(event){
-	var req = new XMLHttpRequest()
-	var data = {
-		user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
-	}
+function deleteInvited(id){
+	var req = new XMLHttpRequest();
+	console.log(id);
+	var data = { user: id };
 	req.onload = ()=>{
 		document.querySelector('.invitedNo').innerHTML = parseInt(document.querySelector('.invitedNo').innerHTML) - 1
-		showInvitedUsers()
+		showInvitedUsers(document.querySelector('#communityId').textContent)
 	}
 	req.open('POST',`/community/deleteInvite/${document.querySelector('#communityId').textContent}`);
 	req.setRequestHeader("Content-Type", "application/json");
@@ -213,6 +215,7 @@ function deleteAdmin(event){
 }
 
 function showAdmins(id){
+	communityid = id;
 	var req  = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)
@@ -263,3 +266,5 @@ function showAdmins(id){
 	req.open('GET',`/community/CommunitysAdmins/${id}`)
 	req.send()
 }
+
+showMembers(document.querySelector('#communityId').textContent);
