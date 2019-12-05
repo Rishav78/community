@@ -4,9 +4,11 @@ const auth = require('../../auth/auth');
 
 router.get('/',
         auth.isAuthenticated(),
-        controllers.community.communitylist.serveCommunitylistPage);
+        controllers.community.addcommunity.serveAddCommunityPage);
 
-router.post('/',
+
+router.post('/', 
         auth.isAuthenticated(),
-        controllers.community.communitylist.communitylist);
-module.exports = router;     
+        controllers.community.addcommunity.createCommunity);
+
+module.exports = router;

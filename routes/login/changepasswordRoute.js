@@ -4,9 +4,10 @@ const auth = require('../../auth/auth');
 
 router.get('/',
         auth.isAuthenticated(),
-        controllers.community.communitylist.serveCommunitylistPage);
+        controllers.login.changepassword.serveChangePasswordPage);
 
 router.post('/',
         auth.isAuthenticated(),
-        controllers.community.communitylist.communitylist);
-module.exports = router;     
+        controllers.login.changepassword.changepassword);
+
+module.exports = router;

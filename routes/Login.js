@@ -22,10 +22,6 @@ const upload = multer({
 }).single('file');
 
 
-router.post('/',(req,res)=>{
-	
-})
-
 router.get('/profile',isAuthenticated(),(req,res)=>{
 	return res.render('profile',{data : req.user,visible : true})
 })

@@ -11,32 +11,6 @@ const inviteduser = require('../models/inviteduser');
 
 
 
-router.post('/communityList',isAuthenticated(),(req,res)=>{
-	const array = ['CommunityName', 'MembershipRule', 'CommunityLocation', 'CommunityOwner', 'CreateDate'];
-	const query = {};
-	if(req.body.MembershipRule != 'All')
-		query.MembershipRule = req.body.MembershipRule;
-	if(req.body.search.value)
-		query.CommunityName = {$regex: new RegExp(req.body.search.value)};
-	community
-	.find(query)
-	.populate('CommunityOwner')
-	.sort({[array[req.body.order[0].column]]: req.body.order[0].dir})
-	.then((result)=>{
-		var record = result.filter((value,index)=>{
-			if(index >= req.body.start && req.body.length>0){
-				req.body.length--
-				return true;
-			}
-		})
-		community
-		.countDocuments({})
-		.then((count)=>{
-			res.send({'recordsTotal': count, 'recordsFiltered' : result.length, data: record});
-		})
-	})
-})
-
 router.post('/updateCommunity/:id',(req,res)=>{
 	knex('communityList')
 	.where('Id', req.params.id)

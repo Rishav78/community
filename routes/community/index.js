@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const uploadProfilePic = require('./uploadProfilePicRoute');
 
 router.use('/updateProfilePic', require('./uploadProfilePicRoute'));
 router.use('/communityList', require('./communitylistRoute'));
+router.use('/communitypanel', require('./communitypanelRoute'));
+router.use('/Addcommunity', require('./addcommunityRoute'));
 
 module.exports = router;
