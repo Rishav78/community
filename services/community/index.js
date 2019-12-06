@@ -10,7 +10,8 @@ const invitelist = require('./invitelistServices');
 const deleteinvite = require('./deleteinviteServices');
 const editcommunity = require('./editcommunityServices');
 const communityprofile = require('./communityprofileServices');
-
+const list = require('./listServices');
+const joincommunity = require('./joincommunityServices');
 module.exports = {
     communitylist,
     communitypanel,
@@ -24,4 +25,6 @@ module.exports = {
     deleteinvite,
     editcommunity,
     communityprofile,
+    list,
+    joincommunity,
 }

@@ -13,6 +13,7 @@ router.use('/inviteList', require('./invitelistRoute'));
 router.use('/deleteInvite', require('./deleteinviteRoute'));
 router.use('/editCommunity', require('./editcommunityRoute'));
 router.use('/communityprofile', require('./communityprofileRoute'));
-
+router.use('/list', require('./listRoute'));
+router.use('/joinCommunity', require('./joincommunityRoute'));
 
 module.exports = router;

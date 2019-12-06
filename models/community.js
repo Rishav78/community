@@ -39,6 +39,8 @@ const communitySchema = new mongoose.Schema({
     Status: {
         type: String,
     },
+},{
+    timestamps: true,
 });
 
 module.exports = mongoose.model('communitys', communitySchema);

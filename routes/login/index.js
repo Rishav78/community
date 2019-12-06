@@ -5,5 +5,6 @@ router.use('/switchAsUser', require('./switchUserRoute'));
 router.use('/profile', require('./profileRoute'));
 router.use('/changePassword', require('./changepasswordRoute'));
 router.use('/logout', require('./logoutRoute'));
+router.use('/editInformation', require('./editinformationRoute'));
 
 module.exports = router;

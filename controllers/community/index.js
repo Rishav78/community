@@ -11,6 +11,8 @@ const invitelist = require('./invitelistController');
 const deleteinvite = require('./deleteinviteController');
 const editcommunity = require('./editcommunityController');
 const communityprofile = require('./communnityprofileController');
+const list = require('./listController');
+const joincommunity = require('./joinCommunityController');
 
 module.exports = {
     uploadProfilePic,
@@ -26,4 +28,6 @@ module.exports = {
     deleteinvite,
     editcommunity,
     communityprofile,
+    list,
+    joincommunity,
 }

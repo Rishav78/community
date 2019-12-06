@@ -35,7 +35,7 @@ function  displayCommunitys() {
 								<a href="/community/communityprofile/${value.Id}">${value.CommunityName}</a>
 							</div>
 							<div class="join">
-								<span onclick="joinReq(event)">
+								<span onclick="joinReq('${value._id}', event)">
 									Ask To Join
 								</span>
 							</div>
