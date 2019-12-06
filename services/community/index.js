@@ -8,6 +8,8 @@ const invitedusers = require('./inviteduserService');
 const inviteusers = require('./inviteuserServices');
 const invitelist = require('./invitelistServices');
 const deleteinvite = require('./deleteinviteServices');
+const editcommunity = require('./editcommunityServices');
+const communityprofile = require('./communityprofileServices');
 
 module.exports = {
     communitylist,
@@ -20,4 +22,6 @@ module.exports = {
     inviteusers,
     invitelist,
     deleteinvite,
+    editcommunity,
+    communityprofile,
 }

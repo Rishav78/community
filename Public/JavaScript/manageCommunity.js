@@ -1,4 +1,3 @@
-let communityid;
 function confirm(e,cb,title,content){
 	$.confirm({
 	  title: title,
@@ -32,7 +31,6 @@ function EmptyUsers(){
 }
 
 function showInvitedUsers(id){
-	communityid = id;
 	var req = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)
@@ -106,7 +104,6 @@ function showRequests(){
 }
 
 function showMembers(id){
-	communityid = id;
 	var req  = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)
@@ -215,7 +212,6 @@ function deleteAdmin(event){
 }
 
 function showAdmins(id){
-	communityid = id;
 	var req  = new XMLHttpRequest()
 	req.onload = ()=>{
 		var users = JSON.parse(req.responseText)

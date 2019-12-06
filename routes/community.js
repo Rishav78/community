@@ -413,57 +413,11 @@ router.get('/requests/:id',isAuthenticated(),(req,res)=>{
 	})
 })
 
-router.get('/invitedUsers/:id',isAuthenticated(),(req,res)=>{
 
-	inviteduser
-	.find({'communityId': req.params.id})
-	.populate('UserId')
-	.then((request)=>{
-		res.json(request)
-	})
-})
 
-router.post('/deleteInvite/:id',isAuthenticated(),(req,res)=>{
-	knex('invitedUsers')
-	.where('Id', req.params.id)
-	.andWhere('UserId', req.body.user)
-	.del()
-	.then(()=>{
-		knex('communityList')
-		.where('Id', req.params.id)
-		.update({
-			invited: knex.raw('invited - 1')
-		})
-		.then(()=>{
-			res.send('done')
-		})
-	})
-})
 
-router.get('/editCommunity/:id',isAuthenticated(),(req,res)=>{
-	community
-	.findById(req.params.id)
-	.then((community)=>{
-		res.render('editCommunity',{
-			data: req.user, 
-			community: community, 
-			join: true,
-			request: false,
-		})
-	})	
-})
 
-router.post('/editCommunity/:id',isAuthenticated(),(req,res)=>{
-	community
-	.updateOne({'_id': req.params.id},{
-		CommunityName: req.body.CommunityName,
-		MembershipRule: req.body.MembershipRule,
-		Discription: req.body.Discription.replace(/<[^>]*>/g, '')
-	})
-	.then(()=>{
-		res.redirect(`/community/communityprofile/${req.params.id}`)
-	})
-})
+
 
 router.post('/acceptReq/:id',isAuthenticated(),(req,res)=>{
 	knex('communityMembers')
