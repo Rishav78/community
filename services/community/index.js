@@ -12,6 +12,11 @@ const editcommunity = require('./editcommunityServices');
 const communityprofile = require('./communityprofileServices');
 const list = require('./listServices');
 const joincommunity = require('./joincommunityServices');
+const requests = require('./requestservices');
+const action = require('./requestactionServices');
+const deletemember = require('./deletememberService');
+const promotordemote = require('./promotanddemotememberServices');
+
 module.exports = {
     communitylist,
     communitypanel,
@@ -27,4 +32,9 @@ module.exports = {
     communityprofile,
     list,
     joincommunity,
-}
+    requests,
+    action,
+    deletemember,
+    promotordemote,
+};
+

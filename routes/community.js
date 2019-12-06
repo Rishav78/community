@@ -255,43 +255,6 @@ router.get('/leaveCommunity/:id',isAuthenticated(),(req,res)=>{
 	})
 })
 
-router.get('/requests/:id',isAuthenticated(),(req,res)=>{
-
-	knex.table('communityMembers')
-	.innerJoin('Users','communityMembers.UserId', '=','Users.Id')
-	.where('communityMembers.Id', req.params.id)
-	andWhere('Accepted', 'False')
-	.then((request)=>{
-		res.json(request)
-	})
-})
-
-
-
-
-
-
-
-router.post('/acceptReq/:id',isAuthenticated(),(req,res)=>{
-	knex('communityMembers')
-	.where('Id', req.params.id)
-	.andWhere('UserId', req.body.user)
-	.update({
-		Accepted: 'True'
-	})
-	.then(()=>{
-		knex('communityList')
-		.where('Id', req.params.id)
-		.update({
-			TotalReq: knex.raw('TotalReq - 1'),
-			members: knex.raw('members + 1')
-		})
-		.then(()=>{
-			res.send('done')
-		})
-	})
-})
-
 router.get('/discussion/:id',(req,res)=>{
 	knex('Users')
 	.where('Id', req.user)

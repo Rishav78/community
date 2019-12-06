@@ -15,5 +15,9 @@ router.use('/editCommunity', require('./editcommunityRoute'));
 router.use('/communityprofile', require('./communityprofileRoute'));
 router.use('/list', require('./listRoute'));
 router.use('/joinCommunity', require('./joincommunityRoute'));
+router.use('/requests', require('./requestsRoute'));
+router.use('/action', require('./requestactionRoute'));
+router.use('/delete', require('./deletememberRoute'));
+router.use('/promotordemote', require('./promotanddemotememberRoute'));
 
 module.exports = router;

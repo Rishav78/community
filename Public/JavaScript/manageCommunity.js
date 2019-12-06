@@ -76,18 +76,18 @@ function showRequests(){
 			users.forEach((value) => {
 			  var div1 = `
 			  		<div style="display : none">
-			  			${value.Id}
+			  			${value._id}
 			  		</div>
 					<div class="block1">
-						<img src="/static/${value.Image}">
+						<img src="/static/${value.UserId.Image}">
 					</div>
 					<div class="block2">
-						<a href="/viewProfile/${value.UserId}">${value.Name}</a>
+						<a href="/viewProfile/${value.UserId._id}">${value.UserId.Name}</a>
 					</div>
 					<div class="block4">
 						<div class="option">
 							<button class="optionButton" onclick="showOptions(event)">Option</button>
-							<ul class="options"><li onclick="acceptReq()">Accept</li><li>Reject</li>
+							<ul class="options"><li onclick="action('${value.UserId._id}', ${1})">Accept</li><li onclick="action('${value.UserId._id}', ${0})">Reject</li>
 							</ul>
 						</div>
 					</div>
@@ -115,17 +115,17 @@ function showMembers(id){
 		}else{
 			users.forEach((value) => {
 			  var div1 = `
-					<div class="block1">robot-Lenovo-ideapad-310-15IKB
-						<img src="/static/${value.Image}">
+					<div class="block1">
+						<img src="/static/${value.UserId.Image}">
 					</div>
 					<div class="block2">
 						<a href="/viewProfile/${value.UserId._id}">${value.UserId.Name}</a>
 					</div>
 					<div class="block3">
-						<i class="fa fa-chevron-up ActionIcons" onclick="confirm('${value.Id}',Promot,'Confirm promote!','Do you really want promote this user?')"></i>
+						<i class="fa fa-chevron-up ActionIcons" onclick="confirm('${value.UserId._id}',Promot,'Confirm promote!','Do you really want promote this user?')"></i>
 					</div>
 					<div class="block4">
-						<i class="fa fa-times ActionIcons" onclick="confirm(event,deleteUser,'Really want remove ?','Do you really want remove this user?')"></i>
+						<i class="fa fa-times ActionIcons" onclick="confirm('${value.UserId._id}',deleteUser,'Really want remove ?','Do you really want remove this user?')"></i>
 					</div>
 				`
 				var div2 = document.createElement('div')
@@ -141,15 +141,15 @@ function showMembers(id){
 function Promot(Id){
 	var req = new XMLHttpRequest()
 	var data = {
-		communityId: document.querySelector('#communityId').textContent
+		communityId: document.querySelector('#communityId').textContent,
+		type: 1,
 	}
 	req.onload = ()=>{
 		document.querySelector('.adminsNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) + 1
 		document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) - 1
-		showMembers()
+		showMembers(document.querySelector('#communityId').textContent)
 	}
-	req.set
-	req.open('POST',`/community/promot/${Id}`);
+	req.open('PUT',`/community/promotordemote/${Id}`);
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
@@ -169,37 +169,38 @@ function deleteInvited(id){
 function Demote(Id){
 	var req = new XMLHttpRequest()
 	var data = {
-		communityId: document.querySelector('#communityId').textContent
+		communityId: document.querySelector('#communityId').textContent,
+		type: 0
 	}
 	req.onload = ()=>{
 		document.querySelector('.adminsNo').innerHTML = parseInt(document.querySelector('.adminsNo').innerHTML) - 1
 		document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) + 1
-		showAdmins()
+		showAdmins(document.querySelector('#communityId').textContent)
 	}
-	req.open('POST',`/community/Demote/${Id}`);
+	req.open('PUT',`/community/promotordemote/${Id}`);
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 
-function deleteUser(event){
+function deleteUser(user){
 	var req = new XMLHttpRequest()
 	var data = {
-		user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
+		user,
 		Type: 'User'
 	}
 	req.onload = ()=>{
 		document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) - 1
-		showMembers()
+		showMembers(document.querySelector('#communityId').textContent)
 	}
-	req.open('POST',`/community/delete/${document.querySelector('#communityId').textContent}`);
+	req.open('DELETE',`/community/delete/${document.querySelector('#communityId').textContent}`);
 	req.setRequestHeader("Content-Type", "application/json");
 	req.send(JSON.stringify(data))
 }
 
-function deleteAdmin(event){
+function deleteAdmin(user){
 	var req = new XMLHttpRequest()
 	var data = {
-		user: event.target.parentElement.parentElement.firstElementChild.textContent.trim(),
+		user,
 		Type: 'Admin'
 	}
 	req.onload = ()=>{
@@ -231,7 +232,7 @@ function showAdmins(id){
 						<a href="/viewProfile/${value.UserId._id}">${value.UserId.Name}</a>
 					</div>
 					<div class="block3">
-						<i class="fa fa-chevron-down ActionIcons" onclick="confirm('${value.communityId}',Demote,'Confirm demotee!','Do you really want demote this user?')"></i>
+						<i class="fa fa-chevron-down ActionIcons" onclick="confirm('${value.UserId._id}',Demote,'Confirm demotee!','Do you really want demote this user?')"></i>
 					</div>
 					<div class="block4">
 						<i class="fa fa-times ActionIcons" onclick="confirm(event,deleteAdmin,'Really want remove ?','Do you really want remove this user?')"></i>

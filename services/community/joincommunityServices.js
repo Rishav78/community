@@ -3,7 +3,7 @@ const communitymembers = require('../../models/communityMember');
 
 exports.joinCommunity = async (req, res) => {
     const { id } = req.params;
-
+    const { user } = req;
     const community = await communitys.findOne({
         '_id': id
     },{
@@ -12,15 +12,15 @@ exports.joinCommunity = async (req, res) => {
 	
     if(community.MembershipRule == 'Direct'){
         const member = {
-            UserId: req.user,
-            communityId: req.params.id,
+            UserId: user,
+            communityId: id,
             Accepted: true,
             Type: 'User'
         };
         const newcommunitymembers = new communitymembers(member);
         newcommunitymembers.save(async (err) => {
             if(err) throw err;
-            await community.updateOne({
+            await communitys.updateOne({
                 '_id': id
             },{
                 '$inc': { 'Members': 1, 'User': 1 }
@@ -29,14 +29,14 @@ exports.joinCommunity = async (req, res) => {
         });
     }else{
         const newcommunitymembers = new communitymembers({
-            UserId: req.user,
-            communityId: req.params.id,
+            UserId:user,
+            communityId: id,
             Accepted: false,
             Type: 'User'
         });
         
         newcommunitymembers.save(async (err) => {
-            await community.updateOne({
+            await communitys.updateOne({
                 '_id': id
             },{
                 '$inc': { 'TotalReq': 1 } 

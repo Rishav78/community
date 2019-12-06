@@ -116,17 +116,15 @@
 <script type="text/javascript" src="/static/LogoutCover.js"></script>
 <script type="text/javascript">
 	var element;
-	function acceptReq(){
+	function action(user, type){
 		var req = new XMLHttpRequest()
-		var data = {
-			user: element.parentElement.parentElement.parentElement.firstElementChild.textContent.trim()
-		}
+		var data = { user, type };
 		req.onload = ()=>{
 			document.querySelector('.ReqNo').innerHTML = parseInt(document.querySelector('.ReqNo').innerHTML) - 1
-			document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) + 1
+			document.querySelector('.usersNo').innerHTML = parseInt(document.querySelector('.usersNo').innerHTML) + type
 			showRequests()
 		}
-		req.open('POST',`/community/acceptReq/${document.querySelector('#communityId').textContent}`)
+		req.open('POST',`/community/action/${document.querySelector('#communityId').textContent}`)
 		req.setRequestHeader("Content-Type", "application/json");
 		req.send(JSON.stringify(data))
 	}
