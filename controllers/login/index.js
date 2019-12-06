@@ -4,6 +4,8 @@ const profile = require('./profileController');
 const changepassword = require('./changepasswordController');
 const logout = require('./logoutController');
 const editinformation = require('./editinformationController');
+const viewprpofile = require('./viewprofileController');
+const activateanddeactivate = require('./activateanddeactivateController');
 
 module.exports = {
     login,
@@ -12,4 +14,6 @@ module.exports = {
     changepassword,
     logout,
     editinformation,
+    viewprpofile,
+    activateanddeactivate,
 };

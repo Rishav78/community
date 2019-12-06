@@ -21,11 +21,6 @@ const upload = multer({
 	storage: storage,
 }).single('file');
 
-
-router.get('/profile',isAuthenticated(),(req,res)=>{
-	return res.render('profile',{data : req.user,visible : true})
-})
-
 router.post('/Activation',isAuthenticated(),(req,res)=>{
 
 	user
@@ -47,43 +42,12 @@ router.post('/Available',(req,res)=>{
 	})
 })
 
-router.get('/Logout',isAuthenticated(),(req,res)=>{
-	req.session.destroy((err)=>{
-		if(err) throw err
-		return res.redirect('/')
-	})
-})
-
 router.get('/deletetag/:id',isAuthenticated(),(req,res)=>{
 	console.log(req.params.id)
 	tag.findByIdAndRemove(req.params.id)
 	.then(()=>{
 		return res.send('done')
 	})
-})
-
-router.get('/changePassword',isAuthenticated(),(req,res)=>{
-	res.render('changePassword',{changed: false, data: req.user})
-})
-
-router.post('/changePassword',isAuthenticated(),(req,res)=>{
-	user.findById(req.user._id)
-	.then((result)=>{
-		if(result.Password === req.body.old){
-			user.updateOne({'_id': req.user._id},{
-				Password: req.body.new
-			})
-			.then(()=>{
-				res.render('changePassword',{changed: 'changed', data: req.user})
-			})
-		}else{
-			res.render('changePassword',{changed: 'wrong', data: req.user})
-		}
-	})
-})
-
-router.get('/editInformation',isAuthenticated(),(req,res)=>{
-	return res.render('editInformation',{data: req.user})
 })
 
 router.get('/getInformation',isAuthenticated(),(req,res)=>{
@@ -94,42 +58,6 @@ router.get('/getInformation',isAuthenticated(),(req,res)=>{
 	})
 })
 
-router.post('/editInformation',isAuthenticated(),(req,res)=>{
-	var data = req.body
-	user.updateOne({'_id': req.user._id},
-	{
-		Name: data.name,
-		DOB: data.dob,
-		Gender: data.gender,
-		Phno: data.phno,
-		City: data.city,
-		About: data.about,
-		Expectations: data.expectations,
-		Verified: true
-	})
-	.then(()=>{
-		res.redirect('/profile')
-	})
-})
-
-router.get('/switchAsUser',(req,res)=>{
-	user
-	.findById(req.user._id)
-	.then((result)=>{
-		var data = {
-			switch: result.LoginAs == 'Admin' ? 'User': 'Admin',
-			msg: result.LoginAs == 'Admin' ? 'Switch Admin To User' : 'Switch User To Admin'
-		}
-		
-		user
-		.updateOne({'_id': req.user._id},{
-			LoginAs: data.switch
-		})
-		.then(()=>{
-			res.render('Switch',{data})
-		})
-	})
-})
 
 router.post('/updateProfilePic',(req,res)=>{
 	upload(req,res,err=>{
@@ -138,17 +66,6 @@ router.post('/updateProfilePic',(req,res)=>{
 	})
 })
 
-router.get('/viewprofile/:id',(req,res)=>{
-	
-	user
-	.findById(req.params.id)
-	.then(function(user2){
-		res.render('MemberProfile',{
-			data: req.user,
-			data2: user2
-		})
-	})
-})
 
 function isAuthenticated(){
 	return (req, res, next)=>{
