@@ -1,4 +1,4 @@
-const mongosse = require('./db');
+const mongosse = require('mongoose');
 
 const inviteduserSchema = new mongosse.Schema({
     UserId: {

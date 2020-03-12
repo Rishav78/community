@@ -1,16 +1,20 @@
+if (process.env.NODE_ENV !== 'production') {
+	require('dotenv').config();
+}
+
 // <-------------------- Require Modules ------------------------------>
 
 const express = require('express');
 const app = express();
 const path = require('path');
-const bodyParser = require('body-parser');
 const session = require('express-session');
+const mongoose = require('mongoose');
 const MongooseStore = require('connect-mongo')(session);
 const passport = require('passport');
 const GitHubStrategy = require('passport-github').Strategy;
 const user = require('./models/user');
-const db = require('./models/db');
-const Port = 8000;
+require('./config/db');
+const Port = process.env.PORT || 8000;
 
 // <-------------------------------------------------------------------->
 
@@ -58,21 +62,27 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-app.set('view engine','ejs')
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(bodyParser.json());
+// view engine config
+app.set('view engine','ejs');
+
+// body parser config
+app.use(express.json());
+
+// static file config
 app.use('/static',express.static(path.join(__dirname,'Public','JavaScript')))
 app.use('/static',express.static(path.join(__dirname,'Public','CSS')))
 app.use('/static',express.static(path.join(__dirname,'Public','Files')))
+
+// mognodb session storage config
 app.use(session({
 	secret : 'sdfghjkl',
 	resave : false,
 	saveUninitialized : false,
-	store : new MongooseStore({mongooseConnection: db.connection}),
+	store : new MongooseStore({mongooseConnection: mongoose.connection}),
 }))
-// Date
+
+
+// passport config
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -81,7 +91,7 @@ app.use(passport.session())
 app.get('/auth/github',
   passport.authenticate('github',{
   	scope: ['profile']
-  }));
+}));
 
 app.get('/code', passport.authenticate('github', { failureRedirect: '/' }), (req,res)=>{
 	console.log(req.user)
