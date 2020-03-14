@@ -2,10 +2,12 @@ const mongoose = require('mongoose');
 
 const communitySchema = new mongoose.Schema({
     CommunityName: {
-        type: String
+        type: String,
+        required: true,
     }, 
     MembershipRule: {
         type: String,
+        required: true
     }, 
     CommunityLocation: {
         type: String
@@ -20,21 +22,27 @@ const communitySchema = new mongoose.Schema({
     TotalReq: {
         type: Number,
         default: 0,
+        required: true
     }, 
     Members: {
         type: Number,
         default: 0,
+        required: true
     },
     User: {
         type: Number,
         default: 0,
+        required: true
     }, 
     Invited: {
         type: Number,
         default: 0,
+        required: true
     }, 
     CommunityPic: {
         type: String,
+        default: 'defaultCommunity.jpg',
+        required: true
     }, 
     Status: {
         type: String,

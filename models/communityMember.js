@@ -11,9 +11,11 @@ const CMS = new mongoose.Schema({
     },
     Accepted: {
         type: Boolean,
+        required: true
     },
     Type: {
         type: String,
+        required: true
     },
 });
 

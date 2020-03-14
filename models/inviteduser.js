@@ -4,10 +4,12 @@ const inviteduserSchema = new mongosse.Schema({
     UserId: {
         type: mongosse.Schema.Types.ObjectId,
         ref: 'users',
+        required: true
     },
     communityId: {
         type: mongosse.Schema.Types.ObjectId,
         ref: 'communitys',
+        required: true
     },
 });
 
