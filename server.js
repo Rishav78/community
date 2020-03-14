@@ -12,7 +12,7 @@ const mongoose = require('mongoose');
 const MongooseStore = require('connect-mongo')(session);
 const passport = require('passport');
 const GitHubStrategy = require('passport-github').Strategy;
-const user = require('./models/user');
+const users = require('./models/user');
 require('./config/db');
 const Port = process.env.PORT || 8000;
 
@@ -45,20 +45,20 @@ passport.use(new GitHubStrategy({
   },
   function(accessToken, refreshToken, profile, cb) {
 
-    con.query(`select * from Users where Email = '${profile.emails[0].value}'`,(err,result)=>{
-    	if(err) throw err;
-    	if(result.length > 0){
-    		console.log('express-session')
-    		return cb(null,result[0].Id)
-    	}else{
-    		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
-			if(err) throw err
-			con.query(`insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values('${id}', '${profile.displayName}', '${profile.emails[0].value}', '${profile.username}', null, '${profile._json.location}', 'User', 'Pending', 'default.png', 'True', 'Admin')`,(err,result)=>{
-				if(err) throw err;
-				return cb(null,id)
-			})
-    	}
-    })
+    // con.query(`select * from Users where Email = '${profile.emails[0].value}'`,(err,result)=>{
+    // 	if(err) throw err;
+    // 	if(result.length > 0){
+    // 		console.log('express-session')
+    // 		return cb(null,result[0].Id)
+    // 	}else{
+    // 		var id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+	// 		if(err) throw err
+	// 		con.query(`insert into Users(Id, Name, Email, Password, Phno, City, Role, Status, Image, ActivationState, LoginAs) values('${id}', '${profile.displayName}', '${profile.emails[0].value}', '${profile.username}', null, '${profile._json.location}', 'User', 'Pending', 'default.png', 'True', 'Admin')`,(err,result)=>{
+	// 			if(err) throw err;
+	// 			return cb(null,id)
+	// 		})
+    // 	}
+    // })
   }
 ));
 
@@ -66,7 +66,8 @@ passport.use(new GitHubStrategy({
 app.set('view engine','ejs');
 
 // body parser config
-app.use(express.json());
+app.use(express.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 // static file config
 app.use('/static',express.static(path.join(__dirname,'Public','JavaScript')))
@@ -170,10 +171,9 @@ passport.serializeUser(function(user, done) {
 	done(null, user);
 });
    
-passport.deserializeUser(function(id, done) {
-	user.findById(id, function (err, user) {
-		done(err, user);
-	});
+passport.deserializeUser(async function(id, done) {
+	const user = await users.findById(id, { Password: 0 });
+	done(null, user);
 });
 
 // <---------------------------------------------------------------------------------->
